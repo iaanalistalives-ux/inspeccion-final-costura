@@ -76,6 +76,10 @@ cursor:pointer;border:1px solid var(--warm);background:#fff;color:var(--sage);mi
 border-radius:8px;font-size:20px;font-weight:700;color:var(--sage);cursor:pointer;
 line-height:1;flex:none;}
 .stepbtn:hover{border-color:var(--sage);}
+.timegrp{display:flex;gap:6px;align-items:stretch;}
+.timegrp select{padding:9px 4px;font-size:13.5px;text-align:center;min-width:0;flex:1;}
+.timegrp select.ap{flex:0 0 74px;}
+.timegrp .stepbtn{flex:0 0 44px;}
 
 .adder{display:grid;grid-template-columns:1fr 110px 120px 130px;gap:10px;align-items:end;}
 .deflist{list-style:none;margin:12px 0 0;padding:0;}
@@ -363,16 +367,20 @@ body.snap .bar{position:sticky;top:0;}
       </div>
       <div>
         <label>Hora inicio <span class="mini">(opcional)</span></label>
-        <div class="stepwrap">
-          <input type="time" id="hini">
-          <button class="stepbtn" type="button" onclick="ahora('hini')" title="Hora actual">⏱</button>
+        <div class="timegrp">
+          <select id="hini_h"></select>
+          <select id="hini_m"></select>
+          <select id="hini_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
+          <button class="stepbtn" type="button" onclick="ahora('hini')" title="Poner la hora actual">⏱</button>
         </div>
       </div>
       <div>
         <label>Hora final <span class="mini">(opcional)</span></label>
-        <div class="stepwrap">
-          <input type="time" id="hfin">
-          <button class="stepbtn" type="button" onclick="ahora('hfin')" title="Hora actual">⏱</button>
+        <div class="timegrp">
+          <select id="hfin_h"></select>
+          <select id="hfin_m"></select>
+          <select id="hfin_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
+          <button class="stepbtn" type="button" onclick="ahora('hfin')" title="Poner la hora actual">⏱</button>
         </div>
       </div>
     </div>
@@ -524,8 +532,18 @@ body.snap .bar{position:sticky;top:0;}
         <div><label>Inspectora</label><select id="edIns"></select></div>
         <div><label>Línea</label><select id="edLin"></select></div>
         <div><label>Fecha</label><input type="date" id="edFecha"></div>
-        <div><label>Hora inicio</label><input type="time" id="edHi"></div>
-        <div><label>Hora final</label><input type="time" id="edHf"></div>
+        <div><label>Hora inicio</label>
+          <div class="timegrp">
+            <select id="edHi_h"></select><select id="edHi_m"></select>
+            <select id="edHi_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
+          </div>
+        </div>
+        <div><label>Hora final</label>
+          <div class="timegrp">
+            <select id="edHf_h"></select><select id="edHf_m"></select>
+            <select id="edHf_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
+          </div>
+        </div>
       </div>
       <div class="f2" style="margin-bottom:12px">
         <div><label>Estilo</label><input type="text" id="edEstilo" list="listaEstilos" autocomplete="off"></div>
@@ -653,9 +671,53 @@ function jsonp(params){
     document.body.appendChild(s);
   });
 }
-function ahora(id){
+const GRUPOS_HORA = ['hini','hfin','edHi','edHf'];
+function initHoras(){
+  let oh = '<option value="">--</option>';
+  for(let i = 1; i <= 12; i++){ const v = String(i).padStart(2,'0'); oh += '<option value="'+v+'">'+v+'</option>'; }
+  let om = '';
+  for(let i = 0; i < 60; i++){ const v = String(i).padStart(2,'0'); om += '<option value="'+v+'">'+v+'</option>'; }
+  GRUPOS_HORA.forEach(p=>{
+    document.getElementById(p+'_h').innerHTML = oh;
+    document.getElementById(p+'_m').innerHTML = om;
+    document.getElementById(p+'_p').value = 'AM';
+  });
+}
+/* Devuelve la hora en formato 24h (HH:mm) para guardarla en el Sheet. */
+function getHora(p){
+  const h = document.getElementById(p+'_h').value;
+  if(!h) return '';
+  const m  = document.getElementById(p+'_m').value || '00';
+  const ap = document.getElementById(p+'_p').value;
+  let H = parseInt(h,10) % 12;
+  if(ap === 'PM') H += 12;
+  return String(H).padStart(2,'0') + ':' + m;
+}
+/* Recibe HH:mm en 24h y lo muestra en los tres selectores. */
+function setHora(p, v){
+  const hs = document.getElementById(p+'_h');
+  const ms = document.getElementById(p+'_m');
+  const ps = document.getElementById(p+'_p');
+  const q = String(v || '').split(':');
+  const H = parseInt(q[0],10);
+  if(isNaN(H)){ hs.value = ''; ms.value = '00'; ps.value = 'AM'; return; }
+  ps.value = H >= 12 ? 'PM' : 'AM';
+  let h12 = H % 12; if(h12 === 0) h12 = 12;
+  hs.value = String(h12).padStart(2,'0');
+  ms.value = String(parseInt(q[1],10) || 0).padStart(2,'0');
+}
+/* Para mostrar en las tablas: 07:15 -> 07:15 AM */
+function hora12(v){
+  const q = String(v || '').split(':');
+  const H = parseInt(q[0],10);
+  if(isNaN(H)) return '';
+  const ap = H >= 12 ? 'PM' : 'AM';
+  let h12 = H % 12; if(h12 === 0) h12 = 12;
+  return String(h12).padStart(2,'0') + ':' + String(parseInt(q[1],10)||0).padStart(2,'0') + ' ' + ap;
+}
+function ahora(p){
   const d = new Date();
-  document.getElementById(id).value = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  setHora(p, String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'));
 }
 function sumaTexto(txt){
   const m = String(txt||'').match(/\d+(\.\d+)?/g);
@@ -676,6 +738,7 @@ function defInfo(nombre){
    ================================================================ */
 async function iniciar(){
   document.getElementById('fecha').value = hoyISO();
+  initHoras();
   rangoHoy();
 
   if(window.__SNAPSHOT__){
@@ -880,7 +943,7 @@ async function guardar(){
   try{
     const r = await jsonp({accion:'guardar', fecha:fecha, inspectora:inspectora, linea:linea,
       estilo:estilo, carga:carga,
-      hini:document.getElementById('hini').value, hfin:document.getElementById('hfin').value,
+      hini:getHora('hini'), hfin:getHora('hfin'),
       defectos:JSON.stringify(CTX.F.obj)});
     if(!r.ok) throw new Error(r.error || 'Error del servidor');
     localStorage.setItem('lives_ic_ult', JSON.stringify({inspectora:inspectora, linea:linea}));
@@ -948,7 +1011,9 @@ function pintarRegistros(){
     mostrar.map(f=>{
       const det = f[F_DET].map((v,i)=> v>0 ? esc(DATA.defectos[i].defecto)+' ×'+v : null).filter(Boolean).join(' · ') || '—';
       const id = escJs(f[F_ID]);
-      return '<tr><td>'+fechaCorta(f[F_FEC])+'</td><td>'+esc(f[F_INS])+'</td><td>'+esc(f[F_LIN])+'</td>' +
+      const hh = [hora12(f[F_HI]), hora12(f[F_HF])].filter(Boolean).join(' – ');
+      return '<tr><td>'+fechaCorta(f[F_FEC]) + (hh ? '<br><span class="mini">'+hh+'</span>' : '') +
+        '</td><td>'+esc(f[F_INS])+'</td><td>'+esc(f[F_LIN])+'</td>' +
         '<td><b>'+esc(f[F_EST])+'</b></td><td class="num">'+n0(f[F_CAR])+'</td>' +
         '<td class="num">'+n0(f[F_DEF])+'</td><td class="num">'+(f[F_NOR]?n0(f[F_NOR]):'—')+'</td>' +
         '<td class="num"><b>'+n0(f[F_PRI])+'</b></td>' +
@@ -975,8 +1040,8 @@ function abrirEdit(id){
   document.getElementById('edIns').value = f[F_INS];
   document.getElementById('edLin').value = f[F_LIN];
   document.getElementById('edFecha').value = f[F_FEC];
-  document.getElementById('edHi').value = f[F_HI] || '';
-  document.getElementById('edHf').value = f[F_HF] || '';
+  setHora('edHi', f[F_HI]);
+  setHora('edHf', f[F_HF]);
   document.getElementById('edEstilo').value = f[F_EST];
   document.getElementById('edCarga').value = f[F_CAR];
   CTX.E.obj = {};
@@ -1004,7 +1069,7 @@ async function guardarEdit(){
   try{
     const r = await jsonp({accion:'editar', id:editId, fecha:fecha, inspectora:inspectora,
       linea:linea, estilo:estilo, carga:carga,
-      hini:document.getElementById('edHi').value, hfin:document.getElementById('edHf').value,
+      hini:getHora('edHi'), hfin:getHora('edHf'),
       defectos:JSON.stringify(CTX.E.obj)});
     if(!r.ok) throw new Error(r.error || 'Error del servidor');
     cerrarEdit();
