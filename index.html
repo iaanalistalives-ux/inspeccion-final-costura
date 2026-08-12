@@ -34,6 +34,7 @@ display:flex;align-items:center;gap:16px;padding:0 22px;flex-wrap:wrap;}
 color:#fff;font-family:inherit;font-size:13px;font-weight:700;border-radius:8px;
 padding:9px 16px;cursor:pointer;min-height:42px;}
 .btn-tablero:hover{background:var(--emer);border-color:var(--emer);color:#06312A;}
+.btn-tablero.volver{display:inline-flex;align-items:center;text-decoration:none;}
 
 .wrap{width:100%;max-width:1180px;margin:0 auto;padding:18px 22px 60px;}
 
@@ -76,10 +77,15 @@ cursor:pointer;border:1px solid var(--warm);background:#fff;color:var(--sage);mi
 border-radius:8px;font-size:20px;font-weight:700;color:var(--sage);cursor:pointer;
 line-height:1;flex:none;}
 .stepbtn:hover{border-color:var(--sage);}
-.timegrp{display:flex;gap:6px;align-items:stretch;}
-.timegrp select{padding:9px 4px;font-size:13.5px;text-align:center;min-width:0;flex:1;}
-.timegrp select.ap{flex:0 0 74px;}
-.timegrp .stepbtn{flex:0 0 44px;}
+.timegrp{display:flex;gap:8px;align-items:center;}
+.timegrp select{flex:1 1 0;min-width:70px;padding:9px 8px;text-align:center;text-align-last:center;}
+.timegrp select.ap{flex:0 0 88px;}
+.tsep{font-weight:700;color:var(--stone);font-size:16px;flex:none;}
+.fgrid.horas{grid-template-columns:repeat(auto-fit,minmax(285px,1fr));}
+@media(max-width:400px){
+  .timegrp select{min-width:0;padding:9px 2px;}
+  .timegrp select.ap{flex:0 0 74px;}
+}
 
 .adder{display:grid;grid-template-columns:1fr 110px 120px 130px;gap:10px;align-items:end;}
 .deflist{list-style:none;margin:12px 0 0;padding:0;}
@@ -284,7 +290,7 @@ box-shadow:var(--sh);padding:12px 16px;margin-bottom:14px;font-size:13.5px;}
 text-align:center;color:var(--stone);}
 
 body.snap #app{display:none;}
-body.snap .header .btn-tablero{display:none;}
+body.snap .header .btn-tablero{display:none!important;}
 body.snap .overlay{display:block;position:static;background:none;padding:0;}
 body.snap .oinner{max-width:1440px;height:auto;border-radius:0;box-shadow:none;
 background:transparent;overflow:visible;}
@@ -340,6 +346,7 @@ body.snap .bar{position:sticky;top:0;}
     <div class="hsub">Dpto. Ingeniería · registro digital por estilo</div>
   </div>
   <div class="hstate" id="hstate">Cargando catálogos…</div>
+  <a class="btn-tablero volver" id="btnPortal" href="#" style="display:none">← Menú principal</a>
   <button class="btn-tablero" onclick="abrirTablero()">📊 Ver tablero</button>
 </div>
 
@@ -365,22 +372,25 @@ body.snap .bar{position:sticky;top:0;}
         <label>Fecha</label>
         <input type="date" id="fecha">
       </div>
+    </div>
+
+    <div class="fgrid horas" style="margin-top:12px">
       <div>
         <label>Hora inicio <span class="mini">(opcional)</span></label>
         <div class="timegrp">
           <select id="hini_h"></select>
+          <span class="tsep">:</span>
           <select id="hini_m"></select>
           <select id="hini_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
-          <button class="stepbtn" type="button" onclick="ahora('hini')" title="Poner la hora actual">⏱</button>
         </div>
       </div>
       <div>
         <label>Hora final <span class="mini">(opcional)</span></label>
         <div class="timegrp">
           <select id="hfin_h"></select>
+          <span class="tsep">:</span>
           <select id="hfin_m"></select>
           <select id="hfin_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
-          <button class="stepbtn" type="button" onclick="ahora('hfin')" title="Poner la hora actual">⏱</button>
         </div>
       </div>
     </div>
@@ -532,15 +542,21 @@ body.snap .bar{position:sticky;top:0;}
         <div><label>Inspectora</label><select id="edIns"></select></div>
         <div><label>Línea</label><select id="edLin"></select></div>
         <div><label>Fecha</label><input type="date" id="edFecha"></div>
+      </div>
+      <div class="fgrid horas" style="margin-bottom:12px">
         <div><label>Hora inicio</label>
           <div class="timegrp">
-            <select id="edHi_h"></select><select id="edHi_m"></select>
+            <select id="edHi_h"></select>
+            <span class="tsep">:</span>
+            <select id="edHi_m"></select>
             <select id="edHi_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
           </div>
         </div>
         <div><label>Hora final</label>
           <div class="timegrp">
-            <select id="edHf_h"></select><select id="edHf_m"></select>
+            <select id="edHf_h"></select>
+            <span class="tsep">:</span>
+            <select id="edHf_m"></select>
             <select id="edHf_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
           </div>
         </div>
@@ -622,6 +638,10 @@ body.snap .bar{position:sticky;top:0;}
    CONEXIÓN — URL /exec del Apps Script
    ================================================================== */
 const API_URL = "https://script.google.com/macros/s/AKfycbydA9gutwDeFqHaZaERnDI6D6N0fDDlFhsL0S9M6HGltAtrWSec8KTbu50TgldK7aFmug/exec";
+
+/* Dirección del portal o menú principal. Pega aquí el enlace de tu portal.
+   Si la dejas vacía (""), el botón "← Menú principal" no aparece.        */
+const URL_PORTAL = "https://iaanalistalives-ux.github.io/tablero-margot/";
 /* ================================================================== */
 
 const F_FEC=0, F_INS=1, F_LIN=2, F_EST=3, F_CAR=4, F_DEF=5, F_PRI=6, F_DET=7,
@@ -715,10 +735,7 @@ function hora12(v){
   let h12 = H % 12; if(h12 === 0) h12 = 12;
   return String(h12).padStart(2,'0') + ':' + String(parseInt(q[1],10)||0).padStart(2,'0') + ' ' + ap;
 }
-function ahora(p){
-  const d = new Date();
-  setHora(p, String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'));
-}
+
 function sumaTexto(txt){
   const m = String(txt||'').match(/\d+(\.\d+)?/g);
   return m ? m.reduce((a,b)=>a+Number(b),0) : 0;
@@ -740,6 +757,12 @@ async function iniciar(){
   document.getElementById('fecha').value = hoyISO();
   initHoras();
   rangoHoy();
+
+  if(URL_PORTAL){
+    const b = document.getElementById('btnPortal');
+    b.href = URL_PORTAL;
+    b.style.display = 'inline-flex';
+  }
 
   if(window.__SNAPSHOT__){
     SNAP = true;
