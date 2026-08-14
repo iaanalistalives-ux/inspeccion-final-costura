@@ -80,6 +80,14 @@ cursor:pointer;border:1px solid var(--warm);background:#fff;color:var(--sage);mi
 .stepbtn{width:44px;min-height:42px;border:1px solid var(--warm);background:#fff;
 border-radius:8px;font-size:20px;font-weight:700;color:var(--sage);cursor:pointer;
 line-height:1;flex:none;}
+/* Las flechitas del campo numérico se quedan siempre a la vista, no solo al
+   pasar el cursor, y el campo se ensancha para que se puedan acertar. */
+input.spin{padding-right:4px;}
+input.spin::-webkit-inner-spin-button,
+input.spin::-webkit-outer-spin-button{opacity:1;height:36px;cursor:pointer;}
+input.spin{-moz-appearance:number-input;}
+.solo-movil{display:none;}
+@media(max-width:760px){ .solo-movil{display:block;} }
 .stepbtn:hover{border-color:var(--sage);background:var(--warm-light);}
 .stepbtn:active{background:var(--sage);color:#fff;border-color:var(--sage);}
 .timegrp{display:flex;gap:8px;align-items:center;}
@@ -92,7 +100,7 @@ line-height:1;flex:none;}
   .timegrp select.ap{flex:0 0 74px;}
 }
 
-.adder{display:grid;grid-template-columns:1fr 168px 120px 130px;gap:10px;align-items:end;}
+.adder{display:grid;grid-template-columns:1fr 126px 120px 130px;gap:10px;align-items:end;}
 .deflist{list-style:none;margin:12px 0 0;padding:0;}
 .deflist li{display:grid;grid-template-columns:76px 1fr auto auto;align-items:center;
 gap:10px;padding:9px 0;border-bottom:1px solid var(--warm-light);}
@@ -444,10 +452,11 @@ body.snap .bar{position:sticky;top:0;}
       <div>
         <label>Cantidad</label>
         <div class="stepwrap">
-          <button class="stepbtn" type="button" onclick="pasoQ('F',-1)">−</button>
-          <input type="text" id="qDefF" inputmode="numeric" value="1" autocomplete="off">
-          <button class="stepbtn" type="button" onclick="pasoQ('F',1)">+</button>
+          <button class="stepbtn solo-movil" type="button" onclick="pasoQ('F',-1)">−</button>
+          <input type="number" id="qDefF" min="1" step="1" value="1" class="spin">
+          <button class="stepbtn solo-movil" type="button" onclick="pasoQ('F',1)">+</button>
         </div>
+        <div class="hint">Con la rueda del mouse encima del número también sube o baja.</div>
       </div>
       <div>
         <button class="btn primary" type="button" style="width:100%" onclick="agregarDefecto('F')">+ Agregar</button>
@@ -601,13 +610,13 @@ body.snap .bar{position:sticky;top:0;}
       </div>
 
       <label>Defectos</label>
-      <div class="adder" style="grid-template-columns:1fr 168px 120px">
+      <div class="adder" style="grid-template-columns:1fr 126px 120px">
         <div><select id="selDefE"></select></div>
         <div>
           <div class="stepwrap">
-            <button class="stepbtn" type="button" onclick="pasoQ('E',-1)">−</button>
-            <input type="text" id="qDefE" inputmode="numeric" value="1" autocomplete="off">
-            <button class="stepbtn" type="button" onclick="pasoQ('E',1)">+</button>
+            <button class="stepbtn solo-movil" type="button" onclick="pasoQ('E',-1)">−</button>
+            <input type="number" id="qDefE" min="1" step="1" value="1" class="spin">
+            <button class="stepbtn solo-movil" type="button" onclick="pasoQ('E',1)">+</button>
           </div>
         </div>
         <div><button class="btn primary" type="button" style="width:100%" onclick="agregarDefecto('E')">+ Agregar</button></div>
@@ -980,7 +989,7 @@ function agregarDefecto(k){
   const c = CTX[k];
   const s = document.getElementById(c.sel);
   const nombre = s.value;
-  const q = Math.max(1, sumaTexto(document.getElementById(c.q).value) || 1);
+  const q = Math.max(1, parseInt(document.getElementById(c.q).value, 10) || 1);
   if(!nombre){ toast('Elige un defecto primero', true); return; }
   c.obj[nombre] = (c.obj[nombre]||0) + q;
   document.getElementById(c.q).value = 1;
@@ -1047,7 +1056,7 @@ function pasoCarga(n){
 }
 function pasoQ(k, n){
   const i = document.getElementById(CTX[k].q);
-  const v = Math.max(1, (sumaTexto(i.value) || 0) + n);
+  const v = Math.max(1, (parseInt(i.value, 10) || 0) + n);
   i.value = String(v);
 }
 function pasoCargaEdit(n){
@@ -1862,6 +1871,22 @@ async function exportar(){
 }
 
 /* ---------------- eventos ---------------- */
+/* Rueda del mouse encima de un campo numérico: sube o baja sin hacer clic
+   y sin necesidad de haberlo seleccionado antes. */
+document.addEventListener('wheel', e=>{
+  const t = e.target;
+  if(!t || t.tagName !== 'INPUT' || t.type !== 'number' || t.disabled) return;
+  e.preventDefault();
+  const paso = parseFloat(t.step) || 1;
+  const min  = (t.min !== '') ? parseFloat(t.min) : -Infinity;
+  let v = parseFloat(t.value);
+  if(isNaN(v)) v = 0;
+  v += (e.deltaY < 0 ? paso : -paso);
+  if(v < min) v = min;
+  t.value = String(Math.round(v * 100) / 100);
+  t.dispatchEvent(new Event('input', {bubbles:true}));
+}, {passive:false});
+
 document.addEventListener('input', e=>{
   if(e.target.id === 'carga') recalcular('F');
   if(e.target.id === 'edCarga') recalcular('E');
