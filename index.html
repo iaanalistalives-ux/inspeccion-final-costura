@@ -408,7 +408,7 @@ body.snap .bar{position:sticky;top:0;}
   <!-- 2. ESTILO Y CARGA -->
   <div class="panel">
     <div class="pt">2. Estilo y carga</div>
-    <div class="ph">Carga = cantidad de prendas revisadas en ese estilo. Si son varias cargas, escríbelas separadas por espacio o con “+” (ejemplo: <b>20 30</b> o <b>10+10</b>) y el sistema las suma solo.</div>
+    <div class="ph">Carga = cantidad de prendas revisadas en ese estilo. Si son varias cargas, escríbelas con el signo <b>+</b> del teclado (ejemplo: <b>20+50+50+50</b>) y el sistema las suma solo.</div>
     <div class="f2">
       <div>
         <label>Estilo</label>
@@ -420,10 +420,11 @@ body.snap .bar{position:sticky;top:0;}
         <label>Carga</label>
         <div class="stepwrap">
           <button class="stepbtn" type="button" onclick="pasoCarga(-1)">−</button>
-          <input type="text" id="carga" inputmode="numeric" placeholder="20  o  20 30" autocomplete="off">
+          <input type="text" id="carga" placeholder="20+50+50+50" autocomplete="off">
           <button class="stepbtn" type="button" onclick="pasoCarga(1)">+</button>
         </div>
         <div class="hint">Carga total: <b id="cargaCalc">0</b> prendas</div>
+        <div class="hint">Se suman solas las cantidades separadas con <b>+</b>.</div>
       </div>
     </div>
   </div>
@@ -440,7 +441,8 @@ body.snap .bar{position:sticky;top:0;}
       </div>
       <div>
         <label>Cantidad</label>
-        <input type="number" id="qDefF" min="1" step="1" value="1">
+        <input type="text" id="qDefF" value="1" placeholder="3  o  2+1" autocomplete="off">
+        <div class="hint" id="qHintF"></div>
       </div>
       <div>
         <button class="btn primary" type="button" style="width:100%" onclick="agregarDefecto('F')">+ Agregar</button>
@@ -508,6 +510,7 @@ body.snap .bar{position:sticky;top:0;}
     <p><b>Horas improductivas.</b> Con la hora de inicio y la hora final el sistema calcula cuántas horas duró el turno. Ahí Margot escribe cuántas de esas horas no se pudo trabajar (línea parada, falta de habilitado, corte de energía). El resto son horas productivas: el tiempo en que sí se estuvo inspeccionando. Como las horas de inicio y final son las mismas para todos los estilos del turno, en los totales <b>cada turno se cuenta una sola vez</b>, no una vez por estilo.</p>
     <p><b>Servicio.</b> En la lista de líneas, debajo de las líneas existentes, está la opción SERVICIO, para la prenda que no viene de una línea interna.</p>
     <p><b>Observaciones.</b> Texto libre por inspección, hasta 500 caracteres. Sirve para explicar lo que los números no dicen. Se ve en la tabla de registros y en el tablero.</p>
+    <p><b>Sumar con el signo +.</b> Tanto en la carga como en la cantidad de defectos se puede escribir varias cifras separadas con <b>+</b> y el sistema las suma: escribir <b>20+50+50+50</b> guarda 170. Debajo del campo se ve el total antes de guardar.</p>
     <p><b>Regla de conteo:</b> cada prenda se marca en un solo defecto, el principal. Si una prenda con mancha y puntada saltada se marca en las dos filas, esa prenda se descuenta dos veces y las primeras quedan por debajo de lo real. Por eso el sistema avisa cuando los defectos superan la carga.</p>
     <p><b>Defecto nuevo:</b> el botón “Defecto nuevo” agrega la falla a la lista para siempre, en el grupo que elijas, y desde ese momento aparece para todos. Se guarda en MAYÚSCULAS y no se puede repetir. Un defecto nuevo siempre resta de las primeras.</p>
     <p><b>Eliminar:</b> el registro desaparece del formulario y del tablero, pero la fila queda tachada en el Google Sheet con la marca ANULADO. Así se puede saber después qué se borró y cuándo.</p>
@@ -587,7 +590,7 @@ body.snap .bar{position:sticky;top:0;}
         <div><label>Carga</label>
           <div class="stepwrap">
             <button class="stepbtn" type="button" onclick="pasoCargaEdit(-1)">−</button>
-            <input type="text" id="edCarga" inputmode="numeric">
+            <input type="text" id="edCarga" placeholder="20+50+50" autocomplete="off">
             <button class="stepbtn" type="button" onclick="pasoCargaEdit(1)">+</button>
           </div>
         </div>
@@ -596,7 +599,8 @@ body.snap .bar{position:sticky;top:0;}
       <label>Defectos</label>
       <div class="adder" style="grid-template-columns:1fr 110px 120px">
         <div><select id="selDefE"></select></div>
-        <div><input type="number" id="qDefE" min="1" step="1" value="1"></div>
+        <div><input type="text" id="qDefE" value="1" placeholder="3  o  2+1" autocomplete="off">
+          <div class="hint" id="qHintE"></div></div>
         <div><button class="btn primary" type="button" style="width:100%" onclick="agregarDefecto('E')">+ Agregar</button></div>
       </div>
       <ul class="deflist" id="deflistE"></ul>
@@ -967,10 +971,11 @@ function agregarDefecto(k){
   const c = CTX[k];
   const s = document.getElementById(c.sel);
   const nombre = s.value;
-  const q = Math.max(1, parseInt(document.getElementById(c.q).value,10) || 1);
+  const q = Math.max(1, sumaTexto(document.getElementById(c.q).value) || 1);
   if(!nombre){ toast('Elige un defecto primero', true); return; }
   c.obj[nombre] = (c.obj[nombre]||0) + q;
   document.getElementById(c.q).value = 1;
+  document.getElementById(k === 'F' ? 'qHintF' : 'qHintE').textContent = '';
   s.value = '';
   pintarDefectos(k); recalcular(k);
 }
@@ -1844,9 +1849,18 @@ async function exportar(){
 }
 
 /* ---------------- eventos ---------------- */
+function pistaCantidad(k){
+  const c = CTX[k];
+  const v = document.getElementById(c.q).value;
+  const box = document.getElementById(k === 'F' ? 'qHintF' : 'qHintE');
+  const suma = sumaTexto(v);
+  box.innerHTML = (v.indexOf('+') >= 0 && suma) ? 'Suman <b>' + n0(suma) + '</b> prendas' : '';
+}
 document.addEventListener('input', e=>{
   if(e.target.id === 'carga') recalcular('F');
   if(e.target.id === 'edCarga') recalcular('E');
+  if(e.target.id === 'qDefF') pistaCantidad('F');
+  if(e.target.id === 'qDefE') pistaCantidad('E');
   if(e.target.id === 'horasImp') actualizarHoras('F');
   if(e.target.id === 'edHorasImp') actualizarHoras('E');
 });
@@ -1866,6 +1880,10 @@ document.addEventListener('keydown', e=>{
     const v = sumaTexto(e.target.value);
     e.target.value = v ? String(v) : '';
     recalcular(e.target.id === 'carga' ? 'F' : 'E');
+  }
+  if((e.target.id === 'qDefF' || e.target.id === 'qDefE') && e.key === 'Enter'){
+    e.preventDefault();
+    agregarDefecto(e.target.id === 'qDefF' ? 'F' : 'E');
   }
   if(e.key === 'Escape'){
     if(document.getElementById('mdNuevo').classList.contains('on')) cerrarNuevoDefecto();
