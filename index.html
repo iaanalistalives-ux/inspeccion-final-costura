@@ -229,12 +229,10 @@ border-radius:50%;background:#fff;box-shadow:var(--sh);transition:.2s;}
 .sw.on .pista::after{left:21px;}
 .sw.on{color:var(--sage-dark);}
 
-.acumbar{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
-padding:12px 16px;margin-bottom:12px;font-size:12.5px;color:var(--stone);
-border-left:4px solid var(--slate);}
-.acumbar b{color:#333;}
-.acumbar .at{font-size:16px;font-weight:700;color:var(--petrol);margin-bottom:3px;}
-.acumbar .at span{color:var(--sage-dark);}
+.kpihead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:2px 0 8px;}
+.kpihead .t{font-size:15px;font-weight:700;color:var(--petrol);}
+.kpihead .t span{color:var(--sage-dark);}
+.kpihead .s{font-size:11.5px;color:var(--stone);}
 
 .verdict{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:var(--r);
 box-shadow:var(--sh);padding:16px 20px;margin-bottom:14px;border-left:6px solid var(--rose);}
@@ -378,7 +376,7 @@ body.snap .bar{position:sticky;top:0;}
   .obody{overflow:visible!important;padding:0!important;}
   .tabpane{display:block!important;}
   #printHead{display:block!important;margin-bottom:10px;}
-  .panel,.kpi,.insight,.verdict,.acumbar{box-shadow:none;border:1px solid var(--warm);break-inside:avoid;}
+  .panel,.kpi,.insight,.verdict{box-shadow:none;border:1px solid var(--warm);break-inside:avoid;}
   .cwrap,.cwrap.tall{height:165px!important;}
   .grid{gap:8px;}
 }
@@ -939,11 +937,11 @@ function defInfo(nombre){
 function degradado(i, total, tono){
   const t = total <= 1 ? 0 : i/(total-1);
   const pares = {
-    tierra:[[154,52,18],[250,222,190]],
-    verde: [[11,90,68],[189,224,212]],
+    azul:  [[24,73,110],[188,214,231]],
+    verde: [[11,105,79],[186,224,209]],
     pizarra:[[43,68,82],[203,216,222]]
   };
-  const p = pares[tono || 'tierra'];
+  const p = pares[tono || 'azul'];
   return 'rgb(' + p[0].map((v,k)=>Math.round(v + (p[1][k]-v)*t)).join(',') + ')';
 }
 
@@ -1673,8 +1671,7 @@ async function render(){
   const ultimaFecha = ACUM.reduce((mx,f)=> f[F_FEC] > mx ? f[F_FEC] : mx, ACUM[0][F_FEC]);
   cont.innerHTML =
     htmlVerdicto(mCur, mPrev, k, kPrev) +
-    htmlAcumbar(mAcum, anio, ultimaFecha) +
-    htmlKpis(mAcum, mAcumPrev) +
+    htmlKpis(mAcum, mAcumPrev, anio, ultimaFecha) +
     htmlInsight(CUR, mCur, k) +
     htmlTabs();
 
@@ -1694,16 +1691,7 @@ async function render(){
     dAvisar('Solo están cargados los datos del mes actual y el anterior, así que el acumulado del año puede quedar corto. Pulsa <b>Actualizar</b> para traer todo el histórico.');
   }
 }
-function htmlAcumbar(m, anio, ultima){
-  return '<div class="acumbar">' +
-    '<div class="at">Acumulado al <span>' + fechaLarga(ultima) + '</span></div>' +
-    'Las cuatro tarjetas de abajo suman desde el 1 de enero de ' + anio +
-    ' hasta la última inspección digitada dentro del período elegido. En ese lapso se revisaron <b>' +
-    n0(m.carga) + '</b> prendas en <b>' + n0(m.n) + '</b> inspecciones' +
-    (m.hTot ? ', con <b>' + nh(m.hTot) + '</b> horas de turno' : '') + '.' +
-    (m.cobStd < 99.5 ? ' <b>Ojo:</b> solo el ' + n1(m.cobStd) + '% de esas prendas tiene T. STD registrado, así que la eficiencia sale más baja de lo real.' : '') +
-    '</div>';
-}
+
 function htmlVerdicto(A, P, k, kPrev){
   const per = etiquetaPeriodo(k);
   if(!P){
@@ -1735,14 +1723,20 @@ function deltaHtml(actual, anterior, subirEsBueno){
   const bueno = subirEsBueno ? dif > 0 : dif < 0;
   return '<span class="d ' + (bueno?'bien':'mal') + '">' + (dif>0?'▲':'▼') + ' ' + n1(Math.abs(dif)) + ' pts</span>';
 }
-function htmlKpis(A, P){
-  return '<div class="kpis">' +
+function htmlKpis(A, P, anio, ultima){
+  return '<div class="kpihead">' +
+      '<span class="t">Acumulado al <span>' + fechaLarga(ultima) + '</span></span>' +
+      '<span class="s">desde el 1 de enero de ' + anio + ' · ' + n0(A.carga) +
+      ' prendas revisadas en ' + n0(A.n) + ' inspecciones</span>' +
+    '</div>' +
+    '<div class="kpis">' +
     kpi('','% Primeras', n1(A.pPri)+'%', deltaHtml(A.pPri, P?P.pPri:null, true),
         n0(A.pri) + ' primeras ÷ ' + n0(A.carga) + ' prendas revisadas', 'spkPri') +
     kpi('alert','% Con defecto', n1(A.pDef)+'%', deltaHtml(A.pDef, P?P.pDef:null, false),
         n0(A.def) + ' con defecto ÷ ' + n0(A.carga) + ' revisadas', 'spkDef') +
     kpi('','% Eficiencia', n1(A.pEfi)+'%', deltaHtml(A.pEfi, P?P.pEfi:null, true),
-        n0(A.min) + ' min de trabajo ÷ ' + n0(A.hProd*60) + ' min productivos (sin refrigerio)', 'spkEfi') +
+        n0(A.min) + ' min de trabajo ÷ ' + n0(A.hProd*60) + ' min productivos' +
+        (A.cobStd < 99.5 ? ' · ojo: solo el ' + n1(A.cobStd) + '% tiene T. STD' : ''), 'spkEfi') +
     kpi('neutro','% Tiempo productivo', n1(A.pProd)+'%', deltaHtml(A.pProd, P?P.pProd:null, true),
         nh(A.hProd) + ' h productivas ÷ ' + nh(A.hTot) + ' h de turno', 'spkProd') +
   '</div>';
@@ -1791,12 +1785,14 @@ function htmlTabs(){
   '<div class="tabpane"><div class="grid">' +
     panel('col8','Prendas con defecto por línea','% calculado como prendas con defecto ÷ prendas revisadas de esa línea.','<div class="cwrap"><canvas id="chLin"></canvas></div>') +
     panel('col4','Orden por % de defecto','Sin meta definida: el color y el orden son relativos entre líneas, no indican cumplimiento.','<ul class="rank" id="rkLin"></ul>') +
+    panel('col12','Eficiencia por línea','Minutos de trabajo que valían las prendas ÷ minutos productivos de cada línea. Solo aparecen las líneas con horas registradas.','<div class="cwrap"><canvas id="chEfiLin"></canvas></div>') +
     panel('col12','Detalle por línea','Los totales suman el total general del período.','<div class="tablescroll" id="tbLin"></div>') +
   '</div></div>' +
 
   '<div class="tabpane"><div class="grid">' +
     panel('col8','Prendas con defecto por inspectora','% calculado como prendas con defecto ÷ prendas revisadas por esa inspectora. Mide lo que encontró, no su desempeño.','<div class="cwrap"><canvas id="chIns"></canvas></div>') +
     panel('col4','Orden por % de defecto','Una inspectora con % alto puede estar revisando peor material o revisando más fino.','<ul class="rank" id="rkIns"></ul>') +
+    panel('col12','Eficiencia por inspectora','Minutos de trabajo que valían las prendas ÷ minutos productivos de cada inspectora. Solo aparecen las que tienen horas registradas.','<div class="cwrap"><canvas id="chEfiIns"></canvas></div>') +
     panel('col12','Detalle por inspectora','Los totales suman el total general del período.','<div class="tablescroll" id="tbIns"></div>') +
   '</div></div>' +
 
@@ -1817,6 +1813,7 @@ function htmlTabs(){
   '<p><b>Eficiencia.</b> El T. STD es el tiempo estándar en minutos que debería tomar inspeccionar una prenda de ese estilo. Las prendas re-inspeccionadas suman porque se revisaron dos veces; las primeras especiales no suman aparte, porque ya venían dentro de la carga. Del tiempo disponible se descuentan las horas improductivas y <b>45 minutos de refrigerio</b> por cada turno de 4 horas o más. Si un registro no tiene T. STD aporta cero minutos y la eficiencia baja: por eso el tablero avisa cuando hay estilos sin T. STD.</p>' +
   '<p><b>Lo que no descuenta.</b> <b>Primeras especiales</b> no resta: la prenda sale igual como primera, así que ya está contada en el % de primeras y no aparece en los gráficos de defectos. <b>Re-inspección</b> tampoco resta prendas, pero sí suma tiempo trabajado.</p>' +
   '<p><b>SERVICIO.</b> El interruptor de arriba arranca apagado, así que todo lo que ves es solo de las líneas de producción. Al encenderlo se suma la prenda de servicio a todos los números.</p>' +
+  '<p><b>Eficiencia por línea y por inspectora.</b> Se calcula con los mismos minutos de trabajo y minutos productivos, pero separando los registros de cada una. Solo aparecen las que tienen hora de inicio y final registradas; sin horas no hay divisor y la barra no se puede dibujar.</p>' +
   '<p><b>Los números sobre los gráficos.</b> Cada barra y cada punto lleva su porcentaje escrito encima, para no tener que estimarlo a ojo ni pasar el cursor. En la línea de tendencia, si hay muchos días, se escriben salteados para que no se encimen.</p>' +
   '<p><b>No hay meta definida.</b> Por eso no hay semáforo de cumplimiento. El degradado de color de las barras es solo orden visual: el más alto en color fuerte, los siguientes más claros.</p>' +
   '<p><b>Cuidado con el % por inspectora.</b> Un porcentaje alto de defectos no significa que trabaje mal: significa que la prenda que le llegó tenía más fallas, o que revisa más fino. Para juzgar personas haría falta comparar sobre el mismo estilo y la misma línea.</p>' +
@@ -1870,24 +1867,49 @@ function pluginEtiquetas(op){
   return {
     id: 'etiquetasLives',
     afterDatasetsDraw(chart){
-      const ctx = chart.ctx;
+      const ctx  = chart.ctx;
+      const area = chart.chartArea;
+      const cajas = [];
+      /* Si una etiqueta pisaría a otra ya dibujada, se omite. Así nunca se
+         encima nada, por muy juntos que estén los valores. */
+      function libre(x, y, an, al){
+        for(let i = 0; i < cajas.length; i++){
+          const c = cajas[i];
+          if(Math.abs(x - c.x) < (an + c.an)/2 + 3 && Math.abs(y - c.y) < (al + c.al)/2 + 2) return false;
+        }
+        return true;
+      }
       ctx.save();
-      ctx.font = '700 10.5px Calibri, Arial, sans-serif';
+      ctx.font = '700 11px Calibri, Arial, sans-serif';
       ctx.textAlign = 'center';
-      ctx.textBaseline = 'bottom';
-      chart.data.datasets.forEach((ds, i)=>{
-        if(o.datasets && o.datasets.indexOf(i) < 0) return;
+      ctx.textBaseline = 'middle';
+      ctx.lineJoin = 'round';
+      const orden = o.datasets || chart.data.datasets.map((d,i)=>i);
+      orden.forEach(i=>{
+        const ds = chart.data.datasets[i];
+        if(!ds) return;
         const meta = chart.getDatasetMeta(i);
         if(!meta || meta.hidden) return;
         const paso = o.paso || 1;
+        const dy = (o.desplazar && o.desplazar[i] !== undefined) ? o.desplazar[i] : -11;
         meta.data.forEach((el, j)=>{
-          if(j % paso !== 0 && j !== meta.data.length - 1) return;
+          if(paso > 1 && j % paso !== 0 && j !== meta.data.length - 1) return;
           const v = ds.data[j];
           if(v === null || v === undefined) return;
           if(o.minimo !== undefined && v < o.minimo) return;
           const txt = (o.entero ? n0(v) : n1(v)) + (o.sufijo === undefined ? '%' : o.sufijo);
-          ctx.fillStyle = o.color || '#3F5A52';
-          ctx.fillText(txt, el.x, Math.max(11, el.y - 5));
+          const an = ctx.measureText(txt).width + 4;
+          const al = 13;
+          let y = el.y + dy;
+          if(y - al/2 < area.top) y = el.y + Math.abs(dy);
+          if(y + al/2 > area.bottom) y = el.y - Math.abs(dy);
+          if(!libre(el.x, y, an, al)) return;
+          cajas.push({x:el.x, y:y, an:an, al:al});
+          ctx.lineWidth = 3.5;
+          ctx.strokeStyle = 'rgba(255,255,255,.92)';
+          ctx.strokeText(txt, el.x, y);
+          ctx.fillStyle = o.color || (ds.borderColor && typeof ds.borderColor === 'string' ? ds.borderColor : '#33474F');
+          ctx.fillText(txt, el.x, y);
         });
       });
       ctx.restore();
@@ -1904,14 +1926,18 @@ function pluginEtiquetasAnillo(){
       const total = ds.data.reduce((a,b)=>a+b, 0);
       if(!total) return;
       ctx.save();
-      ctx.font = '700 11.5px Calibri, Arial, sans-serif';
+      ctx.font = '700 12px Calibri, Arial, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#fff';
+      ctx.lineJoin = 'round';
       chart.getDatasetMeta(0).data.forEach((el, j)=>{
         const p = pct(ds.data[j], total);
-        if(p < 6) return;
+        if(p < 5) return;
         const c = el.getCenterPoint();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(0,0,0,.28)';
+        ctx.strokeText(n1(p) + '%', c.x, c.y);
+        ctx.fillStyle = '#fff';
         ctx.fillText(n1(p) + '%', c.x, c.y);
       });
       ctx.restore();
@@ -1932,7 +1958,8 @@ function pintarTendencia(rows){
   const serie = ks.map(k=>met(m[k]));
   const pasoT = Math.max(1, Math.ceil(ks.length/10));
   charts.tend = new Chart(document.getElementById('chTend'), {
-    plugins:[pluginEtiquetas({datasets:[1,2], paso:pasoT})],
+    plugins:[pluginEtiquetas({datasets:[1,2,3], paso:pasoT,
+      desplazar:{1:-12, 2:14, 3:-12}})],
     data:{labels:ks.map(etiquetaGrafico), datasets:[
       {type:'bar', label:'Prendas revisadas', data:serie.map(x=>x.carga),
        backgroundColor:'rgba(220,229,226,.85)', borderRadius:4, order:4, yAxisID:'y1'},
@@ -2025,12 +2052,12 @@ function pintarGrupo(rows, campo, sufijo, etiqueta){
   const ks = Object.keys(m).sort((a,b)=> met(m[b]).pDef - met(m[a]).pDef);
   const M = {}; ks.forEach(k=>{ M[k] = met(m[k]); });
   const maxp = Math.max(...ks.map(k=>M[k].pDef), 0.0001);
-  const colores = ks.map((k,i)=>degradado(i, ks.length, 'tierra'));
+  const colores = ks.map((k,i)=>degradado(i, ks.length, 'azul'));
 
   const canvas = document.getElementById(sufijo==='lin'?'chLin':'chIns');
   if(window.Chart && canvas){
     charts['g'+sufijo] = new Chart(canvas, {
-      plugins:[pluginEtiquetas({datasets:[0,1]})],
+      plugins:[pluginEtiquetas({datasets:[0,1], desplazar:{0:-11, 1:15}})],
       data:{labels:ks, datasets:[
         {type:'bar', label:'% Con defecto', data:ks.map(k=>+M[k].pDef.toFixed(1)),
          backgroundColor:colores, borderRadius:4, yAxisID:'y'},
@@ -2057,6 +2084,8 @@ function pintarGrupo(rows, campo, sufijo, etiqueta){
       '<span class="val" style="color:' + colores[i] + '">' + n1(p) + '%</span></li>';
   }).join('');
 
+  pintarEficienciaGrupo(M, ks, sufijo);
+
   const T = met(rows);
   document.getElementById(sufijo==='lin'?'tbLin':'tbIns').innerHTML =
     '<table><thead><tr><th>' + etiqueta.toUpperCase() + '</th><th class="num">Inspecciones</th>' +
@@ -2069,6 +2098,38 @@ function pintarGrupo(rows, campo, sufijo, etiqueta){
     '</tbody><tfoot><tr><td>TOTAL</td><td class="num">' + n0(T.n) + '</td><td class="num">' + n0(T.carga) +
     '</td><td class="num">' + n1(T.pDef) + '%</td><td class="num">' + n1(T.pPri) + '%</td>' +
     '<td class="num">' + (T.hProd ? n1(T.pEfi)+'%' : '—') + '</td></tr></tfoot></table>';
+}
+/* Barras de eficiencia por línea o por inspectora. */
+function pintarEficienciaGrupo(M, ks, sufijo){
+  const el = document.getElementById(sufijo==='lin' ? 'chEfiLin' : 'chEfiIns');
+  if(!el) return;
+  const conHoras = ks.filter(k=> M[k].hProd > 0);
+  if(!conHoras.length){
+    el.parentNode.innerHTML = '<div class="nota">Ninguna ' + (sufijo==='lin'?'línea':'inspectora') +
+      ' tiene horas de turno registradas en este período, así que no se puede calcular la eficiencia. ' +
+      'Las horas de inicio y final son opcionales en el formulario.</div>';
+    return;
+  }
+  if(!window.Chart) return;
+  const orden = conHoras.slice().sort((a,b)=> M[b].pEfi - M[a].pEfi);
+  const colores = orden.map((k,i)=>degradado(i, orden.length, 'verde'));
+  charts['e'+sufijo] = new Chart(el, {
+    plugins:[pluginEtiquetas({datasets:[0]})],
+    data:{labels:orden, datasets:[
+      {type:'bar', label:'% Eficiencia', data:orden.map(k=>+M[k].pEfi.toFixed(1)),
+       backgroundColor:colores, borderRadius:4, maxBarThickness:90}
+    ]},
+    options:{responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>{
+          const k = orden[c.dataIndex];
+          return '% Eficiencia: ' + n1(c.raw) + '% · ' + n0(M[k].min) + ' min de trabajo ÷ ' +
+                 n0(M[k].hProd*60) + ' min productivos';
+        }}}},
+      scales:{y:{beginAtZero:true, grace:'16%', grid:{color:'#F1F6F4'},
+          title:{display:true,text:'% Eficiencia'}, ticks:{callback:v=>v+'%'}},
+        x:{grid:{display:false}}}}
+  });
 }
 function pintarDefectosDash(rows, A){
   const defs = DATA.defectos;
@@ -2085,7 +2146,7 @@ function pintarDefectosDash(rows, A){
         '(hace falta internet). Los números de la tabla de abajo sí están completos.</div>';
     }else{
       const top = conResta.slice(0,12);
-      const colores = top.map((o,i)=>degradado(i, top.length, 'tierra'));
+      const colores = top.map((o,i)=>degradado(i, top.length, 'azul'));
       let acum = 0;
       const acumPct = top.map(o=>{ acum += o.v; return +pct(acum, A.def).toFixed(1); });
       charts.par = new Chart(elPar, {
