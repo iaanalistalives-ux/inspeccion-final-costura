@@ -112,6 +112,7 @@ letter-spacing:.3px;}
 .tagc.ZURCIDO{background:#EDF1F3;color:var(--slate);}
 .tagc.LIMPIEZA{background:#E8F0FA;color:#2563EB;}
 .tagc.SEGUNDAS{background:#FCEBEB;color:var(--rose);}
+.tagc.NODESCUENTAN{background:#EDF1F3;color:var(--slate);}
 .tagc.OTROS{background:#F1F1F1;color:#666;}
 .qty{display:flex;align-items:center;gap:4px;}
 .qty button{width:40px;height:40px;border:1px solid var(--warm);background:#fff;
@@ -480,7 +481,7 @@ body.snap .bar{position:sticky;top:0;}
   <!-- 3. DEFECTOS -->
   <div class="panel">
     <div class="pt">3. Defectos encontrados</div>
-    <div class="ph">Elige el defecto, pon cuántas prendas salieron con él y agrégalo. Se cuenta <b>una prenda con un solo defecto</b>. La única fila marcada <b>“no resta”</b> es re-inspección: se registra pero no descuenta de las primeras.</div>
+    <div class="ph">Elige el defecto, pon cuántas prendas salieron con él y agrégalo. Se cuenta <b>una prenda con un solo defecto</b>. Las filas marcadas <b>“no resta”</b> (primeras especiales y re-inspección) se registran pero no descuentan de las primeras.</div>
 
     <div class="adder">
       <div>
@@ -512,7 +513,7 @@ body.snap .bar{position:sticky;top:0;}
       <div class="tot def"><div class="l">Defectos que restan</div><div class="v" id="tDefF">0</div>
         <div class="s">descuentan de las primeras</div></div>
       <div class="tot nor"><div class="l">No restan</div><div class="v" id="tNorF">0</div>
-        <div class="s">re-inspección: solo se registra</div></div>
+        <div class="s">1ras especiales y re-inspección</div></div>
       <div class="tot pri"><div class="l">Primeras</div><div class="v" id="tPriF">0</div>
         <div class="s">carga − defectos que restan</div></div>
     </div>
@@ -557,9 +558,9 @@ body.snap .bar{position:sticky;top:0;}
 
   <details class="help">
     <summary>¿Cómo se calcula esto?</summary>
-    <p><b>Primeras = Carga − Defectos que restan.</b> Descuentan compostura, manchas, zurcido, limpieza, segundas y primeras especiales. <b>No descuenta</b> re-inspección (2da y 3era vuelta): se registra para poder analizarla, pero no es una prenda perdida.</p>
+    <p><b>Primeras = Carga − Defectos que restan.</b> Descuentan compostura, manchas, zurcido, limpieza y segundas. <b>No descuentan</b> primeras especiales ni re-inspección: la primera especial sale igual como prenda buena, y la re-inspección es una carga que hubo que volver a revisar, no una prenda perdida.</p>
     <p><b>T. STD.</b> Es el tiempo estándar en minutos que toma inspeccionar una prenda de ese estilo. Aparece solo cuando el estilo ya lo tiene registrado. Si el estilo es nuevo o si esa prenda toma más o menos de lo normal, se escribe aquí y ese valor queda guardado solo en ese registro. Para que quede como el tiempo oficial del estilo hay que pulsar “Guardar este T. STD para el estilo”.</p>
-    <p><b>Eficiencia.</b> Se calcula en el tablero como (prendas revisadas + prendas re-inspeccionadas) × T. STD ÷ (horas productivas × 60). Es decir: los minutos de trabajo que valía lo hecho, sobre los minutos que realmente se tuvo para trabajar.</p>
+    <p><b>Eficiencia.</b> Se calcula en el tablero como (prendas revisadas + prendas re-inspeccionadas) × T. STD ÷ minutos productivos. Los minutos productivos son las horas del turno menos las horas improductivas menos 45 minutos de refrigerio si el turno duró 4 horas o más. Es decir: los minutos de trabajo que valía lo hecho, sobre los minutos que realmente se tuvo para trabajar.</p>
     <p><b>Horas improductivas.</b> Con la hora de inicio y la hora final el sistema calcula cuántas horas duró el turno. Ahí se escribe cuántas de esas horas no se pudo trabajar (línea parada, falta de habilitado, corte de energía). El resto son horas productivas. Como las horas son las mismas para todos los estilos del turno, en los totales <b>cada turno se cuenta una sola vez</b>, no una vez por estilo.</p>
     <p><b>Servicio.</b> En la lista de líneas, debajo de las líneas existentes, está la opción SERVICIO, para la prenda que no viene de una línea interna. En el tablero se puede incluir o excluir con un interruptor.</p>
     <p><b>Observaciones.</b> Texto libre por inspección, hasta 500 caracteres. Sirve para explicar lo que los números no dicen.</p>
@@ -741,7 +742,9 @@ const URL_PORTAL = "https://iaanalistalives-ux.github.io/tablero-margot/";
 
 const F_FEC=0, F_INS=1, F_LIN=2, F_EST=3, F_CAR=4, F_DEF=5, F_PRI=6, F_DET=7,
       F_ID=8, F_HI=9, F_HF=10, F_NOR=11, F_OBS=12, F_HIMP=13, F_HTOT=14,
-      F_STD=15, F_GRP=16, F_MIN=17;
+      F_STD=15, F_GRP=16, F_MIN=17, F_REI=18;
+const MIN_REFRIGERIO = 45;          /* minutos de refrigerio por turno */
+const HORAS_MIN_REFRIGERIO = 4;    /* turnos más cortos no lo descuentan */
 const ROT = ['#B45309','#4E6B78','#2563EB','#DC2626','#F59E0B','#10B981'];
 const MES3 = ['ene','feb','mar','abr','may','jun','jul','ago','set','oct','nov','dic'];
 
@@ -925,6 +928,7 @@ function detTexto(f){
   }).filter(Boolean).join(' · ');
   return t || '—';
 }
+function claseCat(c){ return String(c||'').replace(/[^A-Za-zÁÉÍÓÚÑ]/g,'').toUpperCase(); }
 function defInfo(nombre){
   const lista = (DATA && DATA.defectos && DATA.defectos.length) ? DATA.defectos : CAT.defectos;
   return lista.filter(d=>d.defecto === nombre)[0] || {categoria:'SEGUNDAS', resta:true};
@@ -1105,7 +1109,7 @@ function pintarDefectos(k){
   nombres.sort((a,b)=> orden.indexOf(a) - orden.indexOf(b));
   document.getElementById(c.list).innerHTML = nombres.map(n=>{
     const info = defInfo(n), e = escJs(n);
-    return '<li><span class="tagc '+esc(info.categoria)+'">'+esc(info.categoria)+'</span>' +
+    return '<li><span class="tagc '+claseCat(info.categoria)+'">'+esc(info.categoria)+'</span>' +
       '<span class="nm">'+esc(n)+(info.resta?'':'<span class="nr">no resta</span>')+'</span>' +
       '<span class="qty"><button type="button" onclick="pasoDef(\''+k+'\',\''+e+'\',-1)">−</button>' +
       '<span class="n">'+c.obj[n]+'</span>' +
@@ -1240,7 +1244,7 @@ function agregarLocal(r, d){
     d.fecha, d.inspectora, d.linea, d.estilo, d.carga,
     r.totalDefectos, r.primeras, det, r.id, d.hini, d.hfin,
     r.noResta || 0, d.obs, r.horasImp || 0, r.horasTotal || 0,
-    d.std || 0, d.grupo || '', r.minutos || 0
+    d.std || 0, d.grupo || '', r.minutos || 0, r.rein || 0
   ]);
   if(d.estilo && CAT.estilos.indexOf(d.estilo) === -1){
     CAT.estilos.push(d.estilo);
@@ -1398,7 +1402,7 @@ async function guardarEdit(){
       DATA.filas[i] = [fecha, inspectora, linea, estilo, carga, r.totalDefectos, r.primeras,
         det, editId, getHora('edHi'), getHora('edHf'), r.noResta || 0,
         document.getElementById('edObs').value.trim(), r.horasImp || 0, r.horasTotal || 0,
-        r.std || 0, previa[F_GRP] || '', r.minutos || 0];
+        r.std || 0, previa[F_GRP] || '', r.minutos || 0, r.rein || 0];
     }
     cerrarEdit();
     pintarRegistros();
@@ -1595,7 +1599,7 @@ function prepararFiltros(){
    cada turno (fecha + inspectora + horario + improductivas) se cuenta una vez. */
 function agregarHoras(rows){
   const vistos = {};
-  let tot = 0, imp = 0;
+  let tot = 0, imp = 0, turnos = 0;
   rows.forEach(f=>{
     if(!f[F_HTOT] && !f[F_HIMP]) return;
     const k = [f[F_FEC], f[F_INS], f[F_HI], f[F_HF], f[F_HIMP]].join('|');
@@ -1603,21 +1607,26 @@ function agregarHoras(rows){
     vistos[k] = 1;
     tot += f[F_HTOT] || 0;
     imp += f[F_HIMP] || 0;
+    /* El refrigerio solo corresponde en turnos de 4 horas o más. */
+    if(f[F_HTOT] >= HORAS_MIN_REFRIGERIO) turnos++;
   });
+  const refr = Math.round(turnos * (MIN_REFRIGERIO/60) * 100)/100;
   tot = Math.round(tot*100)/100; imp = Math.round(imp*100)/100;
-  return {tot:tot, imp:imp, prod:Math.round(Math.max(0, tot-imp)*100)/100};
+  return {tot:tot, imp:imp, turnos:turnos, refr:refr,
+          prod:Math.round(Math.max(0, tot - imp - refr)*100)/100};
 }
 function met(rows){
-  let carga=0, def=0, pri=0, rein=0, min=0, cargaStd=0;
+  let carga=0, def=0, pri=0, rein=0, min=0, cargaStd=0, espec=0;
   rows.forEach(f=>{
     carga += f[F_CAR]; def += f[F_DEF]; pri += f[F_PRI];
-    rein += (f[F_NOR]||0); min += (f[F_MIN]||0);
+    rein += (f[F_REI]||0); min += (f[F_MIN]||0);
     if(f[F_STD] > 0) cargaStd += f[F_CAR];
+    espec += Math.max(0, (f[F_NOR]||0) - (f[F_REI]||0));
   });
   const H = agregarHoras(rows);
   return {
-    n:rows.length, carga:carga, def:def, pri:pri, rein:rein, min:min,
-    hTot:H.tot, hImp:H.imp, hProd:H.prod,
+    n:rows.length, carga:carga, def:def, pri:pri, rein:rein, min:min, espec:espec,
+    hTot:H.tot, hImp:H.imp, hProd:H.prod, hRefr:H.refr, turnos:H.turnos,
     pPri: pct(pri,carga), pDef: pct(def,carga),
     pProd: pct(H.prod, H.tot),
     pEfi: H.prod > 0 ? pct(min, H.prod*60) : 0,
@@ -1728,9 +1737,9 @@ function htmlKpis(A, P){
     kpi('alert','% Con defecto', n1(A.pDef)+'%', deltaHtml(A.pDef, P?P.pDef:null, false),
         n0(A.def) + ' con defecto ÷ ' + n0(A.carga) + ' revisadas', 'spkDef') +
     kpi('','% Eficiencia', n1(A.pEfi)+'%', deltaHtml(A.pEfi, P?P.pEfi:null, true),
-        n0(A.min) + ' min de trabajo ÷ ' + n0(A.hProd*60) + ' min productivos', 'spkEfi') +
+        n0(A.min) + ' min de trabajo ÷ ' + n0(A.hProd*60) + ' min productivos (sin refrigerio)', 'spkEfi') +
     kpi('neutro','% Tiempo productivo', n1(A.pProd)+'%', deltaHtml(A.pProd, P?P.pProd:null, true),
-        nh(A.hProd) + ' h productivas ÷ ' + nh(A.hTot) + ' h trabajadas', 'spkProd') +
+        nh(A.hProd) + ' h productivas ÷ ' + nh(A.hTot) + ' h de turno', 'spkProd') +
   '</div>';
 }
 function kpi(cls,label,valor,delta,sub,sparkId){
@@ -1771,7 +1780,7 @@ function htmlTabs(){
 
   '<div class="tabpane active"><div class="grid">' +
     panel('col8','Cómo se movió el período','Las tres líneas son porcentajes y se leen en el eje de la izquierda (0 a 100%). Las barras grises al fondo son el volumen de prendas revisadas y se leen en el eje de la derecha.','<div class="cwrap tall"><canvas id="chTend"></canvas></div>') +
-    panel('col4','Eficiencia y tiempo','Eficiencia = (prendas revisadas + re-inspeccionadas) × T. STD ÷ (horas productivas × 60).','<div id="bxEfi"></div>') +
+    panel('col4','Eficiencia y tiempo','Eficiencia = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos productivos. Los minutos productivos descuentan las horas improductivas y 45 minutos de refrigerio por cada turno de 4 horas o más.','<div id="bxEfi"></div>') +
   '</div></div>' +
 
   '<div class="tabpane"><div class="grid">' +
@@ -1799,8 +1808,9 @@ function htmlTabs(){
   '<details class="help"><summary>¿Cómo leo este tablero?</summary>' +
   '<p><b>Qué período estoy viendo.</b> Los botones Semanal, Mensual y Anual cambian el tipo de período; el desplegable de al lado elige cuál. Las semanas van de lunes a domingo con sus fechas reales.</p>' +
   '<p><b>Las tarjetas son acumuladas.</b> Muestran el año corrido: del 1 de enero hasta el final del período elegido. La flecha compara ese acumulado contra el acumulado hasta el período anterior. Los gráficos y las tablas, en cambio, son solo del período elegido.</p>' +
-  '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = prendas con defecto ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ (horas productivas × 60). % Tiempo productivo = horas productivas ÷ horas trabajadas. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
-  '<p><b>Eficiencia.</b> El T. STD es el tiempo estándar en minutos que debería tomar inspeccionar una prenda de ese estilo. Las prendas re-inspeccionadas suman porque también consumieron tiempo. Si un registro no tiene T. STD, aporta cero minutos y la eficiencia baja: por eso el tablero avisa cuando hay estilos sin T. STD.</p>' +
+  '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = prendas con defecto ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos productivos, donde los minutos productivos son las horas de turno menos las improductivas menos 45 minutos de refrigerio por cada turno de 4 horas o más. % Tiempo productivo = horas productivas ÷ horas de turno. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
+  '<p><b>Eficiencia.</b> El T. STD es el tiempo estándar en minutos que debería tomar inspeccionar una prenda de ese estilo. Las prendas re-inspeccionadas suman porque se revisaron dos veces; las primeras especiales no suman aparte, porque ya venían dentro de la carga. Del tiempo disponible se descuentan las horas improductivas y <b>45 minutos de refrigerio</b> por cada turno de 4 horas o más. Si un registro no tiene T. STD aporta cero minutos y la eficiencia baja: por eso el tablero avisa cuando hay estilos sin T. STD.</p>' +
+  '<p><b>Lo que no descuenta.</b> <b>Primeras especiales</b> no resta: la prenda sale igual como primera, así que ya está contada en el % de primeras y no aparece en los gráficos de defectos. <b>Re-inspección</b> tampoco resta prendas, pero sí suma tiempo trabajado.</p>' +
   '<p><b>SERVICIO.</b> El interruptor de arriba arranca apagado, así que todo lo que ves es solo de las líneas de producción. Al encenderlo se suma la prenda de servicio a todos los números.</p>' +
   '<p><b>No hay meta definida.</b> Por eso no hay semáforo de cumplimiento. El degradado de color de las barras es solo orden visual: el más alto en color fuerte, los siguientes más claros.</p>' +
   '<p><b>Cuidado con el % por inspectora.</b> Un porcentaje alto de defectos no significa que trabaje mal: significa que la prenda que le llegó tenía más fallas, o que revisa más fino. Para juzgar personas haría falta comparar sobre el mismo estilo y la misma línea.</p>' +
@@ -1899,7 +1909,7 @@ function pintarEficiencia(mCur, mAcum){
       '<div class="mini-kpi g"><div class="l">Eficiencia</div><div class="v">' + n1(mCur.pEfi) + '%</div>' +
       '<div class="s">del período</div></div>' +
       '<div class="mini-kpi b"><div class="l">Horas trabajadas</div><div class="v">' + nh(mCur.hTot) + '</div>' +
-      '<div class="s">inicio a fin de turno</div></div>' +
+      '<div class="s">' + n0(mCur.turnos) + ' turno(s) con refrigerio</div></div>' +
       '<div class="mini-kpi"><div class="l">Improductivas</div><div class="v">' + nh(mCur.hImp) + '</div>' +
       '<div class="s">' + n1(pct(mCur.hImp, mCur.hTot)) + '% del tiempo</div></div>' +
     '</div>' +
@@ -1907,7 +1917,10 @@ function pintarEficiencia(mCur, mAcum){
       '<tr><td>Prendas revisadas</td><td class="num"><b>' + n0(mCur.carga) + '</b></td></tr>' +
       '<tr><td>Prendas re-inspeccionadas</td><td class="num"><b>' + n0(mCur.rein) + '</b></td></tr>' +
       '<tr><td>Minutos de trabajo que valían</td><td class="num"><b>' + n0(mCur.min) + '</b></td></tr>' +
-      '<tr><td>Minutos productivos disponibles</td><td class="num"><b>' + n0(minDisp) + '</b></td></tr>' +
+      '<tr><td>Horas de turno</td><td class="num">' + nh(mCur.hTot) + '</td></tr>' +
+      '<tr><td>− Improductivas</td><td class="num">' + nh(mCur.hImp) + '</td></tr>' +
+      '<tr><td>− Refrigerio (45 min × ' + n0(mCur.turnos) + ' turno(s) de 4 h o más)</td><td class="num">' + nh(mCur.hRefr) + '</td></tr>' +
+      '<tr><td><b>Minutos productivos disponibles</b></td><td class="num"><b>' + n0(minDisp) + '</b></td></tr>' +
     '</tbody></table>' +
     '<div class="nota">' + n0(mCur.min) + ' ÷ ' + n0(minDisp) + ' = <b>' + n1(mCur.pEfi) + '%</b>. ' +
     (mCur.cobStd < 99.5
@@ -2043,11 +2056,18 @@ function pintarDefectosDash(rows, A){
 
   const bx = document.getElementById('bxSplit');
   if(bx){
-    bx.innerHTML = A.rein
-      ? '<div class="split"><div class="mini-kpi"><div class="l">Descuentan de las primeras</div>' +
+    bx.innerHTML = (A.rein || A.espec)
+      ? '<div class="split3">' +
+        '<div class="mini-kpi"><div class="l">Descuentan de las primeras</div>' +
         '<div class="v">' + n1(A.pDef) + '%</div><div class="s">' + n0(A.def) + ' prendas</div></div>' +
-        '<div class="mini-kpi b"><div class="l">Re-inspección (no descuenta)</div>' +
-        '<div class="v">' + n1(pct(A.rein,A.carga)) + '%</div><div class="s">' + n0(A.rein) + ' prendas</div></div></div>'
+        '<div class="mini-kpi g"><div class="l">Primeras especiales</div>' +
+        '<div class="v">' + n0(A.espec) + '</div><div class="s">ya contadas dentro de las primeras</div></div>' +
+        '<div class="mini-kpi b"><div class="l">Re-inspección</div>' +
+        '<div class="v">' + n0(A.rein) + '</div><div class="s">no descuenta, pero suma tiempo</div></div></div>' +
+        '<div class="nota"><b>Primeras especiales</b> no es un defecto: la prenda igual sale como primera, ' +
+        'por eso ya está incluida en el % de primeras y no aparece en los gráficos de defectos. ' +
+        '<b>Re-inspección</b> tampoco descuenta prendas, pero sí suma trabajo: esas prendas se revisaron ' +
+        'dos veces y por eso entran en la eficiencia.</div>'
       : '';
   }
 }
@@ -2104,8 +2124,10 @@ function pintarPortada(k, mCur, mAcum, mPrev, anio, R){
       '<br><b>Acumulado del año.</b> Del 1 de enero al ' + fechaLarga(R.fin) + ': ' + n1(mAcum.pPri) +
       '% de primeras sobre ' + n0(mAcum.carga) + ' prendas revisadas, ' + n1(mAcum.pDef) +
       '% con defecto y ' + n1(mAcum.pEfi) + '% de eficiencia.' +
-      '<br><b>Cómo se calcula.</b> Primeras = carga − defectos que descuentan. Eficiencia = ' +
-      '(prendas revisadas + re-inspeccionadas) × T. STD ÷ (horas productivas × 60). Todos los porcentajes ' +
+      '<br><b>Cómo se calcula.</b> Primeras = carga − defectos que descuentan; primeras especiales no ' +
+      'descuenta, así que quedan contadas dentro de las primeras. Eficiencia = (prendas revisadas + ' +
+      're-inspeccionadas) × T. STD ÷ minutos productivos, descontando las horas improductivas y 45 ' +
+      'minutos de refrigerio por cada turno de 4 horas o más. Todos los porcentajes ' +
       'se obtienen sumando numeradores y denominadores del período, nunca promediando porcentajes diarios. ' +
       'No hay meta definida: las comparaciones son contra el período anterior.</div>';
 }
