@@ -219,20 +219,13 @@ color:var(--stone);margin-right:-4px;}
 color:var(--stone);padding:7px 14px;border-radius:6px;cursor:pointer;}
 .seg button.active{background:var(--sage);color:#fff;box-shadow:var(--sh);}
 
-.sw{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
-font-size:12.5px;font-weight:700;color:var(--stone);}
-.sw .pista{width:42px;height:24px;border-radius:20px;background:var(--warm);
-position:relative;transition:.2s;flex:none;}
-.sw .pista::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;
-border-radius:50%;background:#fff;box-shadow:var(--sh);transition:.2s;}
-.sw.on .pista{background:var(--sage);}
-.sw.on .pista::after{left:21px;}
-.sw.on{color:var(--sage-dark);}
-
 .kpihead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:2px 0 8px;}
 .kpihead .t{font-size:15px;font-weight:700;color:var(--petrol);}
 .kpihead .t span{color:var(--sage-dark);}
 .kpihead .s{font-size:11.5px;color:var(--stone);}
+.kpiper{font-size:9.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+color:var(--slate);background:var(--warm-light);padding:2px 7px;border-radius:20px;
+margin-left:5px;vertical-align:middle;}
 
 .verdict{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:var(--r);
 box-shadow:var(--sh);padding:16px 20px;margin-bottom:14px;border-left:6px solid var(--rose);}
@@ -598,9 +591,6 @@ body.snap .bar{position:sticky;top:0;}
         <span class="lb">Período</span><select id="fPeriodo"></select>
         <span class="lb">Línea</span><select id="fLinea"><option value="">Todas</option></select>
         <span class="lb">Inspectora</span><select id="fIns"><option value="">Todas</option></select>
-        <span class="sw" id="swServicio" onclick="toggleServicio()">
-          <span class="pista"></span><span>Incluir SERVICIO</span>
-        </span>
       </div>
       <div id="printHead"></div>
       <div id="contenido"></div>
@@ -753,7 +743,6 @@ let GRUPO_ACTUAL = '';
 let DATA = null;
 let DATA_COMPLETA = false;
 let GRAN = 'mes';
-let INC_SERVICIO = false;
 let charts = {};
 let SNAP = false;
 let editId = null;
@@ -1455,6 +1444,7 @@ async function cargarDatos(opciones){
     if(!d.ok) throw new Error(d.error || 'Error del servidor');
     DATA = d;
     DATA_COMPLETA = !!o.full;
+    IDX_SEG = null;
     document.getElementById('dAviso').style.display = 'none';
     pintarRegistros();
     prepararFiltros();
@@ -1535,26 +1525,27 @@ function nombrePeriodo(){
 
 /* ---------------- filtros ---------------- */
 function esServicio(l){ return String(l||'').trim().toUpperCase() === 'SERVICIO'; }
-function pasaBase(f){
+/* Los indicadores de calidad (primeras, defectos, segundas) NO consideran la
+   prenda de servicio. Los de tiempo y eficiencia SÍ la consideran, porque esas
+   horas también se trabajaron. */
+function pasaBase(f, conServicio){
   const L = document.getElementById('fLinea').value;
   const I = document.getElementById('fIns').value;
-  if(!INC_SERVICIO && esServicio(f[F_LIN])) return false;
+  if(!conServicio && esServicio(f[F_LIN])) return false;
   if(L && f[F_LIN] !== L) return false;
   if(I && f[F_INS] !== I) return false;
   return true;
 }
 function filtrarRango(ini, fin){
-  return DATA.filas.filter(f=> pasaBase(f) && f[F_FEC] >= ini && f[F_FEC] <= fin);
+  return DATA.filas.filter(f=> pasaBase(f, false) && f[F_FEC] >= ini && f[F_FEC] <= fin);
+}
+function filtrarRangoEfi(ini, fin){
+  return DATA.filas.filter(f=> pasaBase(f, true) && f[F_FEC] >= ini && f[F_FEC] <= fin);
 }
 function clavesPeriodo(){
   const s = {};
-  DATA.filas.forEach(f=>{ if(pasaBase(f)) s[clavePeriodo(f[F_FEC])] = 1; });
+  DATA.filas.forEach(f=>{ if(pasaBase(f, true)) s[clavePeriodo(f[F_FEC])] = 1; });
   return Object.keys(s).sort();
-}
-function toggleServicio(){
-  INC_SERVICIO = !INC_SERVICIO;
-  document.getElementById('swServicio').classList.toggle('on', INC_SERVICIO);
-  prepararFiltros(); render();
 }
 function abrirTablero(){
   document.getElementById('overlay').classList.add('on');
@@ -1615,19 +1606,31 @@ function agregarHoras(rows){
   return {tot:tot, imp:imp, turnos:turnos, refr:refr,
           prod:Math.round(Math.max(0, tot - imp - refr)*100)/100};
 }
+/* Índices de los defectos del grupo SEGUNDAS, para el KPI de segundas. */
+let IDX_SEG = null;
+function idxSegundas(){
+  if(IDX_SEG) return IDX_SEG;
+  IDX_SEG = [];
+  (DATA && DATA.defectos ? DATA.defectos : []).forEach((d,i)=>{
+    if(String(d.categoria).toUpperCase() === 'SEGUNDAS') IDX_SEG.push(i);
+  });
+  return IDX_SEG;
+}
 function met(rows){
-  let carga=0, def=0, pri=0, rein=0, min=0, cargaStd=0, espec=0;
+  const iSeg = idxSegundas();
+  let carga=0, def=0, pri=0, rein=0, min=0, cargaStd=0, espec=0, seg=0;
   rows.forEach(f=>{
     carga += f[F_CAR]; def += f[F_DEF]; pri += f[F_PRI];
     rein += (f[F_REI]||0); min += (f[F_MIN]||0);
     if(f[F_STD] > 0) cargaStd += f[F_CAR];
     espec += Math.max(0, (f[F_NOR]||0) - (f[F_REI]||0));
+    detPares(f).forEach(par=>{ if(iSeg.indexOf(par[0]) >= 0) seg += par[1]; });
   });
   const H = agregarHoras(rows);
   return {
-    n:rows.length, carga:carga, def:def, pri:pri, rein:rein, min:min, espec:espec,
+    n:rows.length, carga:carga, def:def, pri:pri, rein:rein, min:min, espec:espec, seg:seg,
     hTot:H.tot, hImp:H.imp, hProd:H.prod, hRefr:H.refr, turnos:H.turnos,
-    pPri: pct(pri,carga), pDef: pct(def,carga),
+    pPri: pct(pri,carga), pDef: pct(def,carga), pSeg: pct(seg,carga),
     pProd: pct(H.prod, H.tot),
     pEfi: H.prod > 0 ? pct(min, H.prod*60) : 0,
     cobStd: pct(cargaStd, carga)
@@ -1655,35 +1658,36 @@ async function render(){
     document.getElementById('printHead').innerHTML = '';
     return;
   }
-  const anio = anioDe(k);
-  const ACUM = filtrarRango(anio+'-01-01', R.fin);
+  const CUR_EFI = filtrarRangoEfi(R.ini, R.fin);
   const kPrev = periodoAnterior(k);
   const RP = rangoPeriodo(kPrev);
   const PREVrows = filtrarRango(RP.ini, RP.fin);
-  const mismoAnio = anioDe(kPrev) === anio;
-  const ACUMprev = mismoAnio ? filtrarRango(anio+'-01-01', RP.fin) : [];
+  const PREV_EFI = filtrarRangoEfi(RP.ini, RP.fin);
 
   const mCur  = met(CUR);
-  const mAcum = met(ACUM);
+  const mEfi  = met(CUR_EFI);
   const mPrev = PREVrows.length ? met(PREVrows) : null;
-  const mAcumPrev = ACUMprev.length ? met(ACUMprev) : null;
+  const mPrevEfi = PREV_EFI.length ? met(PREV_EFI) : null;
 
-  const ultimaFecha = ACUM.reduce((mx,f)=> f[F_FEC] > mx ? f[F_FEC] : mx, ACUM[0][F_FEC]);
+  const todas = CUR_EFI.concat(CUR);
+  const ultimaFecha = todas.reduce((mx,f)=> f[F_FEC] > mx ? f[F_FEC] : mx, todas[0][F_FEC]);
+  const parcial = ultimaFecha < R.fin;
+  const nServ = CUR_EFI.length - CUR.length;
+
   cont.innerHTML =
     htmlVerdicto(mCur, mPrev, k, kPrev) +
-    htmlKpis(mAcum, mAcumPrev, anio, ultimaFecha) +
+    htmlKpis(mCur, mPrev, mEfi, mPrevEfi, k, R, ultimaFecha, parcial, nServ) +
     htmlInsight(CUR, mCur, k) +
     htmlTabs();
 
   pintarSparklines();
-  pintarTendencia(CUR);
-  pintarEficiencia(mCur, mAcum);
+  pintarTendencia(CUR, CUR_EFI);
+  pintarEficiencia(mEfi, nServ);
   pintarCategorias(CUR);
-  pintarGrupo(CUR, F_LIN, 'lin', 'línea');
-  pintarGrupo(CUR, F_INS, 'ins', 'inspectora');
+  pintarInspectoras(CUR_EFI);
   pintarDefectosDash(CUR, mCur);
-  pintarDetalleDash(CUR);
-  pintarPortada(k, mCur, mAcum, mPrev, anio, R, ultimaFecha);
+  pintarDetalleDash(CUR, nServ);
+  pintarPortada(k, mCur, mEfi, mPrev, R, ultimaFecha, parcial, nServ);
 
   setTimeout(()=>{ document.querySelectorAll('.rank .fill').forEach(f=>{ f.style.width = f.dataset.w; }); }, 120);
 
@@ -1723,22 +1727,29 @@ function deltaHtml(actual, anterior, subirEsBueno){
   const bueno = subirEsBueno ? dif > 0 : dif < 0;
   return '<span class="d ' + (bueno?'bien':'mal') + '">' + (dif>0?'▲':'▼') + ' ' + n1(Math.abs(dif)) + ' pts</span>';
 }
-function htmlKpis(A, P, anio, ultima){
-  return '<div class="kpihead">' +
-      '<span class="t">Acumulado al <span>' + fechaLarga(ultima) + '</span></span>' +
-      '<span class="s">desde el 1 de enero de ' + anio + ' · ' + n0(A.carga) +
-      ' prendas revisadas en ' + n0(A.n) + ' inspecciones</span>' +
-    '</div>' +
-    '<div class="kpis">' +
-    kpi('','% Primeras', n1(A.pPri)+'%', deltaHtml(A.pPri, P?P.pPri:null, true),
-        n0(A.pri) + ' primeras ÷ ' + n0(A.carga) + ' prendas revisadas', 'spkPri') +
-    kpi('alert','% Con defecto', n1(A.pDef)+'%', deltaHtml(A.pDef, P?P.pDef:null, false),
-        n0(A.def) + ' con defecto ÷ ' + n0(A.carga) + ' revisadas', 'spkDef') +
-    kpi('','% Eficiencia', n1(A.pEfi)+'%', deltaHtml(A.pEfi, P?P.pEfi:null, true),
-        n0(A.min) + ' min de trabajo ÷ ' + n0(A.hProd*60) + ' min productivos' +
-        (A.cobStd < 99.5 ? ' · ojo: solo el ' + n1(A.cobStd) + '% tiene T. STD' : ''), 'spkEfi') +
-    kpi('neutro','% Tiempo productivo', n1(A.pProd)+'%', deltaHtml(A.pProd, P?P.pProd:null, true),
-        nh(A.hProd) + ' h productivas ÷ ' + nh(A.hTot) + ' h de turno', 'spkProd') +
+function nombreFiltro(){
+  return GRAN === 'sem' ? 'Semana' : (GRAN === 'anio' ? 'Año' : 'Mes');
+}
+function htmlKpis(A, P, E, PE, k, R, ultima, parcial, nServ){
+  const cab = '<div class="kpihead">' +
+      '<span class="t">' + nombreFiltro() + ': <span>' + etiquetaPeriodo(k) + '</span></span>' +
+      '<span class="s">' +
+        (parcial ? 'Parcial · con datos hasta el ' + fechaLarga(ultima)
+                 : 'Período completo · del ' + fechaLarga(R.ini) + ' al ' + fechaLarga(R.fin)) +
+        ' · ' + n0(A.carga) + ' prendas revisadas en ' + n0(A.n) + ' inspecciones' +
+        (nServ > 0 ? ' · ' + n0(nServ) + ' registro(s) de SERVICIO fuera de los indicadores de calidad' : '') +
+      '</span></div>';
+  const eti = '<span class="kpiper">' + nombreFiltro().toLowerCase() + '</span>';
+  return cab + '<div class="kpis">' +
+    kpi('','% Primeras ' + eti, n1(A.pPri)+'%', deltaHtml(A.pPri, P?P.pPri:null, true),
+        n0(A.pri) + ' primeras ÷ ' + n0(A.carga) + ' prendas revisadas · sin servicio', 'spkPri') +
+    kpi('alert','% Con defecto ' + eti, n1(A.pDef)+'%', deltaHtml(A.pDef, P?P.pDef:null, false),
+        n0(A.def) + ' con defecto ÷ ' + n0(A.carga) + ' revisadas · sin servicio', 'spkDef') +
+    kpi('alert','% Segundas ' + eti, n1(A.pSeg)+'%', deltaHtml(A.pSeg, P?P.pSeg:null, false),
+        n0(A.seg) + ' segundas ÷ ' + n0(A.carga) + ' revisadas · sin servicio', 'spkSeg') +
+    kpi('','% Eficiencia ' + eti, n1(E.pEfi)+'%', deltaHtml(E.pEfi, PE?PE.pEfi:null, true),
+        n0(E.min) + ' min de trabajo ÷ ' + n0(E.hProd*60) + ' min productivos · incluye servicio' +
+        (E.cobStd < 99.5 ? ' · ojo: solo el ' + n1(E.cobStd) + '% tiene T. STD' : ''), 'spkEfi') +
   '</div>';
 }
 function kpi(cls,label,valor,delta,sub,sparkId){
@@ -1772,51 +1783,43 @@ function htmlInsight(rows, A, k){
 function htmlTabs(){
   return '<div class="tabs no-print">' +
     '<button class="active" onclick="tab(0,this)">Tendencia</button>' +
-    '<button onclick="tab(1,this)">Líneas</button>' +
-    '<button onclick="tab(2,this)">Inspectoras</button>' +
-    '<button onclick="tab(3,this)">Defectos</button>' +
-    '<button onclick="tab(4,this)">Detalle</button></div>' +
+    '<button onclick="tab(1,this)">Inspectoras</button>' +
+    '<button onclick="tab(2,this)">Defectos</button>' +
+    '<button onclick="tab(3,this)">Detalle</button></div>' +
 
   '<div class="tabpane active"><div class="grid">' +
-    panel('col8','Cómo se movió el período','Las tres líneas son porcentajes y se leen en el eje de la izquierda (0 a 100%). Las barras grises al fondo son el volumen de prendas revisadas y se leen en el eje de la derecha.','<div class="cwrap tall"><canvas id="chTend"></canvas></div>') +
-    panel('col4','Eficiencia y tiempo','Eficiencia = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos productivos. Los minutos productivos descuentan las horas improductivas y 45 minutos de refrigerio por cada turno de 4 horas o más.','<div id="bxEfi"></div>') +
+    panel('col8','Cómo se movió el período','Las tres líneas son porcentajes y se leen en el eje de la izquierda (0 a 100%). Las barras grises al fondo son el volumen de prendas revisadas, en el eje de la derecha. Primeras y segundas van sin la prenda de servicio; la eficiencia sí la incluye.','<div class="cwrap tall"><canvas id="chTend"></canvas></div>') +
+    panel('col4','Eficiencia y tiempo','Eficiencia = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos productivos. Los minutos productivos descuentan las horas improductivas y 45 minutos de refrigerio por cada turno de 4 horas o más. <b>Incluye la prenda de servicio.</b>','<div id="bxEfi"></div>') +
   '</div></div>' +
 
   '<div class="tabpane"><div class="grid">' +
-    panel('col8','Prendas con defecto por línea','% calculado como prendas con defecto ÷ prendas revisadas de esa línea.','<div class="cwrap"><canvas id="chLin"></canvas></div>') +
-    panel('col4','Orden por % de defecto','Sin meta definida: el color y el orden son relativos entre líneas, no indican cumplimiento.','<ul class="rank" id="rkLin"></ul>') +
-    panel('col12','Eficiencia por línea','Minutos de trabajo que valían las prendas ÷ minutos productivos de cada línea. Solo aparecen las líneas con horas registradas.','<div class="cwrap"><canvas id="chEfiLin"></canvas></div>') +
-    panel('col12','Detalle por línea','Los totales suman el total general del período.','<div class="tablescroll" id="tbLin"></div>') +
-  '</div></div>' +
-
-  '<div class="tabpane"><div class="grid">' +
-    panel('col8','Prendas con defecto por inspectora','% calculado como prendas con defecto ÷ prendas revisadas por esa inspectora. Mide lo que encontró, no su desempeño.','<div class="cwrap"><canvas id="chIns"></canvas></div>') +
-    panel('col4','Orden por % de defecto','Una inspectora con % alto puede estar revisando peor material o revisando más fino.','<ul class="rank" id="rkIns"></ul>') +
-    panel('col12','Eficiencia por inspectora','Minutos de trabajo que valían las prendas ÷ minutos productivos de cada inspectora. Solo aparecen las que tienen horas registradas.','<div class="cwrap"><canvas id="chEfiIns"></canvas></div>') +
+    panel('col8','Eficiencia por inspectora','Minutos de trabajo que valían las prendas ÷ minutos productivos de cada inspectora. <b>Incluye la prenda de servicio.</b> Solo aparecen las que tienen hora de inicio y final registradas.','<div class="cwrap"><canvas id="chEfiIns"></canvas></div>') +
+    panel('col4','Orden por eficiencia','Depende del T. STD de los estilos que le tocaron y de las horas que registró, no solo de su ritmo.','<ul class="rank" id="rkIns"></ul>') +
     panel('col12','Detalle por inspectora','Los totales suman el total general del período.','<div class="tablescroll" id="tbIns"></div>') +
   '</div></div>' +
 
   '<div class="tabpane"><div class="grid">' +
-    panel('col8','Los defectos que más pesan','Solo los que descuentan. Barras = % de las prendas revisadas afectadas por ese defecto. Línea = % acumulado.','<div class="cwrap tall"><canvas id="chPar"></canvas></div>') +
+    panel('col8','Los defectos que más pesan','Cada barra es qué parte del total de prendas con defecto le corresponde a esa falla: las barras suman 100%. La línea verde va acumulando esas mismas barras, así se ve cuántas fallas concentran la mayor parte del problema.','<div class="cwrap tall"><canvas id="chPar"></canvas></div>') +
     panel('col4','Peso de cada grupo','% sobre el total de prendas con defecto del período.','<div class="cwrap tall"><canvas id="chCat"></canvas></div>') +
     panel('col12','Todos los defectos','% calculado sobre las prendas revisadas del período. Re-inspección se registra pero no descuenta de las primeras.','<div id="bxSplit"></div><div class="tablescroll" id="tbDef"></div>') +
   '</div></div>' +
 
   '<div class="tabpane"><div class="grid">' +
-    panel('col12','Inspecciones del período','Una fila por estilo/carga registrado. Los registros eliminados no aparecen.','<div class="tablescroll" id="tbDetDash"></div>') +
+    panel('col12','Inspecciones del período','Una fila por estilo/carga registrado, sin la prenda de servicio, igual que el resto de los indicadores de calidad. Los registros eliminados no aparecen.','<div class="tablescroll" id="tbDetDash"></div>') +
   '</div></div>' +
 
   '<details class="help"><summary>¿Cómo leo este tablero?</summary>' +
   '<p><b>Qué período estoy viendo.</b> Los botones Semanal, Mensual y Anual cambian el tipo de período; el desplegable de al lado elige cuál. Las semanas van de lunes a domingo con sus fechas reales.</p>' +
-  '<p><b>Las tarjetas son acumuladas.</b> Muestran el año corrido: del 1 de enero hasta el final del período elegido. La flecha compara ese acumulado contra el acumulado hasta el período anterior. Los gráficos y las tablas, en cambio, son solo del período elegido.</p>' +
-  '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = prendas con defecto ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos productivos, donde los minutos productivos son las horas de turno menos las improductivas menos 45 minutos de refrigerio por cada turno de 4 horas o más. % Tiempo productivo = horas productivas ÷ horas de turno. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
+  '<p><b>Todo habla del mismo período.</b> Las tarjetas, los gráficos, las tablas y el texto de arriba son todos del período que elegiste en el filtro. La flecha de cada tarjeta compara contra el período anterior del mismo tipo: una semana contra la semana anterior, un mes contra el mes anterior. Si el período todavía no termina, la cabecera lo dice y muestra hasta qué día hay datos.</p>' +
+  '<p><b>Qué entra en cada indicador.</b> Primeras, con defecto y segundas se calculan <b>sin la prenda de servicio</b>: son indicadores de la calidad de las líneas. Eficiencia y tiempo <b>sí incluyen el servicio</b>, porque esas horas también se trabajaron. Cada tarjeta lo dice en su pie.</p>' +
+  '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = prendas con defecto ÷ prendas revisadas. % Segundas = prendas marcadas como segundas ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos productivos, donde los minutos productivos son las horas de turno menos las improductivas menos 45 minutos de refrigerio por cada turno de 4 horas o más. % Tiempo productivo = horas productivas ÷ horas de turno. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
   '<p><b>Eficiencia.</b> El T. STD es el tiempo estándar en minutos que debería tomar inspeccionar una prenda de ese estilo. Las prendas re-inspeccionadas suman porque se revisaron dos veces; las primeras especiales no suman aparte, porque ya venían dentro de la carga. Del tiempo disponible se descuentan las horas improductivas y <b>45 minutos de refrigerio</b> por cada turno de 4 horas o más. Si un registro no tiene T. STD aporta cero minutos y la eficiencia baja: por eso el tablero avisa cuando hay estilos sin T. STD.</p>' +
   '<p><b>Lo que no descuenta.</b> <b>Primeras especiales</b> no resta: la prenda sale igual como primera, así que ya está contada en el % de primeras y no aparece en los gráficos de defectos. <b>Re-inspección</b> tampoco resta prendas, pero sí suma tiempo trabajado.</p>' +
-  '<p><b>SERVICIO.</b> El interruptor de arriba arranca apagado, así que todo lo que ves es solo de las líneas de producción. Al encenderlo se suma la prenda de servicio a todos los números.</p>' +
-  '<p><b>Eficiencia por línea y por inspectora.</b> Se calcula con los mismos minutos de trabajo y minutos productivos, pero separando los registros de cada una. Solo aparecen las que tienen hora de inicio y final registradas; sin horas no hay divisor y la barra no se puede dibujar.</p>' +
+  '<p><b>El gráfico de defectos.</b> Cada barra dice qué parte del total de prendas con defecto le corresponde a esa falla, así que <b>las barras suman 100%</b>. No es el porcentaje sobre las prendas revisadas: ese aparece al pasar el cursor y en la columna “% de lo revisado” de la tabla de abajo. La línea verde va acumulando las barras: donde llega al 80% están las pocas fallas que explican casi todo el problema.</p>' +
+  '<p><b>Eficiencia por inspectora.</b> Se calcula con los mismos minutos de trabajo y minutos productivos, separando los registros de cada una. Solo aparecen las que tienen hora de inicio y final registradas; sin horas no hay divisor y la barra no se puede dibujar.</p>' +
   '<p><b>Los números sobre los gráficos.</b> Cada barra y cada punto lleva su porcentaje escrito encima, para no tener que estimarlo a ojo ni pasar el cursor. En la línea de tendencia, si hay muchos días, se escriben salteados para que no se encimen.</p>' +
   '<p><b>No hay meta definida.</b> Por eso no hay semáforo de cumplimiento. El degradado de color de las barras es solo orden visual: el más alto en color fuerte, los siguientes más claros.</p>' +
-  '<p><b>Cuidado con el % por inspectora.</b> Un porcentaje alto de defectos no significa que trabaje mal: significa que la prenda que le llegó tenía más fallas, o que revisa más fino. Para juzgar personas haría falta comparar sobre el mismo estilo y la misma línea.</p>' +
+  '<p><b>Cuidado con la eficiencia por inspectora.</b> Depende de tres cosas que no controla: el T. STD de los estilos que le tocaron, las horas que alcanzó a registrar y si esos estilos tienen T. STD cargado. Una inspectora con estilos sin T. STD sale con eficiencia baja aunque haya trabajado igual que el resto. No sirve para comparar personas hasta que todos los estilos tengan su tiempo estándar.</p>' +
   '<p><b>Términos.</b> <b>Carga</b>: grupo de prendas que se revisa de una vez. <b>Primeras</b>: prendas conformes. <b>Segundas</b>: prenda con falla que ya no se recupera como primera. <b>Compostura</b>: falla de costura que se arregla cosiendo. <b>Zurcido</b>: falla de tela o puntada que se repara con aguja. <b>Limpieza</b>: hilos sueltos o sin cortar. <b>Re-inspección</b>: carga que hubo que volver a revisar.</p>' +
   '</details>';
 }
@@ -1835,7 +1838,7 @@ function seriePeriodos(nMax){
   const claves = clavesPeriodo().slice(-nMax);
   return claves.map(k=>{
     const r = rangoPeriodo(k);
-    return met(filtrarRango(r.ini, r.fin));
+    return {cal: met(filtrarRango(r.ini, r.fin)), efi: met(filtrarRangoEfi(r.ini, r.fin))};
   });
 }
 function sparkline(id, valores){
@@ -1854,10 +1857,10 @@ function sparkline(id, valores){
 }
 function pintarSparklines(){
   const s = seriePeriodos(8);
-  sparkline('spkPri',  s.map(m=>m.pPri));
-  sparkline('spkDef',  s.map(m=>m.pDef));
-  sparkline('spkEfi',  s.map(m=>m.pEfi));
-  sparkline('spkProd', s.map(m=>m.pProd));
+  sparkline('spkPri', s.map(o=>o.cal.pPri));
+  sparkline('spkDef', s.map(o=>o.cal.pDef));
+  sparkline('spkSeg', s.map(o=>o.cal.pSeg));
+  sparkline('spkEfi', s.map(o=>o.efi.pEfi));
 }
 
 /* ---------------- etiquetas de valor sobre los gráficos ----------------
@@ -1946,16 +1949,14 @@ function pluginEtiquetasAnillo(){
 }
 
 /* ---------------- gráficos ---------------- */
-function pintarTendencia(rows){
+function pintarTendencia(rows, rowsEfi){
   if(!window.Chart) return;
-  const m = {};
-  rows.forEach(f=>{
-    const k = claveGrafico(f[F_FEC]);
-    if(!m[k]) m[k] = [];
-    m[k].push(f);
-  });
+  const m = {}, me = {};
+  rows.forEach(f=>{ const k = claveGrafico(f[F_FEC]); (m[k] = m[k] || []).push(f); });
+  (rowsEfi||rows).forEach(f=>{ const k = claveGrafico(f[F_FEC]); (me[k] = me[k] || []).push(f); });
   const ks = Object.keys(m).sort();
   const serie = ks.map(k=>met(m[k]));
+  const serieE = ks.map(k=>met(me[k] || []));
   const pasoT = Math.max(1, Math.ceil(ks.length/10));
   charts.tend = new Chart(document.getElementById('chTend'), {
     plugins:[pluginEtiquetas({datasets:[1,2,3], paso:pasoT,
@@ -1966,10 +1967,10 @@ function pintarTendencia(rows){
       {type:'line', label:'% Primeras', data:serie.map(x=>+x.pPri.toFixed(1)),
        borderColor:'#0F7A5A', backgroundColor:'#0F7A5A', borderWidth:2.6, tension:.3,
        pointRadius:3, order:1, yAxisID:'y'},
-      {type:'line', label:'% Eficiencia', data:serie.map(x=>+x.pEfi.toFixed(1)),
+      {type:'line', label:'% Eficiencia', data:serieE.map(x=>+x.pEfi.toFixed(1)),
        borderColor:'#B45309', backgroundColor:'#B45309', borderWidth:2.2, tension:.3,
        pointRadius:3, borderDash:[6,3], order:2, yAxisID:'y'},
-      {type:'line', label:'% Con defecto', data:serie.map(x=>+x.pDef.toFixed(1)),
+      {type:'line', label:'% Segundas', data:serie.map(x=>+x.pSeg.toFixed(1)),
        borderColor:'#DC2626', backgroundColor:'#DC2626', borderWidth:2, tension:.3,
        pointRadius:2.5, order:3, yAxisID:'y'}
     ]},
@@ -1987,7 +1988,7 @@ function pintarTendencia(rows){
         x:{grid:{display:false}, ticks:{maxRotation:0, autoSkip:true, maxTicksLimit:14}}}}
   });
 }
-function pintarEficiencia(mCur, mAcum){
+function pintarEficiencia(mCur, nServ){
   const el = document.getElementById('bxEfi');
   if(!el) return;
   if(!mCur.hProd){
@@ -2018,7 +2019,8 @@ function pintarEficiencia(mCur, mAcum){
     (mCur.cobStd < 99.5
       ? 'Solo el <b>' + n1(mCur.cobStd) + '%</b> de las prendas del período tiene T. STD registrado; las que no lo tienen aportan cero minutos y hunden el resultado.'
       : 'Todas las prendas del período tienen T. STD registrado.') +
-    ' En el acumulado del año la eficiencia va en <b>' + n1(mAcum.pEfi) + '%</b>.</div>';
+    (nServ > 0 ? ' Incluye los ' + n0(nServ) + ' registro(s) de SERVICIO, porque esas horas también se trabajaron.' : '') +
+    '</div>';
 }
 function pintarCategorias(rows){
   if(!window.Chart) return;
@@ -2042,94 +2044,73 @@ function pintarCategorias(rows){
         }}}}}
   });
 }
-function pintarGrupo(rows, campo, sufijo, etiqueta){
+/* Pestaña Inspectoras: eficiencia, no defectos. */
+function pintarInspectoras(rows){
   const m = {};
   rows.forEach(f=>{
-    const k = f[campo] || '(sin dato)';
+    const k = f[F_INS] || '(sin dato)';
     if(!m[k]) m[k] = [];
     m[k].push(f);
   });
-  const ks = Object.keys(m).sort((a,b)=> met(m[b]).pDef - met(m[a]).pDef);
-  const M = {}; ks.forEach(k=>{ M[k] = met(m[k]); });
-  const maxp = Math.max(...ks.map(k=>M[k].pDef), 0.0001);
-  const colores = ks.map((k,i)=>degradado(i, ks.length, 'azul'));
+  const M = {}; Object.keys(m).forEach(k=>{ M[k] = met(m[k]); });
+  const ks = Object.keys(m).sort((a,b)=> M[b].pEfi - M[a].pEfi);
+  const conHoras = ks.filter(k=> M[k].hProd > 0);
+  const orden = conHoras.length ? conHoras : ks;
+  const maxp = Math.max(...orden.map(k=>M[k].pEfi), 0.0001);
+  const colores = orden.map((k,i)=>degradado(i, orden.length, 'verde'));
 
-  const canvas = document.getElementById(sufijo==='lin'?'chLin':'chIns');
-  if(window.Chart && canvas){
-    charts['g'+sufijo] = new Chart(canvas, {
-      plugins:[pluginEtiquetas({datasets:[0,1], desplazar:{0:-11, 1:15}})],
-      data:{labels:ks, datasets:[
-        {type:'bar', label:'% Con defecto', data:ks.map(k=>+M[k].pDef.toFixed(1)),
-         backgroundColor:colores, borderRadius:4, yAxisID:'y'},
-        {type:'line', label:'% Primeras', data:ks.map(k=>+M[k].pPri.toFixed(1)),
-         borderColor:'#0F7A5A', backgroundColor:'#0F7A5A', borderWidth:2.2,
-         pointRadius:4, tension:0, yAxisID:'y'}
-      ]},
-      options:{responsive:true, maintainAspectRatio:false,
-        plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14}},
-          tooltip:{callbacks:{label:c=> c.dataset.label + ': ' + n1(c.raw) + '%'}}},
-        scales:{y:{beginAtZero:true, max:108, grid:{color:'#F1F6F4'},
-          title:{display:true,text:'Porcentaje'},
-          ticks:{callback:v=> v > 100 ? '' : v+'%', stepSize:20}},
-          x:{grid:{display:false}}}}
-    });
+  const el = document.getElementById('chEfiIns');
+  if(el){
+    if(!conHoras.length){
+      el.parentNode.innerHTML = '<div class="nota">Ninguna inspectora tiene horas de turno ' +
+        'registradas en este período, así que no se puede calcular la eficiencia. La hora de inicio ' +
+        'y la final son opcionales en el formulario, pero sin ellas no hay divisor.</div>';
+    }else if(window.Chart){
+      charts.efiIns = new Chart(el, {
+        plugins:[pluginEtiquetas({datasets:[0]})],
+        data:{labels:orden, datasets:[
+          {type:'bar', label:'% Eficiencia', data:orden.map(k=>+M[k].pEfi.toFixed(1)),
+           backgroundColor:colores, borderRadius:4, maxBarThickness:90}
+        ]},
+        options:{responsive:true, maintainAspectRatio:false,
+          plugins:{legend:{display:false},
+            tooltip:{callbacks:{label:c=>{
+              const k = orden[c.dataIndex];
+              return '% Eficiencia: ' + n1(c.raw) + '% · ' + n0(M[k].min) + ' min de trabajo ÷ ' +
+                     n0(M[k].hProd*60) + ' min productivos';
+            }}}},
+          scales:{y:{beginAtZero:true, grace:'16%', grid:{color:'#F1F6F4'},
+              title:{display:true,text:'% Eficiencia'}, ticks:{callback:v=>v+'%'}},
+            x:{grid:{display:false}}}}
+      });
+    }
   }
 
-  document.getElementById(sufijo==='lin'?'rkLin':'rkIns').innerHTML = ks.map((k,i)=>{
-    const p = M[k].pDef;
+  document.getElementById('rkIns').innerHTML = orden.map((k,i)=>{
+    const p = M[k].pEfi;
     return '<li><span class="n">' + (i+1) + '</span><span><span class="nm">' + esc(k) + '</span>' +
-      '<span class="sub"> · ' + n0(M[k].carga) + ' prendas · ' + n0(M[k].n) + ' inspecciones</span>' +
+      '<span class="sub"> · ' + n0(M[k].carga) + ' prendas · ' + nh(M[k].hProd) + ' h productivas</span>' +
       '<span class="track"><span class="fill" data-w="' + (p/maxp*100).toFixed(1) + '%" ' +
       'style="background:' + colores[i] + '"></span></span></span>' +
-      '<span class="val" style="color:' + colores[i] + '">' + n1(p) + '%</span></li>';
+      '<span class="val" style="color:' + colores[i] + '">' + (M[k].hProd ? n1(p)+'%' : '—') + '</span></li>';
   }).join('');
 
-  pintarEficienciaGrupo(M, ks, sufijo);
-
   const T = met(rows);
-  document.getElementById(sufijo==='lin'?'tbLin':'tbIns').innerHTML =
-    '<table><thead><tr><th>' + etiqueta.toUpperCase() + '</th><th class="num">Inspecciones</th>' +
-    '<th class="num">Prendas revisadas</th><th class="num">% Con defecto</th>' +
-    '<th class="num">% Primeras</th><th class="num">% Eficiencia</th></tr></thead><tbody>' +
+  document.getElementById('tbIns').innerHTML =
+    '<table><thead><tr><th>INSPECTORA</th><th class="num">Inspecciones</th>' +
+    '<th class="num">Prendas revisadas</th><th class="num">Re-inspeccionadas</th>' +
+    '<th class="num">Min. de trabajo</th><th class="num">H. productivas</th>' +
+    '<th class="num">% Eficiencia</th><th class="num">% Primeras</th></tr></thead><tbody>' +
     ks.map(k=>'<tr><td><b>' + esc(k) + '</b></td><td class="num">' + n0(M[k].n) + '</td>' +
-      '<td class="num">' + n0(M[k].carga) + '</td><td class="num">' + n1(M[k].pDef) + '%</td>' +
-      '<td class="num"><span class="pill ok">' + n1(M[k].pPri) + '%</span></td>' +
-      '<td class="num">' + (M[k].hProd ? n1(M[k].pEfi)+'%' : '—') + '</td></tr>').join('') +
-    '</tbody><tfoot><tr><td>TOTAL</td><td class="num">' + n0(T.n) + '</td><td class="num">' + n0(T.carga) +
-    '</td><td class="num">' + n1(T.pDef) + '%</td><td class="num">' + n1(T.pPri) + '%</td>' +
-    '<td class="num">' + (T.hProd ? n1(T.pEfi)+'%' : '—') + '</td></tr></tfoot></table>';
-}
-/* Barras de eficiencia por línea o por inspectora. */
-function pintarEficienciaGrupo(M, ks, sufijo){
-  const el = document.getElementById(sufijo==='lin' ? 'chEfiLin' : 'chEfiIns');
-  if(!el) return;
-  const conHoras = ks.filter(k=> M[k].hProd > 0);
-  if(!conHoras.length){
-    el.parentNode.innerHTML = '<div class="nota">Ninguna ' + (sufijo==='lin'?'línea':'inspectora') +
-      ' tiene horas de turno registradas en este período, así que no se puede calcular la eficiencia. ' +
-      'Las horas de inicio y final son opcionales en el formulario.</div>';
-    return;
-  }
-  if(!window.Chart) return;
-  const orden = conHoras.slice().sort((a,b)=> M[b].pEfi - M[a].pEfi);
-  const colores = orden.map((k,i)=>degradado(i, orden.length, 'verde'));
-  charts['e'+sufijo] = new Chart(el, {
-    plugins:[pluginEtiquetas({datasets:[0]})],
-    data:{labels:orden, datasets:[
-      {type:'bar', label:'% Eficiencia', data:orden.map(k=>+M[k].pEfi.toFixed(1)),
-       backgroundColor:colores, borderRadius:4, maxBarThickness:90}
-    ]},
-    options:{responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:false},
-        tooltip:{callbacks:{label:c=>{
-          const k = orden[c.dataIndex];
-          return '% Eficiencia: ' + n1(c.raw) + '% · ' + n0(M[k].min) + ' min de trabajo ÷ ' +
-                 n0(M[k].hProd*60) + ' min productivos';
-        }}}},
-      scales:{y:{beginAtZero:true, grace:'16%', grid:{color:'#F1F6F4'},
-          title:{display:true,text:'% Eficiencia'}, ticks:{callback:v=>v+'%'}},
-        x:{grid:{display:false}}}}
-  });
+      '<td class="num">' + n0(M[k].carga) + '</td><td class="num">' + n0(M[k].rein) + '</td>' +
+      '<td class="num">' + n0(M[k].min) + '</td><td class="num">' + nh(M[k].hProd) + '</td>' +
+      '<td class="num">' + (M[k].hProd ? '<span class="pill ok">'+n1(M[k].pEfi)+'%</span>' : '—') + '</td>' +
+      '<td class="num">' + n1(M[k].pPri) + '%</td></tr>').join('') +
+    '</tbody><tfoot><tr><td>TOTAL</td><td class="num">' + n0(T.n) + '</td>' +
+    '<td class="num">' + n0(T.carga) + '</td><td class="num">' + n0(T.rein) + '</td>' +
+    '<td class="num">' + n0(T.min) + '</td><td class="num">' + nh(T.hProd) + '</td>' +
+    '<td class="num">' + (T.hProd ? n1(T.pEfi)+'%' : '—') + '</td>' +
+    '<td class="num">' + n1(T.pPri) + '%</td></tr></tfoot></table>';
 }
 function pintarDefectosDash(rows, A){
   const defs = DATA.defectos;
@@ -2152,16 +2133,23 @@ function pintarDefectosDash(rows, A){
       charts.par = new Chart(elPar, {
         plugins:[pluginEtiquetas({datasets:[0], minimo:0.05})],
         data:{labels:top.map(o=>defs[o.i].defecto), datasets:[
-          {type:'bar', label:'% de lo revisado', data:top.map(o=>+pct(o.v, A.carga).toFixed(2)),
+          {type:'bar', label:'% del total de prendas con defecto',
+           data:top.map(o=>+pct(o.v, A.def).toFixed(1)),
            backgroundColor:colores, borderRadius:4, yAxisID:'y'},
-          {type:'line', label:'% acumulado del total de defectos', data:acumPct,
+          {type:'line', label:'% acumulado', data:acumPct,
            borderColor:'#0F7A5A', borderWidth:2.2, tension:.25, pointRadius:3, yAxisID:'y1'}
         ]},
         options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
           plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14}},
-            tooltip:{callbacks:{label:c=> c.dataset.label + ': ' + n1(c.raw) + '%'}}},
-          scales:{y:{beginAtZero:true, grace:'14%', grid:{color:'#F1F6F4'},
-              title:{display:true,text:'% de lo revisado'}, ticks:{callback:v=>v+'%'}},
+            tooltip:{callbacks:{label:c=>{
+              const o = top[c.dataIndex];
+              return c.datasetIndex === 0
+                ? n0(o.v) + ' prendas · ' + n1(c.raw) + '% de las ' + n0(A.def) +
+                  ' con defecto · ' + n1(pct(o.v, A.carga)) + '% de las ' + n0(A.carga) + ' revisadas'
+                : 'Acumulado: ' + n1(c.raw) + '%';
+            }}}},
+          scales:{y:{beginAtZero:true, max:100, grid:{color:'#F1F6F4'},
+              title:{display:true,text:'% del total de defectos'}, ticks:{callback:v=>v+'%'}},
             y1:{position:'right', beginAtZero:true, max:100, grid:{display:false},
                 title:{display:true,text:'% acumulado'}, ticks:{callback:v=>v+'%'}},
             x:{grid:{display:false}, ticks:{maxRotation:60, minRotation:30, font:{size:10}}}}}
@@ -2201,7 +2189,7 @@ function pintarDefectosDash(rows, A){
       : '';
   }
 }
-function pintarDetalleDash(rows){
+function pintarDetalleDash(rows, nServ){
   const ord = rows.slice().sort((a,b)=> a[F_FEC] < b[F_FEC] ? 1 : -1);
   const T = met(rows);
   document.getElementById('tbDetDash').innerHTML =
@@ -2220,14 +2208,15 @@ function pintarDetalleDash(rows){
         '<td class="mini obscell">' + (f[F_OBS]?esc(f[F_OBS]):'—') + '</td></tr>';
     }).join('') +
     '</tbody><tfoot><tr><td colspan="4">TOTAL ' + n0(T.n) + ' inspecciones' +
-    (ord.length > 400 ? ' (se muestran las 400 más recientes)' : '') + '</td>' +
+    (ord.length > 400 ? ' (se muestran las 400 más recientes)' : '') +
+    (nServ > 0 ? ' · ' + n0(nServ) + ' de SERVICIO no aparecen aquí' : '') + '</td>' +
     '<td class="num">' + n0(T.carga) + '</td><td class="num">' + n0(T.def) + '</td>' +
     '<td class="num">' + n0(T.pri) + '</td><td class="num">' + n1(T.pPri) + '%</td>' +
     '<td colspan="3"></td></tr></tfoot></table>';
 }
 
 /* ---------------- portada del reporte impreso ---------------- */
-function pintarPortada(k, mCur, mAcum, mPrev, anio, R, ultima){
+function pintarPortada(k, mCur, mEfi, mPrev, R, ultima, parcial, nServ){
   const tipo = GRAN === 'sem' ? 'Reporte semanal' : (GRAN === 'anio' ? 'Reporte anual' : 'Reporte mensual');
   const cmp = mPrev
     ? 'Frente al período anterior, las primeras pasaron de ' + n1(mPrev.pPri) + '% a ' + n1(mCur.pPri) + '%.'
@@ -2237,7 +2226,7 @@ function pintarPortada(k, mCur, mAcum, mPrev, anio, R, ultima){
   const I = document.getElementById('fIns').value;
   if(L) filtros.push('línea ' + L);
   if(I) filtros.push('inspectora ' + I);
-  filtros.push(INC_SERVICIO ? 'incluye SERVICIO' : 'solo líneas de producción (SERVICIO excluido)');
+  filtros.push(parcial ? 'parcial, con datos hasta el ' + fechaLarga(ultima) : 'período completo');
 
   document.getElementById('printHead').innerHTML =
     '<div class="rtop">' +
@@ -2248,12 +2237,12 @@ function pintarPortada(k, mCur, mAcum, mPrev, anio, R, ultima){
     '</div>' +
     '<div class="rexp"><b>Resumen del período.</b> Se revisaron ' + n0(mCur.carga) + ' prendas en ' +
       n0(mCur.n) + ' inspecciones. Salieron primeras ' + n0(mCur.pri) + ' prendas, el ' + n1(mCur.pPri) +
-      '% de lo revisado. ' + cmp +
-      (mCur.hProd ? ' Se trabajaron ' + nh(mCur.hTot) + ' horas, de las cuales ' + nh(mCur.hProd) +
-        ' fueron productivas, con una eficiencia de ' + n1(mCur.pEfi) + '%.' : '') +
-      '<br><b>Acumulado al ' + fechaLarga(ultima) + '.</b> Desde el 1 de enero de ' + anio + ': ' + n1(mAcum.pPri) +
-      '% de primeras sobre ' + n0(mAcum.carga) + ' prendas revisadas, ' + n1(mAcum.pDef) +
-      '% con defecto y ' + n1(mAcum.pEfi) + '% de eficiencia.' +
+      '% de lo revisado; ' + n1(mCur.pDef) + '% salió con defecto y ' + n1(mCur.pSeg) + '% fueron segundas. ' + cmp +
+      (mEfi.hProd ? ' Se trabajaron ' + nh(mEfi.hTot) + ' horas, de las cuales ' + nh(mEfi.hProd) +
+        ' fueron productivas, con una eficiencia de ' + n1(mEfi.pEfi) + '%.' : '') +
+      '<br><b>Qué entra en cada número.</b> Los indicadores de calidad (primeras, defectos, segundas) ' +
+      'se calculan sin la prenda de servicio' + (nServ > 0 ? ' (' + n0(nServ) + ' registro(s) excluidos)' : '') +
+      '. Los de tiempo y eficiencia sí la incluyen, porque esas horas también se trabajaron.' +
       '<br><b>Cómo se calcula.</b> Primeras = carga − defectos que descuentan; primeras especiales no ' +
       'descuenta, así que quedan contadas dentro de las primeras. Eficiencia = (prendas revisadas + ' +
       're-inspeccionadas) × T. STD ÷ minutos productivos, descontando las horas improductivas y 45 ' +
