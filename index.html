@@ -80,8 +80,6 @@ cursor:pointer;border:1px solid var(--warm);background:#fff;color:var(--sage);mi
 .stepbtn{width:44px;min-height:42px;border:1px solid var(--warm);background:#fff;
 border-radius:8px;font-size:20px;font-weight:700;color:var(--sage);cursor:pointer;
 line-height:1;flex:none;}
-/* Las flechitas del campo numérico se quedan siempre a la vista, no solo al
-   pasar el cursor, y el campo se ensancha para que se puedan acertar. */
 input.spin{padding-right:4px;}
 input.spin::-webkit-inner-spin-button,
 input.spin::-webkit-outer-spin-button{opacity:1;height:36px;cursor:pointer;}
@@ -102,7 +100,7 @@ input.spin{-moz-appearance:number-input;}
 
 .adder{display:grid;grid-template-columns:1fr 126px 120px 130px;gap:10px;align-items:end;}
 .deflist{list-style:none;margin:12px 0 0;padding:0;}
-.deflist li{display:grid;grid-template-columns:76px 1fr auto auto;align-items:center;
+.deflist li{display:grid;grid-template-columns:88px 1fr auto auto;align-items:center;
 gap:10px;padding:9px 0;border-bottom:1px solid var(--warm-light);}
 .deflist .nm{font-size:13px;font-weight:700;}
 .deflist .nr{font-size:10px;font-weight:700;color:var(--slate);background:#EDF1F3;
@@ -112,7 +110,9 @@ letter-spacing:.3px;}
 .tagc.COMPOSTURA{background:#E7F4EF;color:var(--sage);}
 .tagc.MANCHAS{background:#FEF3E2;color:var(--taupe);}
 .tagc.ZURCIDO{background:#EDF1F3;color:var(--slate);}
-.tagc.OTROS{background:#FCEBEB;color:var(--rose);}
+.tagc.LIMPIEZA{background:#E8F0FA;color:#2563EB;}
+.tagc.SEGUNDAS{background:#FCEBEB;color:var(--rose);}
+.tagc.OTROS{background:#F1F1F1;color:#666;}
 .qty{display:flex;align-items:center;gap:4px;}
 .qty button{width:40px;height:40px;border:1px solid var(--warm);background:#fff;
 border-radius:8px;font-size:19px;font-weight:700;color:var(--sage);cursor:pointer;line-height:1;}
@@ -218,6 +218,21 @@ color:var(--stone);margin-right:-4px;}
 color:var(--stone);padding:7px 14px;border-radius:6px;cursor:pointer;}
 .seg button.active{background:var(--sage);color:#fff;box-shadow:var(--sh);}
 
+.sw{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
+font-size:12.5px;font-weight:700;color:var(--stone);}
+.sw .pista{width:42px;height:24px;border-radius:20px;background:var(--warm);
+position:relative;transition:.2s;flex:none;}
+.sw .pista::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;
+border-radius:50%;background:#fff;box-shadow:var(--sh);transition:.2s;}
+.sw.on .pista{background:var(--sage);}
+.sw.on .pista::after{left:21px;}
+.sw.on{color:var(--sage-dark);}
+
+.acumbar{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
+padding:10px 16px;margin-bottom:12px;font-size:13px;color:var(--stone);
+border-left:4px solid var(--slate);}
+.acumbar b{color:#333;}
+
 .verdict{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:var(--r);
 box-shadow:var(--sh);padding:16px 20px;margin-bottom:14px;border-left:6px solid var(--rose);}
 .verdict .dot{width:44px;height:44px;border-radius:50%;background:#FCEBEB;color:var(--rose);
@@ -263,8 +278,8 @@ color:var(--stone);padding:10px 16px;cursor:pointer;border-bottom:3px solid tran
 .col6{grid-column:span 6;} .col4{grid-column:span 4;}
 @media(max-width:1100px){.col8,.col6,.col4{grid-column:span 12;}}
 
-.cwrap{position:relative;width:100%;height:clamp(220px,26vh,320px);}
-.cwrap.tall{height:clamp(260px,32vh,380px);}
+.cwrap{position:relative;width:100%;height:clamp(230px,28vh,340px);}
+.cwrap.tall{height:clamp(280px,36vh,420px);}
 .cwrap canvas{position:absolute;inset:0;}
 
 .rank{list-style:none;margin:0;padding:0;}
@@ -280,12 +295,15 @@ transition:width .9s cubic-bezier(.2,.8,.2,1);}
 .rank .sub{font-size:11px;color:var(--stone);font-weight:400;}
 
 .split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.split3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
 .mini-kpi{background:var(--warm-light);border-radius:10px;padding:11px 13px;position:relative;overflow:hidden;}
 .mini-kpi::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--taupe);}
 .mini-kpi.b::after{background:var(--slate);}
+.mini-kpi.g::after{background:var(--sage);}
 .mini-kpi .l{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--stone);}
 .mini-kpi .v{font-size:23px;font-weight:700;color:var(--taupe);line-height:1.15;}
 .mini-kpi.b .v{color:var(--slate);}
+.mini-kpi.g .v{color:var(--sage);}
 .mini-kpi .s{font-size:11px;color:var(--stone);}
 .nota{font-size:12px;color:var(--stone);background:var(--warm-light);border-radius:8px;
 padding:9px 11px;margin-top:10px;}
@@ -303,6 +321,16 @@ box-shadow:var(--sh);padding:12px 16px;margin-bottom:14px;font-size:13.5px;}
 .dAviso.snap{border-left-color:var(--slate);}
 .vacio{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:34px;
 text-align:center;color:var(--stone);}
+
+/* ---------------- portada del reporte impreso ---------------- */
+#printHead{display:none;}
+#printHead .rt{font-size:23px;font-weight:700;color:var(--petrol);}
+#printHead .rs{font-size:12.5px;color:var(--stone);margin-top:2px;}
+#printHead .rlogo{height:30px;}
+#printHead .rtop{display:flex;align-items:center;gap:14px;
+border-bottom:2px solid var(--emer);padding-bottom:8px;margin-bottom:10px;}
+#printHead .rexp{font-size:11.5px;color:var(--stone);margin-top:8px;line-height:1.45;}
+#printHead .rexp b{color:#333;}
 
 body.snap #app{display:none;}
 body.snap .header .btn-tablero{display:none!important;}
@@ -329,25 +357,27 @@ body.snap .bar{position:sticky;top:0;}
   .obody{padding:12px 12px 30px;}
   .kpi:hover{transform:none;box-shadow:var(--sh);}
   .kpi .spark{display:none;}
-  .cwrap,.cwrap.tall{height:250px;}
+  .cwrap,.cwrap.tall{height:260px;}
   .tabs{flex-wrap:nowrap;overflow-x:auto;gap:0;}
   .tabs::-webkit-scrollbar{display:none;}
   .tabs button{flex:none;padding:12px 14px;}
-  .split{grid-template-columns:1fr;}
+  .split,.split3{grid-template-columns:1fr;}
   .bar{position:static;}
 }
 
 @media print{
   @page{size:A4 landscape;margin:9mm;}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
-  #app,.header,.bar,.tabs,.obar,details.help,.toast,.no-print,.modal{display:none!important;}
+  #app,.header,.bar,.tabs,.obar,details.help,.toast,.no-print,.modal,.dAviso{display:none!important;}
   body{background:#fff!important;}
   .overlay{display:block!important;position:static!important;background:none!important;padding:0!important;}
   .oinner{height:auto!important;box-shadow:none!important;background:#fff!important;overflow:visible!important;}
   .obody{overflow:visible!important;padding:0!important;}
   .tabpane{display:block!important;}
-  .panel,.kpi,.insight,.verdict{box-shadow:none;border:1px solid var(--warm);break-inside:avoid;}
-  .cwrap,.cwrap.tall{height:170px!important;}
+  #printHead{display:block!important;margin-bottom:10px;}
+  .panel,.kpi,.insight,.verdict,.acumbar{box-shadow:none;border:1px solid var(--warm);break-inside:avoid;}
+  .cwrap,.cwrap.tall{height:165px!important;}
+  .grid{gap:8px;}
 }
 </style>
 </head>
@@ -416,16 +446,16 @@ body.snap .bar{position:sticky;top:0;}
     </div>
   </div>
 
-  <!-- 2. ESTILO Y CARGA -->
+  <!-- 2. ESTILO, CARGA Y T. STD -->
   <div class="panel">
-    <div class="pt">2. Estilo y carga</div>
+    <div class="pt">2. Estilo, carga y tiempo estándar</div>
     <div class="ph">Carga = cantidad de prendas revisadas en ese estilo. Si son varias cargas, escríbelas separadas por espacio o con “+” (ejemplo: <b>20 30</b> o <b>10+10</b>) y el sistema las suma solo.</div>
-    <div class="f2">
+    <div class="fgrid">
       <div>
         <label>Estilo</label>
         <input type="text" id="estilo" list="listaEstilos" placeholder="Ej. 23581" autocomplete="off">
         <datalist id="listaEstilos"></datalist>
-        <div class="hint">Si el estilo es nuevo, escríbelo igual: queda guardado para la próxima vez.</div>
+        <div class="hint" id="hintEstilo">Si el estilo es nuevo, escríbelo igual: queda guardado para la próxima vez.</div>
       </div>
       <div>
         <label>Carga</label>
@@ -436,6 +466,14 @@ body.snap .bar{position:sticky;top:0;}
         </div>
         <div class="hint">Carga total: <b id="cargaCalc">0</b> prendas</div>
       </div>
+      <div>
+        <label>T. STD <span class="mini">(minutos por prenda)</span></label>
+        <input type="number" id="std" min="0" step="0.05" placeholder="1.20" class="spin">
+        <div class="hint" id="hintStd">Aparece solo si el estilo ya lo tiene. Se puede cambiar aquí.</div>
+      </div>
+    </div>
+    <div class="acciones" style="margin-top:10px">
+      <button class="btn small" type="button" onclick="fijarSTD()">Guardar este T. STD para el estilo</button>
     </div>
   </div>
 
@@ -519,14 +557,16 @@ body.snap .bar{position:sticky;top:0;}
 
   <details class="help">
     <summary>¿Cómo se calcula esto?</summary>
-    <p><b>Primeras = Carga − Defectos que restan.</b> Descuentan compostura, manchas, zurcido, hilos, segundas y primeras especiales. <b>No descuenta</b> re-inspección (2da y 3era vuelta): se registra para poder analizarla, pero no es una prenda perdida.</p>
-    <p><b>Horas improductivas.</b> Con la hora de inicio y la hora final el sistema calcula cuántas horas duró el turno. Ahí Margot escribe cuántas de esas horas no se pudo trabajar (línea parada, falta de habilitado, corte de energía). El resto son horas productivas: el tiempo en que sí se estuvo inspeccionando. Como las horas de inicio y final son las mismas para todos los estilos del turno, en los totales <b>cada turno se cuenta una sola vez</b>, no una vez por estilo.</p>
-    <p><b>Servicio.</b> En la lista de líneas, debajo de las líneas existentes, está la opción SERVICIO, para la prenda que no viene de una línea interna.</p>
-    <p><b>Observaciones.</b> Texto libre por inspección, hasta 500 caracteres. Sirve para explicar lo que los números no dicen. Se ve en la tabla de registros y en el tablero.</p>
-    <p><b>Regla de conteo:</b> cada prenda se marca en un solo defecto, el principal. Si una prenda con mancha y puntada saltada se marca en las dos filas, esa prenda se descuenta dos veces y las primeras quedan por debajo de lo real. Por eso el sistema avisa cuando los defectos superan la carga.</p>
-    <p><b>Defecto nuevo:</b> el botón “Defecto nuevo” agrega la falla a la lista para siempre, en el grupo que elijas, y desde ese momento aparece para todos. Se guarda en MAYÚSCULAS y no se puede repetir. Un defecto nuevo siempre resta de las primeras.</p>
-    <p><b>Eliminar:</b> el registro desaparece del formulario y del tablero, pero la fila queda tachada en el Google Sheet con la marca ANULADO. Así se puede saber después qué se borró y cuándo.</p>
-    <p><b>Términos:</b> <b>Carga</b> = grupo de prendas que se revisa de una vez. <b>Primeras</b> = prendas conformes, listas para pasar. <b>Segundas</b> = prendas con falla que no se recuperan como primera. <b>Compostura</b> = falla de costura que se arregla cosiendo de nuevo. <b>Zurcido</b> = falla de tela o puntada que se repara con aguja. <b>Rechazo de auditoría</b> = la carga fue rechazada en la auditoría posterior.</p>
+    <p><b>Primeras = Carga − Defectos que restan.</b> Descuentan compostura, manchas, zurcido, limpieza, segundas y primeras especiales. <b>No descuenta</b> re-inspección (2da y 3era vuelta): se registra para poder analizarla, pero no es una prenda perdida.</p>
+    <p><b>T. STD.</b> Es el tiempo estándar en minutos que toma inspeccionar una prenda de ese estilo. Aparece solo cuando el estilo ya lo tiene registrado. Si el estilo es nuevo o si esa prenda toma más o menos de lo normal, se escribe aquí y ese valor queda guardado solo en ese registro. Para que quede como el tiempo oficial del estilo hay que pulsar “Guardar este T. STD para el estilo”.</p>
+    <p><b>Eficiencia.</b> Se calcula en el tablero como (prendas revisadas + prendas re-inspeccionadas) × T. STD ÷ (horas productivas × 60). Es decir: los minutos de trabajo que valía lo hecho, sobre los minutos que realmente se tuvo para trabajar.</p>
+    <p><b>Horas improductivas.</b> Con la hora de inicio y la hora final el sistema calcula cuántas horas duró el turno. Ahí se escribe cuántas de esas horas no se pudo trabajar (línea parada, falta de habilitado, corte de energía). El resto son horas productivas. Como las horas son las mismas para todos los estilos del turno, en los totales <b>cada turno se cuenta una sola vez</b>, no una vez por estilo.</p>
+    <p><b>Servicio.</b> En la lista de líneas, debajo de las líneas existentes, está la opción SERVICIO, para la prenda que no viene de una línea interna. En el tablero se puede incluir o excluir con un interruptor.</p>
+    <p><b>Observaciones.</b> Texto libre por inspección, hasta 500 caracteres. Sirve para explicar lo que los números no dicen.</p>
+    <p><b>Regla de conteo:</b> cada prenda se marca en un solo defecto, el principal. Si una prenda con mancha y puntada saltada se marca en las dos filas, esa prenda se descuenta dos veces y las primeras quedan por debajo de lo real.</p>
+    <p><b>Defecto nuevo:</b> el botón “Defecto nuevo” agrega la falla a la lista para siempre, en el grupo que elijas. Se guarda en MAYÚSCULAS y no se puede repetir. Un defecto nuevo siempre resta de las primeras.</p>
+    <p><b>Eliminar:</b> el registro desaparece del formulario y del tablero, pero la fila queda tachada en el Google Sheet con la marca ANULADO.</p>
+    <p><b>Términos:</b> <b>Carga</b> = grupo de prendas que se revisa de una vez. <b>Primeras</b> = prendas conformes. <b>Segundas</b> = prendas con falla que no se recuperan como primera. <b>Compostura</b> = falla de costura que se arregla cosiendo. <b>Zurcido</b> = falla de tela o puntada que se repara con aguja. <b>Limpieza</b> = hilos sueltos o sin cortar.</p>
   </details>
 
 </div>
@@ -542,21 +582,26 @@ body.snap .bar{position:sticky;top:0;}
       </div>
       <span class="osp"></span>
       <button id="btnRef" onclick="cargarDatos({full:true})">Actualizar</button>
+      <button id="btnPdf" onclick="imprimirReporte()">Reporte PDF</button>
       <button id="btnExp" class="pri" onclick="exportar()">Exportar HTML</button>
       <button id="btnCerrar" onclick="cerrarTablero()">Cerrar ✕</button>
     </div>
     <div class="obody">
       <div class="dAviso" id="dAviso" style="display:none"></div>
       <div class="bar no-print">
-        <span class="lb">Período</span><select id="fMes"></select>
+        <div class="seg" id="segGran">
+          <button data-g="sem">Semanal</button>
+          <button data-g="mes" class="active">Mensual</button>
+          <button data-g="anio">Anual</button>
+        </div>
+        <span class="lb">Período</span><select id="fPeriodo"></select>
         <span class="lb">Línea</span><select id="fLinea"><option value="">Todas</option></select>
         <span class="lb">Inspectora</span><select id="fIns"><option value="">Todas</option></select>
-        <div class="seg" id="segGran">
-          <button data-g="dia" class="active">Por día</button>
-          <button data-g="sem">Por semana</button>
-          <button data-g="mes">Por mes</button>
-        </div>
+        <span class="sw" id="swServicio" onclick="toggleServicio()">
+          <span class="pista"></span><span>Incluir SERVICIO</span>
+        </span>
       </div>
+      <div id="printHead"></div>
       <div id="contenido"></div>
     </div>
   </div>
@@ -597,7 +642,7 @@ body.snap .bar{position:sticky;top:0;}
           <div class="hint" id="edHintHoras">Horas trabajadas: <b>—</b></div>
         </div>
       </div>
-      <div class="f2" style="margin-bottom:12px">
+      <div class="fgrid" style="margin-bottom:12px">
         <div><label>Estilo</label><input type="text" id="edEstilo" list="listaEstilos" autocomplete="off"></div>
         <div><label>Carga</label>
           <div class="stepwrap">
@@ -606,6 +651,8 @@ body.snap .bar{position:sticky;top:0;}
             <button class="stepbtn" type="button" onclick="pasoCargaEdit(1)">+</button>
           </div>
         </div>
+        <div><label>T. STD <span class="mini">(min/prenda)</span></label>
+          <input type="number" id="edStd" min="0" step="0.05" class="spin"></div>
       </div>
 
       <label>Defectos</label>
@@ -665,7 +712,8 @@ body.snap .bar{position:sticky;top:0;}
           <option value="COMPOSTURA">COMPOSTURA — falla de costura, se arregla cosiendo</option>
           <option value="MANCHAS">MANCHAS — suciedad, aceite, tinta</option>
           <option value="ZURCIDO">ZURCIDO — falla de tela o puntada, se repara con aguja</option>
-          <option value="OTROS">OTROS — no entra en los anteriores</option>
+          <option value="LIMPIEZA">LIMPIEZA — hilos sueltos o sin cortar</option>
+          <option value="SEGUNDAS">SEGUNDAS — la prenda ya no sale como primera</option>
         </select>
       </div>
       <div class="nota">Un defecto nuevo <b>siempre descuenta de las primeras</b>. Si necesitas uno que solo se registre sin descontar, avísale a Christian: se cambia con una marca en el Google Sheet.</div>
@@ -686,19 +734,23 @@ body.snap .bar{position:sticky;top:0;}
    ================================================================== */
 const API_URL = "https://script.google.com/macros/s/AKfycbydA9gutwDeFqHaZaERnDI6D6N0fDDlFhsL0S9M6HGltAtrWSec8KTbu50TgldK7aFmug/exec";
 
-/* Dirección del portal o menú principal. Pega aquí el enlace de tu portal.
-   Si la dejas vacía (""), el botón "← Menú principal" no aparece.        */
+/* Dirección del portal o menú principal. Si se deja vacía (""),
+   el botón "← Menú principal" no aparece.                         */
 const URL_PORTAL = "https://iaanalistalives-ux.github.io/tablero-margot/";
 /* ================================================================== */
 
 const F_FEC=0, F_INS=1, F_LIN=2, F_EST=3, F_CAR=4, F_DEF=5, F_PRI=6, F_DET=7,
-      F_ID=8, F_HI=9, F_HF=10, F_NOR=11, F_OBS=12, F_HIMP=13, F_HTOT=14;
-const ROT = ['#B45309','#4E6B78','#10B981','#DC2626','#F59E0B'];
+      F_ID=8, F_HI=9, F_HF=10, F_NOR=11, F_OBS=12, F_HIMP=13, F_HTOT=14,
+      F_STD=15, F_GRP=16, F_MIN=17;
+const ROT = ['#B45309','#4E6B78','#2563EB','#DC2626','#F59E0B','#10B981'];
+const MES3 = ['ene','feb','mar','abr','may','jun','jul','ago','set','oct','nov','dic'];
 
-let CAT = {inspectoras:[], lineas:[], estilos:[], defectos:[], categorias:[]};
+let CAT = {inspectoras:[], lineas:[], estilos:[], defectos:[], categorias:[], std:{}};
+let GRUPO_ACTUAL = '';
 let DATA = null;
-let DATA_COMPLETA = false;   /* true cuando ya se bajó todo el histórico */
-let GRAN = 'dia';
+let DATA_COMPLETA = false;
+let GRAN = 'mes';
+let INC_SERVICIO = false;
 let charts = {};
 let SNAP = false;
 let editId = null;
@@ -710,8 +762,7 @@ const CTX = {
      tC:'tCargaE', tD:'tDefE', tN:'tNorE', tP:'tPriE', al:'alertaE'}
 };
 
-/* La librería de gráficos se descarga solo cuando se abre el tablero.
-   Así el formulario carga rápido aunque nunca se mire el tablero.        */
+/* La librería de gráficos se descarga solo cuando se abre el tablero. */
 let chartPromesa = null;
 function cargarChart(){
   if(window.Chart) return Promise.resolve();
@@ -738,12 +789,14 @@ function cargarChart(){
 /* ---------------- utilidades ---------------- */
 function n0(x){ return (Math.round(x)||0).toLocaleString('es-PE'); }
 function n1(x){ return (x||0).toLocaleString('es-PE',{minimumFractionDigits:1,maximumFractionDigits:1}); }
+function nh(x){ return (x||0).toLocaleString('es-PE',{minimumFractionDigits:0,maximumFractionDigits:2}); }
 function pct(num,den){ return den > 0 ? (num*100/den) : 0; }
 function hoyISO(){
   const d = new Date();
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
-function fechaCorta(iso){ const p = iso.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+function fechaCorta(iso){ const p = String(iso||'').split('-'); return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : ''; }
+function fechaLarga(iso){ const p = String(iso||'').split('-'); return p.length===3 ? Number(p[2])+' '+MES3[+p[1]-1]+' '+p[0] : ''; }
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escJs(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function toast(msg, err){
@@ -764,9 +817,6 @@ function jsonpUna(params){
     document.body.appendChild(s);
   });
 }
-/* Reintenta una vez si la señal se corta. Guardar lleva una clave única,
-   así que aunque el reintento llegue dos veces al servidor, solo se crea
-   un registro. */
 async function jsonp(params, intentos){
   const max = (intentos === undefined) ? 2 : intentos;
   let ultimo;
@@ -795,7 +845,6 @@ function initHoras(){
     document.getElementById(p+'_p').value = 'AM';
   });
 }
-/* Devuelve la hora en formato 24h (HH:mm) para guardarla en el Sheet. */
 function getHora(p){
   const h = document.getElementById(p+'_h').value;
   if(!h) return '';
@@ -805,7 +854,6 @@ function getHora(p){
   if(ap === 'PM') H += 12;
   return String(H).padStart(2,'0') + ':' + m;
 }
-/* Recibe HH:mm en 24h y lo muestra en los tres selectores. */
 function setHora(p, v){
   const hs = document.getElementById(p+'_h');
   const ms = document.getElementById(p+'_m');
@@ -818,7 +866,6 @@ function setHora(p, v){
   hs.value = String(h12).padStart(2,'0');
   ms.value = String(parseInt(q[1],10) || 0).padStart(2,'0');
 }
-/* Horas entre dos horas HH:mm. 0 si falta alguna o si la final no es posterior. */
 function horasEntre(hi, hf){
   const a = String(hi||'').split(':'), b = String(hf||'').split(':');
   if(a.length < 2 || b.length < 2) return 0;
@@ -827,8 +874,6 @@ function horasEntre(hi, hf){
   if(isNaN(m1) || isNaN(m2) || m2 <= m1) return 0;
   return Math.round((m2-m1)/60*100)/100;
 }
-function nh(x){ return (x||0).toLocaleString('es-PE',{minimumFractionDigits:0,maximumFractionDigits:2}); }
-/* Refresca el texto de horas trabajadas / productivas. k = 'F' o 'E'. */
 function actualizarHoras(k){
   const pi = (k === 'F') ? 'hini' : 'edHi';
   const pf = (k === 'F') ? 'hfin' : 'edHf';
@@ -851,8 +896,6 @@ function actualizarHoras(k){
   box.className = 'hint';
   box.innerHTML = 'Horas trabajadas: <b>' + nh(tot) + '</b> · productivas: <b>' + nh(tot-imp) + '</b>';
 }
-
-/* Para mostrar en las tablas: 07:15 -> 07:15 AM */
 function hora12(v){
   const q = String(v || '').split(':');
   const H = parseInt(q[0],10);
@@ -861,15 +904,9 @@ function hora12(v){
   let h12 = H % 12; if(h12 === 0) h12 = 12;
   return String(h12).padStart(2,'0') + ':' + String(parseInt(q[1],10)||0).padStart(2,'0') + ' ' + ap;
 }
-
 function sumaTexto(txt){
   const m = String(txt||'').match(/\d+(\.\d+)?/g);
   return m ? m.reduce((a,b)=>a+Number(b),0) : 0;
-}
-function mesTxt(ym){
-  const M = ['ene','feb','mar','abr','may','jun','jul','ago','set','oct','nov','dic'];
-  const p = ym.split('-');
-  return M[Number(p[1])-1] + ' ' + p[0];
 }
 /* El servidor manda solo los defectos con cantidad: [[indice, cantidad], ...] */
 function detPares(f){
@@ -890,7 +927,18 @@ function detTexto(f){
 }
 function defInfo(nombre){
   const lista = (DATA && DATA.defectos && DATA.defectos.length) ? DATA.defectos : CAT.defectos;
-  return lista.filter(d=>d.defecto === nombre)[0] || {categoria:'OTROS', resta:true};
+  return lista.filter(d=>d.defecto === nombre)[0] || {categoria:'SEGUNDAS', resta:true};
+}
+/* Degradado: el primero del ranking en color fuerte, los siguientes más claros. */
+function degradado(i, total, tono){
+  const t = total <= 1 ? 0 : i/(total-1);
+  const pares = {
+    tierra:[[154,52,18],[250,222,190]],
+    verde: [[11,90,68],[189,224,212]],
+    pizarra:[[43,68,82],[203,216,222]]
+  };
+  const p = pares[tono || 'tierra'];
+  return 'rgb(' + p[0].map((v,k)=>Math.round(v + (p[1][k]-v)*t)).join(',') + ')';
 }
 
 /* ================================================================
@@ -921,7 +969,7 @@ async function iniciar(){
     return;
   }
   if(API_URL.indexOf('PEGA_AQUI') === 0){
-    avisar('⚠ Falta configurar la conexión: reemplaza <b>https://script.google.com/macros/s/AKfycbydA9gutwDeFqHaZaERnDI6D6N0fDDlFhsL0S9M6HGltAtrWSec8KTbu50TgldK7aFmug/exec</b> por la URL /exec del Apps Script.');
+    avisar('⚠ Falta configurar la conexión: reemplaza el valor de API_URL por la URL /exec del Apps Script.');
     document.getElementById('hstate').textContent = 'Sin conexión configurada';
     return;
   }
@@ -929,9 +977,11 @@ async function iniciar(){
     const d = await jsonp({accion:'catalogos'});
     if(!d.ok) throw new Error(d.error || 'Error del servidor');
     CAT = d;
+    if(!CAT.std) CAT.std = {};
     pintarCatalogos();
     document.getElementById('hstate').innerHTML =
-      CAT.inspectoras.length + ' inspectora(s) · ' + CAT.lineas.length + ' línea(s) · ' + CAT.defectos.length + ' defectos';
+      CAT.inspectoras.length + ' inspectora(s) · ' + CAT.lineas.length + ' línea(s) · ' +
+      CAT.defectos.length + ' defectos · ' + Object.keys(CAT.std).length + ' estilos con T. STD';
     if(!CAT.inspectoras.length || !CAT.lineas.length){
       avisar('Las listas de <b>INSPECTORAS</b> o <b>LINEAS</b> están vacías en el Google Sheet. Llénalas (una por fila, con SI en la columna ACTIVO) y refresca con Ctrl+Shift+R.');
     }
@@ -979,6 +1029,48 @@ function pintarCatalogos(){
       if(CAT.lineas.indexOf(u.linea) >= 0) document.getElementById('linea').value = u.linea;
     }catch(e){}
   }
+}
+
+/* ---------------- tiempo estándar ---------------- */
+function buscarSTD(){
+  const est = document.getElementById('estilo').value.trim().toUpperCase();
+  const hint = document.getElementById('hintStd');
+  const hEst = document.getElementById('hintEstilo');
+  const info = CAT.std ? CAT.std[est] : null;
+  if(info && info.std > 0){
+    document.getElementById('std').value = info.std;
+    GRUPO_ACTUAL = info.grupo || '';
+    hint.className = 'hint';
+    hint.innerHTML = 'Del catálogo: <b>' + nh(info.std) + ' min</b> por prenda.';
+    hEst.innerHTML = GRUPO_ACTUAL ? 'Grupo: <b>' + esc(GRUPO_ACTUAL) + '</b>'
+                                  : 'Estilo conocido, sin grupo registrado.';
+  }else{
+    GRUPO_ACTUAL = '';
+    document.getElementById('std').value = '';
+    hint.className = est ? 'hint mal' : 'hint';
+    hint.innerHTML = est ? 'Este estilo todavía no tiene T. STD. Escríbelo aquí.'
+                         : 'Aparece solo si el estilo ya lo tiene. Se puede cambiar aquí.';
+    hEst.innerHTML = 'Si el estilo es nuevo, escríbelo igual: queda guardado para la próxima vez.';
+  }
+}
+async function fijarSTD(){
+  const est = document.getElementById('estilo').value.trim().toUpperCase();
+  const v = parseFloat(document.getElementById('std').value);
+  if(!est){ toast('Escribe primero el estilo', true); return; }
+  if(isNaN(v) || v <= 0){ toast('Escribe un T. STD mayor que cero', true); return; }
+  const antes = (CAT.std && CAT.std[est]) ? CAT.std[est].std : null;
+  const msj = antes
+    ? '¿Cambiar el T. STD del estilo ' + est + ' de ' + nh(antes) + ' a ' + nh(v) + ' minutos?\n\n' +
+      'Se usará en los registros nuevos. Los ya guardados conservan el que tenían.'
+    : '¿Guardar ' + nh(v) + ' minutos por prenda como T. STD del estilo ' + est + '?';
+  if(!confirm(msj)) return;
+  try{
+    const r = await jsonp({accion:'guardarSTD', estilo:est, grupo:GRUPO_ACTUAL, std:v});
+    if(!r.ok) throw new Error(r.error || 'Error del servidor');
+    CAT.std = r.std_map || CAT.std;
+    buscarSTD();
+    toast('T. STD guardado para ' + est);
+  }catch(e){ toast('No se guardó: ' + e.message, true); }
 }
 
 /* ================================================================
@@ -1116,17 +1208,20 @@ async function guardar(){
     const hini = getHora('hini'), hfin = getHora('hfin');
     const horasImp = parseFloat(document.getElementById('horasImp').value) || 0;
     const obs = document.getElementById('obs').value.trim();
+    const std = parseFloat(document.getElementById('std').value) || 0;
     const detalle = Object.assign({}, CTX.F.obj);
 
     const r = await jsonp({accion:'guardar', clave:claveUnica(), fecha:fecha,
       inspectora:inspectora, linea:linea, estilo:estilo, carga:carga,
       hini:hini, hfin:hfin, horasImp:horasImp, obs:obs,
+      std:std, grupo:GRUPO_ACTUAL,
       defectos:JSON.stringify(detalle)});
     if(!r.ok) throw new Error(r.error || 'Error del servidor');
 
     localStorage.setItem('lives_ic_ult', JSON.stringify({inspectora:inspectora, linea:linea}));
     agregarLocal(r, {fecha:fecha, inspectora:inspectora, linea:linea, estilo:estilo,
-      carga:carga, hini:hini, hfin:hfin, obs:obs, detalle:detalle});
+      carga:carga, hini:hini, hfin:hfin, obs:obs, detalle:detalle,
+      std:(r.std || std), grupo:GRUPO_ACTUAL});
     limpiarEstilo(false);
     toast('Guardado: ' + estilo + ' · ' + r.primeras + ' primeras');
     document.getElementById('estilo').focus();
@@ -1136,8 +1231,6 @@ async function guardar(){
     btn.disabled = false; btn.textContent = 'Guardar y siguiente estilo';
   }
 }
-/* Agrega el registro recién guardado a la lista que ya está en pantalla,
-   en vez de volver a descargar todo el histórico. */
 function agregarLocal(r, d){
   if(!DATA) return;
   const defs = DATA.defectos || CAT.defectos;
@@ -1146,7 +1239,8 @@ function agregarLocal(r, d){
   DATA.filas.push([
     d.fecha, d.inspectora, d.linea, d.estilo, d.carga,
     r.totalDefectos, r.primeras, det, r.id, d.hini, d.hfin,
-    r.noResta || 0, d.obs, r.horasImp || 0, r.horasTotal || 0
+    r.noResta || 0, d.obs, r.horasImp || 0, r.horasTotal || 0,
+    d.std || 0, d.grupo || '', r.minutos || 0
   ]);
   if(d.estilo && CAT.estilos.indexOf(d.estilo) === -1){
     CAT.estilos.push(d.estilo);
@@ -1159,6 +1253,9 @@ function limpiarEstilo(avisarUsuario){
   document.getElementById('estilo').value = '';
   document.getElementById('carga').value = '';
   document.getElementById('obs').value = '';
+  document.getElementById('std').value = '';
+  GRUPO_ACTUAL = '';
+  buscarSTD();
   CTX.F.obj = {};
   pintarDefectos('F'); recalcular('F');
   if(avisarUsuario) toast('Estilo limpiado');
@@ -1200,24 +1297,27 @@ function pintarRegistros(){
     cont.innerHTML = '<div class="mini">No hay registros con estos filtros. Prueba con “Todo” o cambia las fechas.</div>';
     return;
   }
-  let sC=0, sD=0, sP=0;
-  rows.forEach(f=>{ sC+=f[F_CAR]; sD+=f[F_DEF]; sP+=f[F_PRI]; });
+  let sC=0, sD=0, sP=0, sM=0;
+  rows.forEach(f=>{ sC+=f[F_CAR]; sD+=f[F_DEF]; sP+=f[F_PRI]; sM+=(f[F_MIN]||0); });
   const H = agregarHoras(rows);
   const mostrar = rows.slice(0,500);
 
   cont.innerHTML =
     '<table><thead><tr><th>Fecha</th><th>Inspectora</th><th>Línea</th><th>Estilo</th>' +
     '<th class="num">Carga</th><th class="num">Defectos</th><th class="num">Primeras</th>' +
-    '<th class="num">H. improd.</th><th>Detalle</th><th>Observación</th><th></th></tr></thead><tbody>' +
+    '<th class="num">T. STD</th><th class="num">H. improd.</th><th>Detalle</th>' +
+    '<th>Observación</th><th></th></tr></thead><tbody>' +
     mostrar.map(f=>{
       const det = detTexto(f);
       const id = escJs(f[F_ID]);
       const hh = [hora12(f[F_HI]), hora12(f[F_HF])].filter(Boolean).join(' – ');
       return '<tr><td>'+fechaCorta(f[F_FEC]) + (hh ? '<br><span class="mini">'+hh+'</span>' : '') +
         '</td><td>'+esc(f[F_INS])+'</td><td>'+esc(f[F_LIN])+'</td>' +
-        '<td><b>'+esc(f[F_EST])+'</b></td><td class="num">'+n0(f[F_CAR])+'</td>' +
+        '<td><b>'+esc(f[F_EST])+'</b>' + (f[F_GRP] ? '<br><span class="mini">'+esc(f[F_GRP])+'</span>' : '') +
+        '</td><td class="num">'+n0(f[F_CAR])+'</td>' +
         '<td class="num">'+n0(f[F_DEF])+'</td>' +
         '<td class="num"><b>'+n0(f[F_PRI])+'</b></td>' +
+        '<td class="num">'+(f[F_STD]?nh(f[F_STD]):'—')+'</td>' +
         '<td class="num">'+(f[F_HIMP]?nh(f[F_HIMP]):'—')+'</td>' +
         '<td class="mini">'+det+'</td>' +
         '<td class="mini obscell">'+(f[F_OBS]?esc(f[F_OBS]):'—')+'</td>' +
@@ -1229,10 +1329,11 @@ function pintarRegistros(){
     '</tbody><tfoot><tr><td colspan="4">TOTAL — ' + n0(rows.length) + ' registro(s)' +
     (rows.length > 500 ? ' (se muestran los 500 más recientes)' : '') + '</td>' +
     '<td class="num">'+n0(sC)+'</td><td class="num">'+n0(sD)+'</td><td class="num">'+n0(sP)+'</td>' +
-    '<td class="num">'+(H.imp?nh(H.imp):'—')+'</td>' +
+    '<td class="num">—</td><td class="num">'+(H.imp?nh(H.imp):'—')+'</td>' +
     '<td colspan="3" class="mini">' +
     (sC>0 ? 'Primeras = <b>'+n1(pct(sP,sC))+'%</b> de '+n0(sC)+' prendas revisadas' : '') +
     (H.tot ? ' · Horas trabajadas <b>'+nh(H.tot)+'</b>, productivas <b>'+nh(H.prod)+'</b>' : '') +
+    (H.prod>0 && sM>0 ? ' · Eficiencia <b>'+n1(pct(sM, H.prod*60))+'%</b>' : '') +
     '</td></tr></tfoot></table>';
 }
 
@@ -1249,6 +1350,7 @@ function abrirEdit(id){
   setHora('edHf', f[F_HF]);
   document.getElementById('edHorasImp').value = f[F_HIMP] || '';
   document.getElementById('edObs').value = f[F_OBS] || '';
+  document.getElementById('edStd').value = f[F_STD] || '';
   actualizarHoras('E');
   document.getElementById('edEstilo').value = f[F_EST];
   document.getElementById('edCarga').value = f[F_CAR];
@@ -1275,6 +1377,7 @@ async function guardarEdit(){
   if(!inspectora || !linea || !fecha || !estilo || carga <= 0){
     toast('Faltan datos: inspectora, línea, fecha, estilo y carga son obligatorios', true); return;
   }
+  const previa = DATA.filas.filter(x=>x[F_ID] === editId)[0] || [];
   const btn = document.getElementById('btnGuardarEdit');
   btn.disabled = true; btn.textContent = 'Guardando…';
   try{
@@ -1283,6 +1386,8 @@ async function guardarEdit(){
       hini:getHora('edHi'), hfin:getHora('edHf'),
       horasImp:document.getElementById('edHorasImp').value || 0,
       obs:document.getElementById('edObs').value.trim(),
+      std:parseFloat(document.getElementById('edStd').value) || 0,
+      grupo:previa[F_GRP] || '',
       defectos:JSON.stringify(CTX.E.obj)});
     if(!r.ok) throw new Error(r.error || 'Error del servidor');
     const i = DATA.filas.findIndex(x=>x[F_ID] === editId);
@@ -1292,7 +1397,8 @@ async function guardarEdit(){
       defs.forEach((x,k)=>{ if(CTX.E.obj[x.defecto] > 0) det.push([k, CTX.E.obj[x.defecto]]); });
       DATA.filas[i] = [fecha, inspectora, linea, estilo, carga, r.totalDefectos, r.primeras,
         det, editId, getHora('edHi'), getHora('edHf'), r.noResta || 0,
-        document.getElementById('edObs').value.trim(), r.horasImp || 0, r.horasTotal || 0];
+        document.getElementById('edObs').value.trim(), r.horasImp || 0, r.horasTotal || 0,
+        r.std || 0, previa[F_GRP] || '', r.minutos || 0];
     }
     cerrarEdit();
     pintarRegistros();
@@ -1327,14 +1433,13 @@ async function eliminar(id){
 }
 
 /* ================================================================
-   DATOS (compartidos por registros y tablero)
+   DATOS
    ================================================================ */
 function primerDiaMesAnterior(){
   const d = new Date();
   d.setDate(1); d.setMonth(d.getMonth() - 1);
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-01';
 }
-/* opciones: {silencioso:true} sin bloquear botones · {full:true} todo el histórico */
 async function cargarDatos(opciones){
   const o = opciones || {};
   const btn = document.getElementById('btnRef');
@@ -1348,8 +1453,8 @@ async function cargarDatos(opciones){
     DATA_COMPLETA = !!o.full;
     document.getElementById('dAviso').style.display = 'none';
     pintarRegistros();
-    if(document.getElementById('overlay').classList.contains('on')){ prepararFiltros(); render(); }
-    else { prepararFiltros(); }
+    prepararFiltros();
+    if(document.getElementById('overlay').classList.contains('on')) render();
     document.getElementById('dEstado').innerHTML =
       n0(DATA.filas.length) + ' inspecciones' + (DATA_COMPLETA ? '' : ' (desde ' + fechaCorta(DATA.desde) + ')') +
       ' · datos al ' + (DATA.generado || '—');
@@ -1367,8 +1472,86 @@ async function cargarDatos(opciones){
 }
 
 /* ================================================================
-   TABLERO
+   TABLERO — períodos reales (semana lunes a domingo, mes, año)
    ================================================================ */
+function isoDe(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function sumarDias(iso, n){
+  const d = new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return isoDe(d);
+}
+function lunesDe(iso){
+  const d = new Date(iso+'T00:00:00');
+  const dow = (d.getDay()+6)%7;      /* 0 = lunes */
+  d.setDate(d.getDate()-dow);
+  return isoDe(d);
+}
+function clavePeriodo(iso, g){
+  const gr = g || GRAN;
+  if(gr === 'sem')  return lunesDe(iso);
+  if(gr === 'anio') return iso.slice(0,4);
+  return iso.slice(0,7);
+}
+function etiquetaPeriodo(k, g){
+  const gr = g || GRAN;
+  if(!k) return '';
+  if(gr === 'anio') return k;
+  if(gr === 'mes'){ const p = k.split('-'); return MES3[+p[1]-1] + ' ' + p[0]; }
+  const fin = sumarDias(k, 6);
+  const a = k.split('-'), b = fin.split('-');
+  if(a[1] === b[1] && a[0] === b[0]) return Number(a[2])+'–'+Number(b[2])+' '+MES3[+a[1]-1]+' '+a[0];
+  return Number(a[2])+' '+MES3[+a[1]-1]+' – '+Number(b[2])+' '+MES3[+b[1]-1]+' '+b[0];
+}
+function rangoPeriodo(k, g){
+  const gr = g || GRAN;
+  if(gr === 'sem')  return {ini:k, fin:sumarDias(k,6)};
+  if(gr === 'anio') return {ini:k+'-01-01', fin:k+'-12-31'};
+  const p = k.split('-');
+  const ult = new Date(+p[0], +p[1], 0).getDate();
+  return {ini:k+'-01', fin:k+'-'+String(ult).padStart(2,'0')};
+}
+function anioDe(k, g){ return ((g||GRAN) === 'anio') ? k : k.slice(0,4); }
+function periodoAnterior(k, g){
+  const gr = g || GRAN;
+  if(gr === 'sem')  return sumarDias(k,-7);
+  if(gr === 'anio') return String(+k - 1);
+  const p = k.split('-'); let a = +p[0], m = +p[1]-1;
+  if(m === 0){ m = 12; a--; }
+  return a + '-' + String(m).padStart(2,'0');
+}
+function granGrafico(){ return GRAN === 'anio' ? 'mes' : 'dia'; }
+function claveGrafico(iso){ return granGrafico() === 'mes' ? iso.slice(0,7) : iso; }
+function etiquetaGrafico(k){
+  if(granGrafico() === 'mes') return etiquetaPeriodo(k, 'mes');
+  const p = k.split('-'); return p[2]+'/'+p[1];
+}
+function nombrePeriodo(){
+  return GRAN === 'sem' ? 'semana' : (GRAN === 'anio' ? 'año' : 'mes');
+}
+
+/* ---------------- filtros ---------------- */
+function esServicio(l){ return String(l||'').trim().toUpperCase() === 'SERVICIO'; }
+function pasaBase(f){
+  const L = document.getElementById('fLinea').value;
+  const I = document.getElementById('fIns').value;
+  if(!INC_SERVICIO && esServicio(f[F_LIN])) return false;
+  if(L && f[F_LIN] !== L) return false;
+  if(I && f[F_INS] !== I) return false;
+  return true;
+}
+function filtrarRango(ini, fin){
+  return DATA.filas.filter(f=> pasaBase(f) && f[F_FEC] >= ini && f[F_FEC] <= fin);
+}
+function clavesPeriodo(){
+  const s = {};
+  DATA.filas.forEach(f=>{ if(pasaBase(f)) s[clavePeriodo(f[F_FEC])] = 1; });
+  return Object.keys(s).sort();
+}
+function toggleServicio(){
+  INC_SERVICIO = !INC_SERVICIO;
+  document.getElementById('swServicio').classList.toggle('on', INC_SERVICIO);
+  prepararFiltros(); render();
+}
 function abrirTablero(){
   document.getElementById('overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
@@ -1385,19 +1568,13 @@ function dAvisar(html, clase){
   a.innerHTML = html; a.className = 'dAviso ' + (clase||''); a.style.display = 'block';
 }
 function prepararFiltros(){
-  const meses = [], lineas = [], insp = [];
+  if(!DATA) return;
+  const lineas = [], insp = [];
   DATA.filas.forEach(f=>{
-    const m = f[F_FEC].slice(0,7);
-    if(meses.indexOf(m) === -1) meses.push(m);
     if(f[F_LIN] && lineas.indexOf(f[F_LIN]) === -1) lineas.push(f[F_LIN]);
     if(f[F_INS] && insp.indexOf(f[F_INS]) === -1) insp.push(f[F_INS]);
   });
-  meses.sort().reverse(); lineas.sort(); insp.sort();
-
-  const sm = document.getElementById('fMes'), antes = sm.value;
-  sm.innerHTML = meses.map(m=>'<option value="'+m+'">'+mesTxt(m)+'</option>').join('') +
-                 '<option value="TODOS">Todo el histórico</option>';
-  sm.value = (antes && [...sm.options].some(o=>o.value===antes)) ? antes : (meses[0] || 'TODOS');
+  lineas.sort(); insp.sort();
 
   const sl = document.getElementById('fLinea'), al = sl.value;
   sl.innerHTML = '<option value="">Todas las líneas</option>' + lineas.map(l=>'<option>'+esc(l)+'</option>').join('');
@@ -1406,44 +1583,16 @@ function prepararFiltros(){
   const si = document.getElementById('fIns'), ai = si.value;
   si.innerHTML = '<option value="">Todas las inspectoras</option>' + insp.map(i=>'<option>'+esc(i)+'</option>').join('');
   si.value = ai;
+
+  const sp = document.getElementById('fPeriodo'), ap = sp.value;
+  const claves = clavesPeriodo().reverse();
+  sp.innerHTML = claves.map(k=>'<option value="'+k+'">'+etiquetaPeriodo(k)+'</option>').join('');
+  sp.value = (ap && claves.indexOf(ap) >= 0) ? ap : (claves[0] || '');
 }
-function claveISOsemana(f){
-  const d = new Date(f + 'T00:00:00');
-  const t = new Date(d.valueOf());
-  t.setDate(t.getDate() + 3 - ((d.getDay()+6)%7));
-  const p1 = new Date(t.getFullYear(), 0, 4);
-  const sem = 1 + Math.round(((t - p1)/86400000 - 3 + ((p1.getDay()+6)%7))/7);
-  return t.getFullYear() + '-S' + String(sem).padStart(2,'0');
-}
-function claveGran(f){
-  if(GRAN === 'mes') return f.slice(0,7);
-  if(GRAN === 'sem') return claveISOsemana(f);
-  return f;
-}
-function etiquetaGran(k){
-  if(GRAN === 'mes') return mesTxt(k);
-  if(GRAN === 'sem') return 'Sem ' + k.split('-S')[1];
-  const p = k.split('-');
-  return p[2] + '/' + p[1];
-}
-function mesAnterior(ym){
-  const p = ym.split('-'); let a = +p[0], m = +p[1]-1;
-  if(m === 0){ m = 12; a--; }
-  return a + '-' + String(m).padStart(2,'0');
-}
-function filtrar(mes){
-  const L = document.getElementById('fLinea').value;
-  const I = document.getElementById('fIns').value;
-  return DATA.filas.filter(f=>{
-    if(mes && mes !== 'TODOS' && f[F_FEC].slice(0,7) !== mes) return false;
-    if(L && f[F_LIN] !== L) return false;
-    if(I && f[F_INS] !== I) return false;
-    return true;
-  });
-}
-/* Las horas de inicio y final se repiten en cada estilo del mismo turno.
-   Por eso se cuenta una sola vez cada combinación de fecha + inspectora +
-   horario + horas improductivas, en vez de sumar fila por fila.            */
+
+/* ---------------- métricas ---------------- */
+/* Las horas de inicio y final se repiten en cada estilo del mismo turno, así que
+   cada turno (fecha + inspectora + horario + improductivas) se cuenta una vez. */
 function agregarHoras(rows){
   const vistos = {};
   let tot = 0, imp = 0;
@@ -1458,77 +1607,131 @@ function agregarHoras(rows){
   tot = Math.round(tot*100)/100; imp = Math.round(imp*100)/100;
   return {tot:tot, imp:imp, prod:Math.round(Math.max(0, tot-imp)*100)/100};
 }
-function agg(rows){
-  let c=0,d=0,p=0,nr=0;
-  rows.forEach(f=>{ c+=f[F_CAR]; d+=f[F_DEF]; p+=f[F_PRI]; nr+=f[F_NOR]; });
-  return {carga:c, def:d, pri:p, noResta:nr, n:rows.length, pPri:pct(p,c), pDef:pct(d,c)};
+function met(rows){
+  let carga=0, def=0, pri=0, rein=0, min=0, cargaStd=0;
+  rows.forEach(f=>{
+    carga += f[F_CAR]; def += f[F_DEF]; pri += f[F_PRI];
+    rein += (f[F_NOR]||0); min += (f[F_MIN]||0);
+    if(f[F_STD] > 0) cargaStd += f[F_CAR];
+  });
+  const H = agregarHoras(rows);
+  return {
+    n:rows.length, carga:carga, def:def, pri:pri, rein:rein, min:min,
+    hTot:H.tot, hImp:H.imp, hProd:H.prod,
+    pPri: pct(pri,carga), pDef: pct(def,carga),
+    pProd: pct(H.prod, H.tot),
+    pEfi: H.prod > 0 ? pct(min, H.prod*60) : 0,
+    cobStd: pct(cargaStd, carga)
+  };
 }
+
+/* ---------------- render ---------------- */
 async function render(){
   Object.keys(charts).forEach(k=>{ try{ charts[k].destroy(); }catch(e){} });
   charts = {};
   if(!DATA) return;
-  try{ await cargarChart(); }catch(e){ /* sin internet al CDN: tablas sí, gráficos no */ }
-  const mes = document.getElementById('fMes').value;
-  const cur = filtrar(mes);
+  try{ await cargarChart(); }catch(e){ /* sin CDN: tablas sí, gráficos no */ }
+
   const cont = document.getElementById('contenido');
-  if(!cur.length){
-    cont.innerHTML = '<div class="vacio">No hay inspecciones registradas con estos filtros. Prueba con otro período o quita el filtro de línea o inspectora.</div>';
+  const k = document.getElementById('fPeriodo').value;
+  if(!k){
+    cont.innerHTML = '<div class="vacio">No hay inspecciones con estos filtros. Prueba con otro período, con otra línea, o enciende el interruptor de SERVICIO.</div>';
+    document.getElementById('printHead').innerHTML = '';
     return;
   }
-  const A = agg(cur);
-  const prev = (mes !== 'TODOS') ? filtrar(mesAnterior(mes)) : [];
-  const P = prev.length ? agg(prev) : null;
+  const R = rangoPeriodo(k);
+  const CUR = filtrarRango(R.ini, R.fin);
+  if(!CUR.length){
+    cont.innerHTML = '<div class="vacio">No hay inspecciones en ' + etiquetaPeriodo(k) + ' con estos filtros.</div>';
+    document.getElementById('printHead').innerHTML = '';
+    return;
+  }
+  const anio = anioDe(k);
+  const ACUM = filtrarRango(anio+'-01-01', R.fin);
+  const kPrev = periodoAnterior(k);
+  const RP = rangoPeriodo(kPrev);
+  const PREVrows = filtrarRango(RP.ini, RP.fin);
+  const mismoAnio = anioDe(kPrev) === anio;
+  const ACUMprev = mismoAnio ? filtrarRango(anio+'-01-01', RP.fin) : [];
 
-  cont.innerHTML = htmlVerdicto(A,P,mes) + htmlKpis(A,P) + htmlInsight(cur,A) + htmlTabs();
+  const mCur  = met(CUR);
+  const mAcum = met(ACUM);
+  const mPrev = PREVrows.length ? met(PREVrows) : null;
+  const mAcumPrev = ACUMprev.length ? met(ACUMprev) : null;
+
+  cont.innerHTML =
+    htmlVerdicto(mCur, mPrev, k, kPrev) +
+    htmlAcumbar(mAcum, anio, R.fin) +
+    htmlKpis(mAcum, mAcumPrev) +
+    htmlInsight(CUR, mCur, k) +
+    htmlTabs();
 
   pintarSparklines();
-  pintarTendencia(cur);
-  pintarHoras(cur);
-  pintarCategorias(cur);
-  pintarGrupo(cur, F_LIN, 'lin', 'línea');
-  pintarGrupo(cur, F_INS, 'ins', 'inspectora');
-  pintarDefectosDash(cur, A);
-  pintarDetalleDash(cur);
+  pintarTendencia(CUR);
+  pintarEficiencia(mCur, mAcum);
+  pintarCategorias(CUR);
+  pintarGrupo(CUR, F_LIN, 'lin', 'línea');
+  pintarGrupo(CUR, F_INS, 'ins', 'inspectora');
+  pintarDefectosDash(CUR, mCur);
+  pintarDetalleDash(CUR);
+  pintarPortada(k, mCur, mAcum, mPrev, anio, R);
+
   setTimeout(()=>{ document.querySelectorAll('.rank .fill').forEach(f=>{ f.style.width = f.dataset.w; }); }, 120);
+
+  if(!DATA_COMPLETA){
+    dAvisar('Solo están cargados los datos del mes actual y el anterior, así que el acumulado del año puede quedar corto. Pulsa <b>Actualizar</b> para traer todo el histórico.');
+  }
 }
-function htmlVerdicto(A,P,mes){
-  const periodo = mes === 'TODOS' ? 'todo el histórico' : mesTxt(mes);
+function htmlAcumbar(m, anio, hasta){
+  return '<div class="acumbar">Las cuatro tarjetas de abajo son el <b>acumulado del año</b>: ' +
+    'del 1 de enero al <b>' + fechaLarga(hasta) + '</b>. En ese período se revisaron <b>' +
+    n0(m.carga) + '</b> prendas en <b>' + n0(m.n) + '</b> inspecciones' +
+    (m.hTot ? ', con <b>' + nh(m.hTot) + '</b> horas trabajadas' : '') + '.' +
+    (m.cobStd < 99.5 ? ' <b>Ojo:</b> solo el ' + n1(m.cobStd) + '% de esas prendas tiene T. STD registrado, así que la eficiencia sale más baja de lo real.' : '') +
+    '</div>';
+}
+function htmlVerdicto(A, P, k, kPrev){
+  const per = etiquetaPeriodo(k);
   if(!P){
     return '<div class="verdict warn"><div class="dot">i</div><div>' +
-      '<div class="t">Sin comparación disponible</div><div class="s">En ' + periodo +
+      '<div class="t">Sin comparación disponible</div><div class="s">En ' + per +
       ' se revisaron <b>' + n0(A.carga) + '</b> prendas y salieron <b>' + n0(A.pri) +
-      '</b> primeras, o sea el <b>' + n1(A.pPri) + '%</b> de lo revisado. No hay un mes anterior con datos ni una meta definida, así que todavía no se puede decir si esto es bueno o malo.</div></div></div>';
+      '</b> primeras, o sea el <b>' + n1(A.pPri) + '%</b> de lo revisado. No hay ' + nombrePeriodo() +
+      ' anterior con datos ni una meta definida, así que todavía no se puede decir si esto es bueno o malo.</div></div></div>';
   }
   const dif = A.pPri - P.pPri;
   const mejor = dif >= 0;
-  const cls = Math.abs(dif) < 0.5 ? 'warn' : (mejor ? 'ok' : '');
-  const icono = Math.abs(dif) < 0.5 ? '=' : (mejor ? '↑' : '↓');
-  const titulo = Math.abs(dif) < 0.5 ? 'Igual que el mes anterior' : (mejor ? 'Mejor que el mes anterior' : 'Peor que el mes anterior');
+  const igual = Math.abs(dif) < 0.5;
+  const cls = igual ? 'warn' : (mejor ? 'ok' : '');
+  const icono = igual ? '=' : (mejor ? '↑' : '↓');
+  const titulo = igual ? ('Igual que ' + (GRAN==='anio'?'el año anterior':(GRAN==='sem'?'la semana anterior':'el mes anterior')))
+    : (mejor ? 'Mejor que antes' : 'Peor que antes');
   const equiv = Math.round(Math.abs(dif) * A.carga / 100);
   return '<div class="verdict ' + cls + '"><div class="dot">' + icono + '</div><div>' +
-    '<div class="t">' + titulo + '</div><div class="s">En ' + periodo + ' salieron primeras el <b>' +
+    '<div class="t">' + titulo + '</div><div class="s">En <b>' + per + '</b> salieron primeras el <b>' +
     n1(A.pPri) + '%</b> de las ' + n0(A.carga) + ' prendas revisadas, contra ' + n1(P.pPri) + '% en ' +
-    mesTxt(mesAnterior(mes)) + '. Son <b>' + n1(Math.abs(dif)) + ' puntos ' + (mejor?'más':'menos') +
+    etiquetaPeriodo(kPrev) + '. Son <b>' + n1(Math.abs(dif)) + ' puntos ' + (mejor?'más':'menos') +
     '</b>, equivalente a unas <b>' + n0(equiv) + '</b> prendas ' + (mejor?'salvadas':'perdidas') +
-    ' sobre el volumen de este período. No hay meta definida: la comparación es contra el mes anterior, no contra un objetivo.</div></div></div>';
+    ' sobre este volumen. No hay meta definida: la comparación es contra el período anterior, no contra un objetivo.</div></div></div>';
 }
-function deltaHtml(actual, anterior, subirEsBueno, suf){
+function deltaHtml(actual, anterior, subirEsBueno){
   if(anterior === null || anterior === undefined) return '';
   const dif = actual - anterior;
   if(Math.abs(dif) < 0.05) return '<span class="d flat">sin cambio</span>';
   const bueno = subirEsBueno ? dif > 0 : dif < 0;
-  return '<span class="d ' + (bueno?'bien':'mal') + '">' + (dif>0?'▲':'▼') + ' ' + n1(Math.abs(dif)) + (suf||'') + '</span>';
+  return '<span class="d ' + (bueno?'bien':'mal') + '">' + (dif>0?'▲':'▼') + ' ' + n1(Math.abs(dif)) + ' pts</span>';
 }
-function htmlKpis(A,P){
+function htmlKpis(A, P){
   return '<div class="kpis">' +
-    kpi('neutro','Prendas revisadas', n0(A.carga), P?deltaHtml(A.carga,P.carga,true,''):'',
-        'Suma de la carga de ' + n0(A.n) + ' inspecciones', 'spkCarga') +
-    kpi('','% Primeras', n1(A.pPri)+'%', P?deltaHtml(A.pPri,P.pPri,true,' pts'):'',
-        n0(A.pri) + ' primeras ÷ ' + n0(A.carga) + ' revisadas', 'spkPri') +
-    kpi('alert','Prendas con defecto', n0(A.def), P?deltaHtml(A.def,P.def,false,''):'',
-        n1(A.pDef) + '% de lo revisado · solo lo que descuenta', 'spkDef') +
-    kpi('neutro','Inspecciones', n0(A.n), P?deltaHtml(A.n,P.n,true,''):'',
-        'Registros de estilo/carga en el período', 'spkN') + '</div>';
+    kpi('','% Primeras', n1(A.pPri)+'%', deltaHtml(A.pPri, P?P.pPri:null, true),
+        n0(A.pri) + ' primeras ÷ ' + n0(A.carga) + ' prendas revisadas', 'spkPri') +
+    kpi('alert','% Con defecto', n1(A.pDef)+'%', deltaHtml(A.pDef, P?P.pDef:null, false),
+        n0(A.def) + ' con defecto ÷ ' + n0(A.carga) + ' revisadas', 'spkDef') +
+    kpi('','% Eficiencia', n1(A.pEfi)+'%', deltaHtml(A.pEfi, P?P.pEfi:null, true),
+        n0(A.min) + ' min de trabajo ÷ ' + n0(A.hProd*60) + ' min productivos', 'spkEfi') +
+    kpi('neutro','% Tiempo productivo', n1(A.pProd)+'%', deltaHtml(A.pProd, P?P.pProd:null, true),
+        nh(A.hProd) + ' h productivas ÷ ' + nh(A.hTot) + ' h trabajadas', 'spkProd') +
+  '</div>';
 }
 function kpi(cls,label,valor,delta,sub,sparkId){
   return '<div class="kpi ' + cls + '"><div class="l">' + label + '</div>' +
@@ -1540,21 +1743,22 @@ function totalesPorDefecto(rows){
   rows.forEach(f=> detPares(f).forEach(par=>{ if(par[0] < tot.length) tot[par[0]] += par[1]; }));
   return tot;
 }
-function htmlInsight(rows,A){
+function htmlInsight(rows, A, k){
   const defs = DATA.defectos;
   const tot = totalesPorDefecto(rows);
   const idx = tot.map((v,i)=>({i:i,v:v})).filter(o=>o.v>0 && defs[o.i].resta).sort((a,b)=>b.v-a.v);
   if(!idx.length){
-    return '<div class="insight">En este período no se registró ningún defecto que descuente: las ' + n0(A.carga) +
-      ' prendas revisadas salieron todas como primeras.</div>';
+    return '<div class="insight">En ' + etiquetaPeriodo(k) + ' no se registró ningún defecto que descuente: las ' +
+      n0(A.carga) + ' prendas revisadas salieron todas como primeras.</div>';
   }
   const top3 = idx.slice(0,3);
   const conc = pct(top3.reduce((a,o)=>a+o.v,0), A.def);
   const nom = top3.map(o=>esc(defs[o.i].defecto)).join(', ');
   const siBaja = pct(A.pri + top3[0].v, A.carga);
-  return '<div class="insight">Los <b>' + top3.length + '</b> defectos más frecuentes (' + nom +
-    ') concentran el <b>' + n1(conc) + '%</b> de todas las prendas con defecto. Si <b>' +
-    esc(defs[top3[0].i].defecto) + '</b> (' + n0(top3[0].v) + ' prendas) se eliminara por completo, las primeras subirían de ' +
+  return '<div class="insight">En ' + etiquetaPeriodo(k) + ', los <b>' + top3.length +
+    '</b> defectos más frecuentes (' + nom + ') concentran el <b>' + n1(conc) +
+    '%</b> de todas las prendas con defecto. Si <b>' + esc(defs[top3[0].i].defecto) + '</b> (' +
+    n0(top3[0].v) + ' prendas) se eliminara por completo, las primeras subirían de ' +
     n1(A.pPri) + '% a <b>' + n1(siBaja) + '%</b>.</div>';
 }
 function htmlTabs(){
@@ -1566,13 +1770,13 @@ function htmlTabs(){
     '<button onclick="tab(4,this)">Detalle</button></div>' +
 
   '<div class="tabpane active"><div class="grid">' +
-    panel('col8','Evolución de las primeras','Barras = prendas revisadas. Línea = % de primeras, calculado como primeras ÷ prendas revisadas de cada período.','<div class="cwrap tall"><canvas id="chTend"></canvas></div>') +
-    panel('col4','Tiempo productivo','Horas entre el inicio y el final de cada turno, menos las que Margot marcó como improductivas.','<div id="bxHoras"></div>') +
+    panel('col8','Cómo se movió el período','Las tres líneas son porcentajes y se leen en el eje de la izquierda (0 a 100%). Las barras grises al fondo son el volumen de prendas revisadas y se leen en el eje de la derecha.','<div class="cwrap tall"><canvas id="chTend"></canvas></div>') +
+    panel('col4','Eficiencia y tiempo','Eficiencia = (prendas revisadas + re-inspeccionadas) × T. STD ÷ (horas productivas × 60).','<div id="bxEfi"></div>') +
   '</div></div>' +
 
   '<div class="tabpane"><div class="grid">' +
     panel('col8','Prendas con defecto por línea','% calculado como prendas con defecto ÷ prendas revisadas de esa línea.','<div class="cwrap"><canvas id="chLin"></canvas></div>') +
-    panel('col4','Orden por % de defecto','Sin meta definida: el orden es relativo entre líneas, no indica cumplimiento.','<ul class="rank" id="rkLin"></ul>') +
+    panel('col4','Orden por % de defecto','Sin meta definida: el color y el orden son relativos entre líneas, no indican cumplimiento.','<ul class="rank" id="rkLin"></ul>') +
     panel('col12','Detalle por línea','Los totales suman el total general del período.','<div class="tablescroll" id="tbLin"></div>') +
   '</div></div>' +
 
@@ -1583,7 +1787,7 @@ function htmlTabs(){
   '</div></div>' +
 
   '<div class="tabpane"><div class="grid">' +
-    panel('col8','Los defectos que más pesan','Solo los que descuentan. Barras = prendas afectadas. Línea = % acumulado sobre el total de prendas con defecto.','<div class="cwrap tall"><canvas id="chPar"></canvas></div>') +
+    panel('col8','Los defectos que más pesan','Solo los que descuentan. Barras = % de las prendas revisadas afectadas por ese defecto. Línea = % acumulado.','<div class="cwrap tall"><canvas id="chPar"></canvas></div>') +
     panel('col4','Peso de cada grupo','% sobre el total de prendas con defecto del período.','<div class="cwrap tall"><canvas id="chCat"></canvas></div>') +
     panel('col12','Todos los defectos','% calculado sobre las prendas revisadas del período. Re-inspección se registra pero no descuenta de las primeras.','<div id="bxSplit"></div><div class="tablescroll" id="tbDef"></div>') +
   '</div></div>' +
@@ -1593,14 +1797,14 @@ function htmlTabs(){
   '</div></div>' +
 
   '<details class="help"><summary>¿Cómo leo este tablero?</summary>' +
-  '<p><b>De dónde salen los números.</b> Cada fila es una inspección: una inspectora, una línea, un estilo y una carga de prendas. Lo que se marca en el formulario es cuántas prendas salieron con cada defecto.</p>' +
-  '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % de defecto = prendas con ese defecto ÷ prendas revisadas. Todos los porcentajes se calculan sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
-  '<p><b>Tiempo productivo.</b> Las horas trabajadas salen de la diferencia entre la hora de inicio y la hora final del turno. Las improductivas las escribe la inspectora (línea parada, falta de habilitado). Productivas = trabajadas − improductivas. Como el horario se repite en cada estilo del mismo turno, cada turno se cuenta una sola vez.</p>' +
-  '<p><b>Qué no descuenta.</b> Re-inspección (2da y 3era vuelta) se registra pero no resta de las primeras: no es una prenda distinta que se pierde, es una carga que hubo que volver a revisar. Sale marcada como “No” en la tabla de defectos.</p>' +
-  '<p><b>No hay meta definida.</b> Por eso no hay semáforo de colores ni se dice "en meta" o "fuera de meta": las comparaciones son contra el mes anterior. Cuando Ingeniería fije una meta de % de primeras, el tablero puede pintar el semáforo.</p>' +
-  '<p><b>Cuidado con el % por inspectora.</b> Un porcentaje alto de defectos no significa que la inspectora trabaje mal: significa que la prenda que le llegó tenía más fallas, o que ella revisa más fino que otra. Para juzgar personas haría falta comparar sobre el mismo estilo y la misma línea.</p>' +
-  '<p><b>Términos.</b> <b>Carga</b>: grupo de prendas que se revisa de una vez. <b>Primeras</b>: prendas conformes, listas para pasar. <b>Segundas</b>: prenda con falla que ya no se recupera como primera. <b>Compostura</b>: falla de costura que se arregla cosiendo de nuevo. <b>Zurcido</b>: falla de tela o puntada que se repara con aguja.</p>' +
-  '<p><b>Una advertencia de conteo.</b> El sistema asume que cada prenda se marca en un solo defecto. Si una prenda con mancha y puntada saltada se marcara en las dos filas, se descontaría dos veces y las primeras saldrían por debajo de lo real.</p>' +
+  '<p><b>Qué período estoy viendo.</b> Los botones Semanal, Mensual y Anual cambian el tipo de período; el desplegable de al lado elige cuál. Las semanas van de lunes a domingo con sus fechas reales.</p>' +
+  '<p><b>Las tarjetas son acumuladas.</b> Muestran el año corrido: del 1 de enero hasta el final del período elegido. La flecha compara ese acumulado contra el acumulado hasta el período anterior. Los gráficos y las tablas, en cambio, son solo del período elegido.</p>' +
+  '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = prendas con defecto ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ (horas productivas × 60). % Tiempo productivo = horas productivas ÷ horas trabajadas. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
+  '<p><b>Eficiencia.</b> El T. STD es el tiempo estándar en minutos que debería tomar inspeccionar una prenda de ese estilo. Las prendas re-inspeccionadas suman porque también consumieron tiempo. Si un registro no tiene T. STD, aporta cero minutos y la eficiencia baja: por eso el tablero avisa cuando hay estilos sin T. STD.</p>' +
+  '<p><b>SERVICIO.</b> El interruptor de arriba arranca apagado, así que todo lo que ves es solo de las líneas de producción. Al encenderlo se suma la prenda de servicio a todos los números.</p>' +
+  '<p><b>No hay meta definida.</b> Por eso no hay semáforo de cumplimiento. El degradado de color de las barras es solo orden visual: el más alto en color fuerte, los siguientes más claros.</p>' +
+  '<p><b>Cuidado con el % por inspectora.</b> Un porcentaje alto de defectos no significa que trabaje mal: significa que la prenda que le llegó tenía más fallas, o que revisa más fino. Para juzgar personas haría falta comparar sobre el mismo estilo y la misma línea.</p>' +
+  '<p><b>Términos.</b> <b>Carga</b>: grupo de prendas que se revisa de una vez. <b>Primeras</b>: prendas conformes. <b>Segundas</b>: prenda con falla que ya no se recupera como primera. <b>Compostura</b>: falla de costura que se arregla cosiendo. <b>Zurcido</b>: falla de tela o puntada que se repara con aguja. <b>Limpieza</b>: hilos sueltos o sin cortar. <b>Re-inspección</b>: carga que hubo que volver a revisar.</p>' +
   '</details>';
 }
 function panel(col,titulo,sub,cuerpo){
@@ -1612,18 +1816,14 @@ function tab(i,btn){
   btn.classList.add('active');
   document.querySelectorAll('.tabpane').forEach((p,k)=>p.classList.toggle('active', k===i));
 }
-function serieHistorica(){
-  const L = document.getElementById('fLinea').value;
-  const I = document.getElementById('fIns').value;
-  const m = {};
-  DATA.filas.forEach(f=>{
-    if(L && f[F_LIN] !== L) return;
-    if(I && f[F_INS] !== I) return;
-    const k = f[F_FEC].slice(0,7);
-    if(!m[k]) m[k] = {c:0,d:0,p:0,n:0};
-    m[k].c += f[F_CAR]; m[k].d += f[F_DEF]; m[k].p += f[F_PRI]; m[k].n++;
+
+/* ---------------- sparklines por período ---------------- */
+function seriePeriodos(nMax){
+  const claves = clavesPeriodo().slice(-nMax);
+  return claves.map(k=>{
+    const r = rangoPeriodo(k);
+    return met(filtrarRango(r.ini, r.fin));
   });
-  return Object.keys(m).sort().slice(-8).map(k=>({k:k, c:m[k].c, d:m[k].d, p:m[k].p, n:m[k].n}));
 }
 function sparkline(id, valores){
   if(!window.Chart) return;
@@ -1640,36 +1840,80 @@ function sparkline(id, valores){
   });
 }
 function pintarSparklines(){
-  const h = serieHistorica();
-  sparkline('spkCarga', h.map(o=>o.c));
-  sparkline('spkPri', h.map(o=>pct(o.p,o.c)));
-  sparkline('spkDef', h.map(o=>o.d));
-  sparkline('spkN', h.map(o=>o.n));
+  const s = seriePeriodos(8);
+  sparkline('spkPri',  s.map(m=>m.pPri));
+  sparkline('spkDef',  s.map(m=>m.pDef));
+  sparkline('spkEfi',  s.map(m=>m.pEfi));
+  sparkline('spkProd', s.map(m=>m.pProd));
 }
+
+/* ---------------- gráficos ---------------- */
 function pintarTendencia(rows){
   if(!window.Chart) return;
   const m = {};
   rows.forEach(f=>{
-    const k = claveGran(f[F_FEC]);
-    if(!m[k]) m[k] = {c:0,d:0,p:0};
-    m[k].c += f[F_CAR]; m[k].d += f[F_DEF]; m[k].p += f[F_PRI];
+    const k = claveGrafico(f[F_FEC]);
+    if(!m[k]) m[k] = [];
+    m[k].push(f);
   });
   const ks = Object.keys(m).sort();
+  const serie = ks.map(k=>met(m[k]));
   charts.tend = new Chart(document.getElementById('chTend'), {
-    data:{labels:ks.map(etiquetaGran), datasets:[
-      {type:'bar', label:'Prendas revisadas', data:ks.map(k=>m[k].c),
-       backgroundColor:'#4E6B78', borderRadius:4, order:2, yAxisID:'y'},
-      {type:'line', label:'% Primeras', data:ks.map(k=>+pct(m[k].p,m[k].c).toFixed(1)),
-       borderColor:'#0F7A5A', backgroundColor:'#0F7A5A', borderWidth:2.4, tension:.3,
-       pointRadius:3, order:1, yAxisID:'y1'}
+    data:{labels:ks.map(etiquetaGrafico), datasets:[
+      {type:'bar', label:'Prendas revisadas', data:serie.map(x=>x.carga),
+       backgroundColor:'rgba(220,229,226,.85)', borderRadius:4, order:4, yAxisID:'y1'},
+      {type:'line', label:'% Primeras', data:serie.map(x=>+x.pPri.toFixed(1)),
+       borderColor:'#0F7A5A', backgroundColor:'#0F7A5A', borderWidth:2.6, tension:.3,
+       pointRadius:3, order:1, yAxisID:'y'},
+      {type:'line', label:'% Eficiencia', data:serie.map(x=>+x.pEfi.toFixed(1)),
+       borderColor:'#B45309', backgroundColor:'#B45309', borderWidth:2.2, tension:.3,
+       pointRadius:3, borderDash:[6,3], order:2, yAxisID:'y'},
+      {type:'line', label:'% Con defecto', data:serie.map(x=>+x.pDef.toFixed(1)),
+       borderColor:'#DC2626', backgroundColor:'#DC2626', borderWidth:2, tension:.3,
+       pointRadius:2.5, order:3, yAxisID:'y'}
     ]},
     options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
-      plugins:{legend:{position:'bottom'}},
-      scales:{y:{beginAtZero:true, title:{display:true,text:'Prendas'}, grid:{color:'#F1F6F4'}},
-        y1:{position:'right', beginAtZero:true, max:100, grid:{display:false},
-            title:{display:true,text:'% primeras'}, ticks:{callback:v=>v+'%'}},
-        x:{grid:{display:false}}}}
+      plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14}},
+        tooltip:{callbacks:{label:c=> c.dataset.yAxisID === 'y'
+          ? c.dataset.label + ': ' + n1(c.raw) + '%'
+          : c.dataset.label + ': ' + n0(c.raw)}}},
+      scales:{
+        y:{position:'left', beginAtZero:true, max:100, grid:{color:'#F1F6F4'},
+           title:{display:true,text:'Porcentaje'}, ticks:{callback:v=>v+'%', stepSize:20}},
+        y1:{position:'right', beginAtZero:true, grid:{display:false},
+            title:{display:true,text:'Prendas revisadas'}},
+        x:{grid:{display:false}, ticks:{maxRotation:0, autoSkip:true, maxTicksLimit:14}}}}
   });
+}
+function pintarEficiencia(mCur, mAcum){
+  const el = document.getElementById('bxEfi');
+  if(!el) return;
+  if(!mCur.hProd){
+    el.innerHTML = '<div class="nota">En este período no se registraron horas de inicio y final, ' +
+      'así que no se puede calcular ni el tiempo productivo ni la eficiencia. El campo es opcional en el formulario.</div>';
+    return;
+  }
+  const minDisp = mCur.hProd * 60;
+  el.innerHTML =
+    '<div class="split3">' +
+      '<div class="mini-kpi g"><div class="l">Eficiencia</div><div class="v">' + n1(mCur.pEfi) + '%</div>' +
+      '<div class="s">del período</div></div>' +
+      '<div class="mini-kpi b"><div class="l">Horas trabajadas</div><div class="v">' + nh(mCur.hTot) + '</div>' +
+      '<div class="s">inicio a fin de turno</div></div>' +
+      '<div class="mini-kpi"><div class="l">Improductivas</div><div class="v">' + nh(mCur.hImp) + '</div>' +
+      '<div class="s">' + n1(pct(mCur.hImp, mCur.hTot)) + '% del tiempo</div></div>' +
+    '</div>' +
+    '<table><tbody>' +
+      '<tr><td>Prendas revisadas</td><td class="num"><b>' + n0(mCur.carga) + '</b></td></tr>' +
+      '<tr><td>Prendas re-inspeccionadas</td><td class="num"><b>' + n0(mCur.rein) + '</b></td></tr>' +
+      '<tr><td>Minutos de trabajo que valían</td><td class="num"><b>' + n0(mCur.min) + '</b></td></tr>' +
+      '<tr><td>Minutos productivos disponibles</td><td class="num"><b>' + n0(minDisp) + '</b></td></tr>' +
+    '</tbody></table>' +
+    '<div class="nota">' + n0(mCur.min) + ' ÷ ' + n0(minDisp) + ' = <b>' + n1(mCur.pEfi) + '%</b>. ' +
+    (mCur.cobStd < 99.5
+      ? 'Solo el <b>' + n1(mCur.cobStd) + '%</b> de las prendas del período tiene T. STD registrado; las que no lo tienen aportan cero minutos y hunden el resultado.'
+      : 'Todas las prendas del período tienen T. STD registrado.') +
+    ' En el acumulado del año la eficiencia va en <b>' + n1(mAcum.pEfi) + '%</b>.</div>';
 }
 function pintarCategorias(rows){
   if(!window.Chart) return;
@@ -1678,88 +1922,72 @@ function pintarCategorias(rows){
   tot.forEach((v,i)=>{ if(v > 0 && defs[i].resta){ cats[defs[i].categoria] = (cats[defs[i].categoria]||0)+v; } });
   const ks = Object.keys(cats).sort((a,b)=>cats[b]-cats[a]);
   const el = document.getElementById('chCat');
+  if(!el) return;
   if(!ks.length){ el.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>'; return; }
   charts.cat = new Chart(el, {
     type:'doughnut',
     data:{labels:ks, datasets:[{data:ks.map(k=>cats[k]),
       backgroundColor:ks.map((k,i)=>ROT[i%ROT.length]), borderWidth:2, borderColor:'#fff'}]},
     options:{responsive:true, maintainAspectRatio:false, cutout:'58%',
-      plugins:{legend:{position:'bottom'}, tooltip:{callbacks:{label:c=>{
-        const t = c.dataset.data.reduce((a,b)=>a+b,0);
-        return c.label + ': ' + n0(c.raw) + ' prendas (' + n1(pct(c.raw,t)) + '%)';
-      }}}}}
+      plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:12}},
+        tooltip:{callbacks:{label:c=>{
+          const t = c.dataset.data.reduce((a,b)=>a+b,0);
+          return c.label + ': ' + n1(pct(c.raw,t)) + '% (' + n0(c.raw) + ' prendas)';
+        }}}}}
   });
 }
 function pintarGrupo(rows, campo, sufijo, etiqueta){
   const m = {};
   rows.forEach(f=>{
     const k = f[campo] || '(sin dato)';
-    if(!m[k]) m[k] = {c:0,d:0,p:0,n:0};
-    m[k].c += f[F_CAR]; m[k].d += f[F_DEF]; m[k].p += f[F_PRI]; m[k].n++;
+    if(!m[k]) m[k] = [];
+    m[k].push(f);
   });
-  const ks = Object.keys(m).sort((a,b)=> pct(m[b].d,m[b].c) - pct(m[a].d,m[a].c));
-  const maxp = Math.max(...ks.map(k=>pct(m[k].d,m[k].c)), 0.0001);
+  const ks = Object.keys(m).sort((a,b)=> met(m[b]).pDef - met(m[a]).pDef);
+  const M = {}; ks.forEach(k=>{ M[k] = met(m[k]); });
+  const maxp = Math.max(...ks.map(k=>M[k].pDef), 0.0001);
+  const colores = ks.map((k,i)=>degradado(i, ks.length, 'tierra'));
 
-  if(window.Chart) charts['g'+sufijo] = new Chart(document.getElementById(sufijo==='lin'?'chLin':'chIns'), {
-    data:{labels:ks, datasets:[
-      {type:'bar', label:'% con defecto', data:ks.map(k=>+pct(m[k].d,m[k].c).toFixed(1)),
-       backgroundColor:'#B45309', borderRadius:4, yAxisID:'y'},
-      {type:'bar', label:'Prendas revisadas', data:ks.map(k=>m[k].c),
-       backgroundColor:'#DCE5E2', borderRadius:4, yAxisID:'y1'}
-    ]},
-    options:{responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
-      scales:{y:{beginAtZero:true, title:{display:true,text:'% con defecto'},
-        grid:{color:'#F1F6F4'}, ticks:{callback:v=>v+'%'}},
-        y1:{position:'right', beginAtZero:true, grid:{display:false}, title:{display:true,text:'Prendas'}},
-        x:{grid:{display:false}}}}
-  });
+  const canvas = document.getElementById(sufijo==='lin'?'chLin':'chIns');
+  if(window.Chart && canvas){
+    charts['g'+sufijo] = new Chart(canvas, {
+      data:{labels:ks, datasets:[
+        {type:'bar', label:'% Con defecto', data:ks.map(k=>+M[k].pDef.toFixed(1)),
+         backgroundColor:colores, borderRadius:4, yAxisID:'y'},
+        {type:'line', label:'% Primeras', data:ks.map(k=>+M[k].pPri.toFixed(1)),
+         borderColor:'#0F7A5A', backgroundColor:'#0F7A5A', borderWidth:2.2,
+         pointRadius:4, tension:0, yAxisID:'y'}
+      ]},
+      options:{responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14}},
+          tooltip:{callbacks:{label:c=> c.dataset.label + ': ' + n1(c.raw) + '%'}}},
+        scales:{y:{beginAtZero:true, max:100, grid:{color:'#F1F6F4'},
+          title:{display:true,text:'Porcentaje'}, ticks:{callback:v=>v+'%', stepSize:20}},
+          x:{grid:{display:false}}}}
+    });
+  }
 
   document.getElementById(sufijo==='lin'?'rkLin':'rkIns').innerHTML = ks.map((k,i)=>{
-    const p = pct(m[k].d, m[k].c);
+    const p = M[k].pDef;
     return '<li><span class="n">' + (i+1) + '</span><span><span class="nm">' + esc(k) + '</span>' +
-      '<span class="sub"> · ' + n0(m[k].c) + ' prendas · ' + n0(m[k].n) + ' inspecciones</span>' +
-      '<span class="track"><span class="fill" data-w="' + (p/maxp*100).toFixed(1) + '%"></span></span></span>' +
-      '<span class="val">' + n1(p) + '%</span></li>';
+      '<span class="sub"> · ' + n0(M[k].carga) + ' prendas · ' + n0(M[k].n) + ' inspecciones</span>' +
+      '<span class="track"><span class="fill" data-w="' + (p/maxp*100).toFixed(1) + '%" ' +
+      'style="background:' + colores[i] + '"></span></span></span>' +
+      '<span class="val" style="color:' + colores[i] + '">' + n1(p) + '%</span></li>';
   }).join('');
 
-  const T = agg(rows);
+  const T = met(rows);
   document.getElementById(sufijo==='lin'?'tbLin':'tbIns').innerHTML =
     '<table><thead><tr><th>' + etiqueta.toUpperCase() + '</th><th class="num">Inspecciones</th>' +
-    '<th class="num">Prendas revisadas</th><th class="num">Con defecto</th>' +
-    '<th class="num">Primeras</th><th class="num">% Primeras</th></tr></thead><tbody>' +
-    ks.map(k=>'<tr><td><b>' + esc(k) + '</b></td><td class="num">' + n0(m[k].n) + '</td>' +
-      '<td class="num">' + n0(m[k].c) + '</td><td class="num">' + n0(m[k].d) + '</td>' +
-      '<td class="num">' + n0(m[k].p) + '</td><td class="num"><span class="pill ok">' +
-      n1(pct(m[k].p,m[k].c)) + '%</span></td></tr>').join('') +
+    '<th class="num">Prendas revisadas</th><th class="num">% Con defecto</th>' +
+    '<th class="num">% Primeras</th><th class="num">% Eficiencia</th></tr></thead><tbody>' +
+    ks.map(k=>'<tr><td><b>' + esc(k) + '</b></td><td class="num">' + n0(M[k].n) + '</td>' +
+      '<td class="num">' + n0(M[k].carga) + '</td><td class="num">' + n1(M[k].pDef) + '%</td>' +
+      '<td class="num"><span class="pill ok">' + n1(M[k].pPri) + '%</span></td>' +
+      '<td class="num">' + (M[k].hProd ? n1(M[k].pEfi)+'%' : '—') + '</td></tr>').join('') +
     '</tbody><tfoot><tr><td>TOTAL</td><td class="num">' + n0(T.n) + '</td><td class="num">' + n0(T.carga) +
-    '</td><td class="num">' + n0(T.def) + '</td><td class="num">' + n0(T.pri) + '</td><td class="num">' +
-    n1(T.pPri) + '%</td></tr></tfoot></table>';
-}
-function pintarHoras(rows){
-  const H = agregarHoras(rows);
-  const el = document.getElementById('bxHoras');
-  if(!el) return;
-  if(!H.tot){
-    el.innerHTML = '<div class="nota">En este período no se registraron horas de inicio y final, ' +
-      'así que no se puede calcular el tiempo trabajado. El campo es opcional en el formulario.</div>';
-    return;
-  }
-  const pProd = pct(H.prod, H.tot);
-  el.innerHTML =
-    '<div class="split">' +
-      '<div class="mini-kpi b"><div class="l">Horas trabajadas</div><div class="v">' + nh(H.tot) +
-      '</div><div class="s">entre inicio y final de turno</div></div>' +
-      '<div class="mini-kpi"><div class="l">Improductivas</div><div class="v">' + nh(H.imp) +
-      '</div><div class="s">' + n1(pct(H.imp,H.tot)) + '% del tiempo</div></div>' +
-    '</div>' +
-    '<ul class="rank"><li><span class="n">✓</span><span>' +
-      '<span class="nm">Horas productivas</span>' +
-      '<span class="sub"> · ' + n1(pProd) + '% de las ' + nh(H.tot) + ' horas trabajadas</span>' +
-      '<span class="track"><span class="fill" data-w="' + pProd.toFixed(1) + '%"></span></span></span>' +
-      '<span class="val">' + nh(H.prod) + '</span></li></ul>' +
-    '<div class="nota">Las horas de inicio y final se repiten en cada estilo del mismo turno, ' +
-    'así que <b>cada turno se cuenta una sola vez</b> (misma fecha, misma inspectora, mismo horario). ' +
-    'Si un turno quedó sin hora de inicio o de fin, no entra en este cálculo.</div>';
+    '</td><td class="num">' + n1(T.pDef) + '%</td><td class="num">' + n1(T.pPri) + '%</td>' +
+    '<td class="num">' + (T.hProd ? n1(T.pEfi)+'%' : '—') + '</td></tr></tfoot></table>';
 }
 function pintarDefectosDash(rows, A){
   const defs = DATA.defectos;
@@ -1768,28 +1996,34 @@ function pintarDefectosDash(rows, A){
   const sinResta = tot.map((v,i)=>({i:i,v:v})).filter(o=>o.v>0 && !defs[o.i].resta).sort((a,b)=>b.v-a.v);
   const elPar = document.getElementById('chPar');
 
-  if(!conResta.length){
-    elPar.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>';
-  }else if(!window.Chart){
-    elPar.parentNode.innerHTML = '<div class="nota">No se pudo cargar la librería de gráficos ' +
-      '(hace falta internet). Los números de la tabla de abajo sí están completos.</div>';
-  }else{
-    const top = conResta.slice(0,12);
-    let acum = 0;
-    const acumPct = top.map(o=>{ acum += o.v; return +pct(acum, A.def).toFixed(1); });
-    charts.par = new Chart(elPar, {
-      data:{labels:top.map(o=>defs[o.i].defecto), datasets:[
-        {type:'bar', label:'Prendas afectadas', data:top.map(o=>o.v),
-         backgroundColor:'#B45309', borderRadius:4, yAxisID:'y'},
-        {type:'line', label:'% acumulado', data:acumPct, borderColor:'#0F7A5A',
-         borderWidth:2.2, tension:.25, pointRadius:3, yAxisID:'y1'}
-      ]},
-      options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
-        plugins:{legend:{position:'bottom'}},
-        scales:{y:{beginAtZero:true, title:{display:true,text:'Prendas'}, grid:{color:'#F1F6F4'}},
-          y1:{position:'right', beginAtZero:true, max:100, grid:{display:false}, ticks:{callback:v=>v+'%'}},
-          x:{grid:{display:false}, ticks:{maxRotation:60, minRotation:30, font:{size:10}}}}}
-    });
+  if(elPar){
+    if(!conResta.length){
+      elPar.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>';
+    }else if(!window.Chart){
+      elPar.parentNode.innerHTML = '<div class="nota">No se pudo cargar la librería de gráficos ' +
+        '(hace falta internet). Los números de la tabla de abajo sí están completos.</div>';
+    }else{
+      const top = conResta.slice(0,12);
+      const colores = top.map((o,i)=>degradado(i, top.length, 'tierra'));
+      let acum = 0;
+      const acumPct = top.map(o=>{ acum += o.v; return +pct(acum, A.def).toFixed(1); });
+      charts.par = new Chart(elPar, {
+        data:{labels:top.map(o=>defs[o.i].defecto), datasets:[
+          {type:'bar', label:'% de lo revisado', data:top.map(o=>+pct(o.v, A.carga).toFixed(2)),
+           backgroundColor:colores, borderRadius:4, yAxisID:'y'},
+          {type:'line', label:'% acumulado del total de defectos', data:acumPct,
+           borderColor:'#0F7A5A', borderWidth:2.2, tension:.25, pointRadius:3, yAxisID:'y1'}
+        ]},
+        options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+          plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14}},
+            tooltip:{callbacks:{label:c=> c.dataset.label + ': ' + n1(c.raw) + '%'}}},
+          scales:{y:{beginAtZero:true, grid:{color:'#F1F6F4'},
+              title:{display:true,text:'% de lo revisado'}, ticks:{callback:v=>v+'%'}},
+            y1:{position:'right', beginAtZero:true, max:100, grid:{display:false},
+                title:{display:true,text:'% acumulado'}, ticks:{callback:v=>v+'%'}},
+            x:{grid:{display:false}, ticks:{maxRotation:60, minRotation:30, font:{size:10}}}}}
+      });
+    }
   }
 
   const todos = conResta.concat(sinResta);
@@ -1809,37 +2043,75 @@ function pintarDefectosDash(rows, A){
 
   const bx = document.getElementById('bxSplit');
   if(bx){
-    bx.innerHTML = A.noResta
+    bx.innerHTML = A.rein
       ? '<div class="split"><div class="mini-kpi"><div class="l">Descuentan de las primeras</div>' +
-        '<div class="v">' + n0(A.def) + '</div><div class="s">' + n1(A.pDef) + '% de lo revisado</div></div>' +
+        '<div class="v">' + n1(A.pDef) + '%</div><div class="s">' + n0(A.def) + ' prendas</div></div>' +
         '<div class="mini-kpi b"><div class="l">Re-inspección (no descuenta)</div>' +
-        '<div class="v">' + n0(A.noResta) + '</div><div class="s">' + n1(pct(A.noResta,A.carga)) +
-        '% de lo revisado</div></div></div>'
+        '<div class="v">' + n1(pct(A.rein,A.carga)) + '%</div><div class="s">' + n0(A.rein) + ' prendas</div></div></div>'
       : '';
   }
 }
 function pintarDetalleDash(rows){
   const ord = rows.slice().sort((a,b)=> a[F_FEC] < b[F_FEC] ? 1 : -1);
-  const T = agg(rows);
+  const T = met(rows);
   document.getElementById('tbDetDash').innerHTML =
     '<table><thead><tr><th>Fecha</th><th>Inspectora</th><th>Línea</th><th>Estilo</th>' +
     '<th class="num">Revisadas</th><th class="num">Con defecto</th>' +
-    '<th class="num">Primeras</th><th class="num">% Primeras</th><th>Defectos</th>' +
-    '<th>Observación</th></tr></thead><tbody>' +
+    '<th class="num">Primeras</th><th class="num">% Primeras</th><th class="num">T. STD</th>' +
+    '<th>Defectos</th><th>Observación</th></tr></thead><tbody>' +
     ord.slice(0,400).map(f=>{
       const det = detTexto(f);
       return '<tr><td>' + fechaCorta(f[F_FEC]) + '</td><td>' + esc(f[F_INS]) + '</td><td>' + esc(f[F_LIN]) +
         '</td><td><b>' + esc(f[F_EST]) + '</b></td><td class="num">' + n0(f[F_CAR]) + '</td>' +
         '<td class="num">' + n0(f[F_DEF]) + '</td>' +
         '<td class="num">' + n0(f[F_PRI]) + '</td><td class="num">' + n1(pct(f[F_PRI],f[F_CAR])) + '%</td>' +
+        '<td class="num">' + (f[F_STD]?nh(f[F_STD]):'—') + '</td>' +
         '<td style="font-size:11px;color:#5F726C">' + det + '</td>' +
         '<td class="mini obscell">' + (f[F_OBS]?esc(f[F_OBS]):'—') + '</td></tr>';
     }).join('') +
     '</tbody><tfoot><tr><td colspan="4">TOTAL ' + n0(T.n) + ' inspecciones' +
     (ord.length > 400 ? ' (se muestran las 400 más recientes)' : '') + '</td>' +
     '<td class="num">' + n0(T.carga) + '</td><td class="num">' + n0(T.def) + '</td>' +
-    '<td class="num">' + n0(T.pri) + '</td>' +
-    '<td class="num">' + n1(T.pPri) + '%</td><td colspan="2"></td></tr></tfoot></table>';
+    '<td class="num">' + n0(T.pri) + '</td><td class="num">' + n1(T.pPri) + '%</td>' +
+    '<td colspan="3"></td></tr></tfoot></table>';
+}
+
+/* ---------------- portada del reporte impreso ---------------- */
+function pintarPortada(k, mCur, mAcum, mPrev, anio, R){
+  const tipo = GRAN === 'sem' ? 'Reporte semanal' : (GRAN === 'anio' ? 'Reporte anual' : 'Reporte mensual');
+  const cmp = mPrev
+    ? 'Frente al período anterior, las primeras pasaron de ' + n1(mPrev.pPri) + '% a ' + n1(mCur.pPri) + '%.'
+    : 'No hay período anterior con datos para comparar.';
+  const filtros = [];
+  const L = document.getElementById('fLinea').value;
+  const I = document.getElementById('fIns').value;
+  if(L) filtros.push('línea ' + L);
+  if(I) filtros.push('inspectora ' + I);
+  filtros.push(INC_SERVICIO ? 'incluye SERVICIO' : 'solo líneas de producción (SERVICIO excluido)');
+
+  document.getElementById('printHead').innerHTML =
+    '<div class="rtop">' +
+      '<img class="rlogo" src="data:image/png;base64,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" alt="LIVES">' +
+      '<div><div class="rt">' + tipo + ' — ' + etiquetaPeriodo(k) + '</div>' +
+      '<div class="rs">Inspección Final · Área de Costura · Dpto. Ingeniería · ' +
+      'del ' + fechaLarga(R.ini) + ' al ' + fechaLarga(R.fin) + ' · ' + filtros.join(' · ') + '</div></div>' +
+    '</div>' +
+    '<div class="rexp"><b>Resumen del período.</b> Se revisaron ' + n0(mCur.carga) + ' prendas en ' +
+      n0(mCur.n) + ' inspecciones. Salieron primeras ' + n0(mCur.pri) + ' prendas, el ' + n1(mCur.pPri) +
+      '% de lo revisado. ' + cmp +
+      (mCur.hProd ? ' Se trabajaron ' + nh(mCur.hTot) + ' horas, de las cuales ' + nh(mCur.hProd) +
+        ' fueron productivas, con una eficiencia de ' + n1(mCur.pEfi) + '%.' : '') +
+      '<br><b>Acumulado del año.</b> Del 1 de enero al ' + fechaLarga(R.fin) + ': ' + n1(mAcum.pPri) +
+      '% de primeras sobre ' + n0(mAcum.carga) + ' prendas revisadas, ' + n1(mAcum.pDef) +
+      '% con defecto y ' + n1(mAcum.pEfi) + '% de eficiencia.' +
+      '<br><b>Cómo se calcula.</b> Primeras = carga − defectos que descuentan. Eficiencia = ' +
+      '(prendas revisadas + re-inspeccionadas) × T. STD ÷ (horas productivas × 60). Todos los porcentajes ' +
+      'se obtienen sumando numeradores y denominadores del período, nunca promediando porcentajes diarios. ' +
+      'No hay meta definida: las comparaciones son contra el período anterior.</div>';
+}
+function imprimirReporte(){
+  if(!DATA){ toast('Espera a que carguen los datos', true); return; }
+  window.print();
 }
 
 /* ---------------- exportar copia estática ---------------- */
@@ -1870,8 +2142,6 @@ async function exportar(){
 }
 
 /* ---------------- eventos ---------------- */
-/* Rueda del mouse encima de un campo numérico: sube o baja sin hacer clic
-   y sin necesidad de haberlo seleccionado antes. */
 document.addEventListener('wheel', e=>{
   const t = e.target;
   if(!t || t.tagName !== 'INPUT' || t.type !== 'number' || t.disabled) return;
@@ -1919,16 +2189,25 @@ document.addEventListener('keydown', e=>{
     else if(!SNAP && document.getElementById('overlay').classList.contains('on')) cerrarTablero();
   }
 });
+document.getElementById('estilo').addEventListener('change', buscarSTD);
+document.getElementById('estilo').addEventListener('blur', buscarSTD);
 ['rDesde','rHasta','rIns','rLin'].forEach(id=>{
   document.getElementById(id).addEventListener('change', pintarRegistros);
 });
-['fMes','fLinea','fIns'].forEach(id=>{
-  document.getElementById(id).addEventListener('change', render);
+['fPeriodo','fLinea','fIns'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', ()=>{
+    if(id !== 'fPeriodo') prepararFiltros();
+    render();
+  });
 });
 document.querySelectorAll('#segGran button').forEach(b=>{
   b.addEventListener('click', ()=>{
     document.querySelectorAll('#segGran button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active'); GRAN = b.dataset.g; render();
+    b.classList.add('active');
+    GRAN = b.dataset.g;
+    document.getElementById('fPeriodo').value = '';
+    prepararFiltros();
+    render();
   });
 });
 iniciar();
