@@ -230,9 +230,11 @@ border-radius:50%;background:#fff;box-shadow:var(--sh);transition:.2s;}
 .sw.on{color:var(--sage-dark);}
 
 .acumbar{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
-padding:10px 16px;margin-bottom:12px;font-size:13px;color:var(--stone);
+padding:12px 16px;margin-bottom:12px;font-size:12.5px;color:var(--stone);
 border-left:4px solid var(--slate);}
 .acumbar b{color:#333;}
+.acumbar .at{font-size:16px;font-weight:700;color:var(--petrol);margin-bottom:3px;}
+.acumbar .at span{color:var(--sage-dark);}
 
 .verdict{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:var(--r);
 box-shadow:var(--sh);padding:16px 20px;margin-bottom:14px;border-left:6px solid var(--rose);}
@@ -1668,9 +1670,10 @@ async function render(){
   const mPrev = PREVrows.length ? met(PREVrows) : null;
   const mAcumPrev = ACUMprev.length ? met(ACUMprev) : null;
 
+  const ultimaFecha = ACUM.reduce((mx,f)=> f[F_FEC] > mx ? f[F_FEC] : mx, ACUM[0][F_FEC]);
   cont.innerHTML =
     htmlVerdicto(mCur, mPrev, k, kPrev) +
-    htmlAcumbar(mAcum, anio, R.fin) +
+    htmlAcumbar(mAcum, anio, ultimaFecha) +
     htmlKpis(mAcum, mAcumPrev) +
     htmlInsight(CUR, mCur, k) +
     htmlTabs();
@@ -1683,7 +1686,7 @@ async function render(){
   pintarGrupo(CUR, F_INS, 'ins', 'inspectora');
   pintarDefectosDash(CUR, mCur);
   pintarDetalleDash(CUR);
-  pintarPortada(k, mCur, mAcum, mPrev, anio, R);
+  pintarPortada(k, mCur, mAcum, mPrev, anio, R, ultimaFecha);
 
   setTimeout(()=>{ document.querySelectorAll('.rank .fill').forEach(f=>{ f.style.width = f.dataset.w; }); }, 120);
 
@@ -1691,11 +1694,13 @@ async function render(){
     dAvisar('Solo están cargados los datos del mes actual y el anterior, así que el acumulado del año puede quedar corto. Pulsa <b>Actualizar</b> para traer todo el histórico.');
   }
 }
-function htmlAcumbar(m, anio, hasta){
-  return '<div class="acumbar">Las cuatro tarjetas de abajo son el <b>acumulado del año</b>: ' +
-    'del 1 de enero al <b>' + fechaLarga(hasta) + '</b>. En ese período se revisaron <b>' +
+function htmlAcumbar(m, anio, ultima){
+  return '<div class="acumbar">' +
+    '<div class="at">Acumulado al <span>' + fechaLarga(ultima) + '</span></div>' +
+    'Las cuatro tarjetas de abajo suman desde el 1 de enero de ' + anio +
+    ' hasta la última inspección digitada dentro del período elegido. En ese lapso se revisaron <b>' +
     n0(m.carga) + '</b> prendas en <b>' + n0(m.n) + '</b> inspecciones' +
-    (m.hTot ? ', con <b>' + nh(m.hTot) + '</b> horas trabajadas' : '') + '.' +
+    (m.hTot ? ', con <b>' + nh(m.hTot) + '</b> horas de turno' : '') + '.' +
     (m.cobStd < 99.5 ? ' <b>Ojo:</b> solo el ' + n1(m.cobStd) + '% de esas prendas tiene T. STD registrado, así que la eficiencia sale más baja de lo real.' : '') +
     '</div>';
 }
@@ -1812,6 +1817,7 @@ function htmlTabs(){
   '<p><b>Eficiencia.</b> El T. STD es el tiempo estándar en minutos que debería tomar inspeccionar una prenda de ese estilo. Las prendas re-inspeccionadas suman porque se revisaron dos veces; las primeras especiales no suman aparte, porque ya venían dentro de la carga. Del tiempo disponible se descuentan las horas improductivas y <b>45 minutos de refrigerio</b> por cada turno de 4 horas o más. Si un registro no tiene T. STD aporta cero minutos y la eficiencia baja: por eso el tablero avisa cuando hay estilos sin T. STD.</p>' +
   '<p><b>Lo que no descuenta.</b> <b>Primeras especiales</b> no resta: la prenda sale igual como primera, así que ya está contada en el % de primeras y no aparece en los gráficos de defectos. <b>Re-inspección</b> tampoco resta prendas, pero sí suma tiempo trabajado.</p>' +
   '<p><b>SERVICIO.</b> El interruptor de arriba arranca apagado, así que todo lo que ves es solo de las líneas de producción. Al encenderlo se suma la prenda de servicio a todos los números.</p>' +
+  '<p><b>Los números sobre los gráficos.</b> Cada barra y cada punto lleva su porcentaje escrito encima, para no tener que estimarlo a ojo ni pasar el cursor. En la línea de tendencia, si hay muchos días, se escriben salteados para que no se encimen.</p>' +
   '<p><b>No hay meta definida.</b> Por eso no hay semáforo de cumplimiento. El degradado de color de las barras es solo orden visual: el más alto en color fuerte, los siguientes más claros.</p>' +
   '<p><b>Cuidado con el % por inspectora.</b> Un porcentaje alto de defectos no significa que trabaje mal: significa que la prenda que le llegó tenía más fallas, o que revisa más fino. Para juzgar personas haría falta comparar sobre el mismo estilo y la misma línea.</p>' +
   '<p><b>Términos.</b> <b>Carga</b>: grupo de prendas que se revisa de una vez. <b>Primeras</b>: prendas conformes. <b>Segundas</b>: prenda con falla que ya no se recupera como primera. <b>Compostura</b>: falla de costura que se arregla cosiendo. <b>Zurcido</b>: falla de tela o puntada que se repara con aguja. <b>Limpieza</b>: hilos sueltos o sin cortar. <b>Re-inspección</b>: carga que hubo que volver a revisar.</p>' +
@@ -1857,6 +1863,62 @@ function pintarSparklines(){
   sparkline('spkProd', s.map(m=>m.pProd));
 }
 
+/* ---------------- etiquetas de valor sobre los gráficos ----------------
+   Dibuja el número encima de cada barra o punto, sin librerías extra.     */
+function pluginEtiquetas(op){
+  const o = op || {};
+  return {
+    id: 'etiquetasLives',
+    afterDatasetsDraw(chart){
+      const ctx = chart.ctx;
+      ctx.save();
+      ctx.font = '700 10.5px Calibri, Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      chart.data.datasets.forEach((ds, i)=>{
+        if(o.datasets && o.datasets.indexOf(i) < 0) return;
+        const meta = chart.getDatasetMeta(i);
+        if(!meta || meta.hidden) return;
+        const paso = o.paso || 1;
+        meta.data.forEach((el, j)=>{
+          if(j % paso !== 0 && j !== meta.data.length - 1) return;
+          const v = ds.data[j];
+          if(v === null || v === undefined) return;
+          if(o.minimo !== undefined && v < o.minimo) return;
+          const txt = (o.entero ? n0(v) : n1(v)) + (o.sufijo === undefined ? '%' : o.sufijo);
+          ctx.fillStyle = o.color || '#3F5A52';
+          ctx.fillText(txt, el.x, Math.max(11, el.y - 5));
+        });
+      });
+      ctx.restore();
+    }
+  };
+}
+/* Porcentaje dentro de cada porción del gráfico de anillo. */
+function pluginEtiquetasAnillo(){
+  return {
+    id: 'etiquetasAnillo',
+    afterDatasetsDraw(chart){
+      const ctx = chart.ctx;
+      const ds = chart.data.datasets[0];
+      const total = ds.data.reduce((a,b)=>a+b, 0);
+      if(!total) return;
+      ctx.save();
+      ctx.font = '700 11.5px Calibri, Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#fff';
+      chart.getDatasetMeta(0).data.forEach((el, j)=>{
+        const p = pct(ds.data[j], total);
+        if(p < 6) return;
+        const c = el.getCenterPoint();
+        ctx.fillText(n1(p) + '%', c.x, c.y);
+      });
+      ctx.restore();
+    }
+  };
+}
+
 /* ---------------- gráficos ---------------- */
 function pintarTendencia(rows){
   if(!window.Chart) return;
@@ -1868,7 +1930,9 @@ function pintarTendencia(rows){
   });
   const ks = Object.keys(m).sort();
   const serie = ks.map(k=>met(m[k]));
+  const pasoT = Math.max(1, Math.ceil(ks.length/10));
   charts.tend = new Chart(document.getElementById('chTend'), {
+    plugins:[pluginEtiquetas({datasets:[1,2], paso:pasoT})],
     data:{labels:ks.map(etiquetaGrafico), datasets:[
       {type:'bar', label:'Prendas revisadas', data:serie.map(x=>x.carga),
        backgroundColor:'rgba(220,229,226,.85)', borderRadius:4, order:4, yAxisID:'y1'},
@@ -1888,8 +1952,9 @@ function pintarTendencia(rows){
           ? c.dataset.label + ': ' + n1(c.raw) + '%'
           : c.dataset.label + ': ' + n0(c.raw)}}},
       scales:{
-        y:{position:'left', beginAtZero:true, max:100, grid:{color:'#F1F6F4'},
-           title:{display:true,text:'Porcentaje'}, ticks:{callback:v=>v+'%', stepSize:20}},
+        y:{position:'left', beginAtZero:true, max:108, grid:{color:'#F1F6F4'},
+           title:{display:true,text:'Porcentaje'},
+           ticks:{callback:v=> v > 100 ? '' : v+'%', stepSize:20}},
         y1:{position:'right', beginAtZero:true, grid:{display:false},
             title:{display:true,text:'Prendas revisadas'}},
         x:{grid:{display:false}, ticks:{maxRotation:0, autoSkip:true, maxTicksLimit:14}}}}
@@ -1939,6 +2004,7 @@ function pintarCategorias(rows){
   if(!ks.length){ el.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>'; return; }
   charts.cat = new Chart(el, {
     type:'doughnut',
+    plugins:[pluginEtiquetasAnillo()],
     data:{labels:ks, datasets:[{data:ks.map(k=>cats[k]),
       backgroundColor:ks.map((k,i)=>ROT[i%ROT.length]), borderWidth:2, borderColor:'#fff'}]},
     options:{responsive:true, maintainAspectRatio:false, cutout:'58%',
@@ -1964,6 +2030,7 @@ function pintarGrupo(rows, campo, sufijo, etiqueta){
   const canvas = document.getElementById(sufijo==='lin'?'chLin':'chIns');
   if(window.Chart && canvas){
     charts['g'+sufijo] = new Chart(canvas, {
+      plugins:[pluginEtiquetas({datasets:[0,1]})],
       data:{labels:ks, datasets:[
         {type:'bar', label:'% Con defecto', data:ks.map(k=>+M[k].pDef.toFixed(1)),
          backgroundColor:colores, borderRadius:4, yAxisID:'y'},
@@ -1974,8 +2041,9 @@ function pintarGrupo(rows, campo, sufijo, etiqueta){
       options:{responsive:true, maintainAspectRatio:false,
         plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14}},
           tooltip:{callbacks:{label:c=> c.dataset.label + ': ' + n1(c.raw) + '%'}}},
-        scales:{y:{beginAtZero:true, max:100, grid:{color:'#F1F6F4'},
-          title:{display:true,text:'Porcentaje'}, ticks:{callback:v=>v+'%', stepSize:20}},
+        scales:{y:{beginAtZero:true, max:108, grid:{color:'#F1F6F4'},
+          title:{display:true,text:'Porcentaje'},
+          ticks:{callback:v=> v > 100 ? '' : v+'%', stepSize:20}},
           x:{grid:{display:false}}}}
     });
   }
@@ -2021,6 +2089,7 @@ function pintarDefectosDash(rows, A){
       let acum = 0;
       const acumPct = top.map(o=>{ acum += o.v; return +pct(acum, A.def).toFixed(1); });
       charts.par = new Chart(elPar, {
+        plugins:[pluginEtiquetas({datasets:[0], minimo:0.05})],
         data:{labels:top.map(o=>defs[o.i].defecto), datasets:[
           {type:'bar', label:'% de lo revisado', data:top.map(o=>+pct(o.v, A.carga).toFixed(2)),
            backgroundColor:colores, borderRadius:4, yAxisID:'y'},
@@ -2030,7 +2099,7 @@ function pintarDefectosDash(rows, A){
         options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
           plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14}},
             tooltip:{callbacks:{label:c=> c.dataset.label + ': ' + n1(c.raw) + '%'}}},
-          scales:{y:{beginAtZero:true, grid:{color:'#F1F6F4'},
+          scales:{y:{beginAtZero:true, grace:'14%', grid:{color:'#F1F6F4'},
               title:{display:true,text:'% de lo revisado'}, ticks:{callback:v=>v+'%'}},
             y1:{position:'right', beginAtZero:true, max:100, grid:{display:false},
                 title:{display:true,text:'% acumulado'}, ticks:{callback:v=>v+'%'}},
@@ -2097,7 +2166,7 @@ function pintarDetalleDash(rows){
 }
 
 /* ---------------- portada del reporte impreso ---------------- */
-function pintarPortada(k, mCur, mAcum, mPrev, anio, R){
+function pintarPortada(k, mCur, mAcum, mPrev, anio, R, ultima){
   const tipo = GRAN === 'sem' ? 'Reporte semanal' : (GRAN === 'anio' ? 'Reporte anual' : 'Reporte mensual');
   const cmp = mPrev
     ? 'Frente al período anterior, las primeras pasaron de ' + n1(mPrev.pPri) + '% a ' + n1(mCur.pPri) + '%.'
@@ -2121,7 +2190,7 @@ function pintarPortada(k, mCur, mAcum, mPrev, anio, R){
       '% de lo revisado. ' + cmp +
       (mCur.hProd ? ' Se trabajaron ' + nh(mCur.hTot) + ' horas, de las cuales ' + nh(mCur.hProd) +
         ' fueron productivas, con una eficiencia de ' + n1(mCur.pEfi) + '%.' : '') +
-      '<br><b>Acumulado del año.</b> Del 1 de enero al ' + fechaLarga(R.fin) + ': ' + n1(mAcum.pPri) +
+      '<br><b>Acumulado al ' + fechaLarga(ultima) + '.</b> Desde el 1 de enero de ' + anio + ': ' + n1(mAcum.pPri) +
       '% de primeras sobre ' + n0(mAcum.carga) + ' prendas revisadas, ' + n1(mAcum.pDef) +
       '% con defecto y ' + n1(mAcum.pEfi) + '% de eficiencia.' +
       '<br><b>Cómo se calcula.</b> Primeras = carga − defectos que descuentan; primeras especiales no ' +
