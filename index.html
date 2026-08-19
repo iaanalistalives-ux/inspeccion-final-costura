@@ -273,8 +273,8 @@ color:var(--stone);padding:10px 16px;cursor:pointer;border-bottom:3px solid tran
 .col6{grid-column:span 6;} .col4{grid-column:span 4;}
 @media(max-width:1100px){.col8,.col6,.col4{grid-column:span 12;}}
 
-.cwrap{position:relative;width:100%;height:clamp(230px,28vh,340px);}
-.cwrap.tall{height:clamp(280px,36vh,420px);}
+.cwrap{position:relative;width:100%;height:clamp(290px,32vh,390px);}
+.cwrap.tall{height:clamp(290px,32vh,390px);}
 .cwrap canvas{position:absolute;inset:0;}
 
 .rank{list-style:none;margin:0;padding:0;}
@@ -457,7 +457,7 @@ body.snap .bar{position:sticky;top:0;}
       <div>
         <label>Horas improductivas <span class="mini">(opcional)</span></label>
         <input type="number" id="horasImp" min="0" step="0.5" placeholder="0">
-        <div class="hint" id="hintHoras">Horas trabajadas: <b>—</b></div>
+        <div class="hint" id="hintHoras">Horas de turno: <b>—</b></div>
       </div>
     </div>
   </div>
@@ -576,8 +576,8 @@ body.snap .bar{position:sticky;top:0;}
     <p><b>Primeras = Carga − Defectos que restan.</b> Descuentan compostura, manchas, zurcido, limpieza y segundas. <b>No descuentan</b> primeras especiales ni re-inspección: la primera especial sale igual como prenda buena, y la re-inspección es una carga que hubo que volver a revisar, no una prenda perdida.</p>
     <p><b>T. STD.</b> Es el tiempo estándar en minutos que toma inspeccionar una prenda de ese estilo. Aparece solo cuando el estilo ya lo tiene registrado. Si el estilo es nuevo o si esa prenda toma más o menos de lo normal, se escribe aquí y ese valor queda guardado solo en ese registro. Para que quede como el tiempo oficial del estilo hay que pulsar “Guardar este T. STD para el estilo”.</p>
     <p><b>Re-inspección suelta.</b> A veces se revisan por segunda vuelta prendas que llegan de otro lado y que no son de una carga propia. En ese caso se deja la carga vacía y solo se pone la cantidad en RE-INSPECC. Ese registro no entra en el % de primeras ni en el de defectos, porque no hubo carga que juzgar, pero sí suma tiempo trabajado para la eficiencia, que es lo correcto: ese trabajo se hizo.</p>
-    <p><b>Eficiencia.</b> Se calcula en el tablero como (prendas revisadas + prendas re-inspeccionadas) × T. STD ÷ minutos productivos. Los minutos productivos son las horas del turno menos las horas improductivas menos 45 minutos de refrigerio si el turno duró 4 horas o más. Es decir: los minutos de trabajo que valía lo hecho, sobre los minutos que realmente se tuvo para trabajar.</p>
-    <p><b>Horas improductivas.</b> Con la hora de inicio y la hora final el sistema calcula cuántas horas duró el turno. Ahí se escribe cuántas de esas horas no se pudo trabajar (línea parada, falta de habilitado, corte de energía). El resto son horas productivas. Como las horas son las mismas para todos los estilos del turno, en los totales <b>cada turno se cuenta una sola vez</b>, no una vez por estilo.</p>
+    <p><b>Eficiencia.</b> Se calcula en el tablero como (prendas revisadas + prendas re-inspeccionadas) × T. STD ÷ minutos asistidos. Los minutos asistidos son las horas del turno menos las horas improductivas menos 45 minutos de refrigerio si el turno duró 4 horas o más. Es decir: los minutos producidos por lo hecho, sobre los minutos que realmente se tuvo para trabajar.</p>
+    <p><b>Horas improductivas.</b> Con la hora de inicio y la hora final el sistema calcula cuántas horas duró el turno. Ahí se escribe cuántas de esas horas no se pudo trabajar (línea parada, falta de habilitado, corte de energía). El resto son horas asistidas. Como las horas son las mismas para todos los estilos del turno, en los totales <b>cada turno se cuenta una sola vez</b>, no una vez por estilo.</p>
     <p><b>Servicio.</b> En la lista de líneas, debajo de las líneas existentes, está la opción SERVICIO, para la prenda que no viene de una línea interna. En el tablero se puede incluir o excluir con un interruptor.</p>
     <p><b>Observaciones.</b> Texto libre por inspección, hasta 500 caracteres. Sirve para explicar lo que los números no dicen.</p>
     <p><b>Regla de conteo:</b> cada prenda se marca en un solo defecto, el principal. Si una prenda con mancha y puntada saltada se marca en las dos filas, esa prenda se descuenta dos veces y las primeras quedan por debajo de lo real.</p>
@@ -654,7 +654,7 @@ body.snap .bar{position:sticky;top:0;}
         </div>
         <div><label>Horas improductivas</label>
           <input type="number" id="edHorasImp" min="0" step="0.5" placeholder="0">
-          <div class="hint" id="edHintHoras">Horas trabajadas: <b>—</b></div>
+          <div class="hint" id="edHintHoras">Horas de turno: <b>—</b></div>
         </div>
       </div>
       <div class="fgrid" style="margin-bottom:12px">
@@ -904,8 +904,8 @@ function actualizarHoras(k){
   if(!tot){
     box.className = 'hint';
     box.innerHTML = imp > 0
-      ? 'Horas trabajadas: <b>—</b> · faltan la hora de inicio y la final para calcularlas'
-      : 'Horas trabajadas: <b>—</b> · se calculan con la hora de inicio y la final';
+      ? 'Horas de turno: <b>—</b> · faltan la hora de inicio y la final para calcularlas'
+      : 'Horas de turno: <b>—</b> · se calculan con la hora de inicio y la final';
     return;
   }
   if(imp > tot){
@@ -914,7 +914,7 @@ function actualizarHoras(k){
     return;
   }
   box.className = 'hint';
-  box.innerHTML = 'Horas trabajadas: <b>' + nh(tot) + '</b> · productivas: <b>' + nh(tot-imp) + '</b>';
+  box.innerHTML = 'Horas de turno: <b>' + nh(tot) + '</b> · asistidas: <b>' + nh(tot-imp) + '</b>';
 }
 function hora12(v){
   const q = String(v || '').split(':');
@@ -1377,7 +1377,7 @@ function pintarRegistros(){
     '<td class="num">—</td><td class="num">'+(H.imp?nh(H.imp):'—')+'</td>' +
     '<td colspan="3" class="mini">' +
     (sC>0 ? 'Primeras = <b>'+n1(pct(sP,sC))+'%</b> de '+n0(sC)+' prendas revisadas' : '') +
-    (H.tot ? ' · Horas trabajadas <b>'+nh(H.tot)+'</b>, productivas <b>'+nh(H.prod)+'</b>' : '') +
+    (H.tot ? ' · Horas de turno <b>'+nh(H.tot)+'</b>, asistidas <b>'+nh(H.prod)+'</b>' : '') +
     (H.prod>0 && sM>0 ? ' · Eficiencia <b>'+n1(pct(sM, H.prod*60))+'%</b>' : '') +
     '</td></tr></tfoot></table>';
 }
@@ -1810,7 +1810,7 @@ function htmlKpis(A, P, E, PE, k, R, ultima, parcial, nServ){
     kpi('alert','% Segundas ' + eti, n1(A.pSeg)+'%', deltaHtml(A.pSeg, P?P.pSeg:null, false),
         n0(A.seg) + ' segundas ÷ ' + n0(A.carga) + ' revisadas · sin servicio', 'spkSeg') +
     kpi('','% Eficiencia ' + eti, n1(E.pEfi)+'%', deltaHtml(E.pEfi, PE?PE.pEfi:null, true),
-        n0(E.min) + ' min de trabajo ÷ ' + n0(E.hProd*60) + ' min productivos · incluye servicio' +
+        n0(E.min) + ' min producidos ÷ ' + n0(E.hProd*60) + ' min asistidos · incluye servicio' +
         (E.cobStd < 99.5 ? ' · ojo: solo el ' + n1(E.cobStd) + '% tiene T. STD' : ''), 'spkEfi') +
   '</div>';
 }
@@ -1849,10 +1849,10 @@ function htmlTabs(){
       ' onclick="tab(' + i + ',this)">' + t + '</button>').join('') + '</div>' +
 
   '<div class="tabpane' + (TAB_ACT===0?' active':'') + '"><div class="grid">' +
-    panel('col8','Eficiencia por inspectora','Debajo de cada barra está el lote que trabajó: carga más re-inspección. La eficiencia son los minutos que valía ese lote ÷ los minutos productivos que tuvo. <b>Incluye la prenda de servicio.</b> Solo aparecen las que tienen hora de inicio y final registradas.','<div class="cwrap"><canvas id="chEfiIns"></canvas></div>') +
+    panel('col8','Eficiencia por inspectora','Debajo de cada barra está el lote que trabajó: carga más re-inspección. La eficiencia son los minutos producidos por ese lote ÷ los minutos asistidos que tuvo. <b>Incluye la prenda de servicio.</b> Solo aparecen las que tienen hora de inicio y final registradas.','<div class="cwrap"><canvas id="chEfiIns"></canvas></div>') +
     panel('col4','Orden por eficiencia','Depende del T. STD de los estilos que le tocaron y de las horas que registró, no solo de su ritmo.','<ul class="rank" id="rkIns"></ul>') +
     panel('col12','Detalle por inspectora','Los totales suman el total general del período.','<div class="tablescroll" id="tbIns"></div>') +
-    panel('col12','Eficiencia y tiempo del período','Eficiencia = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos productivos. Los minutos productivos descuentan las horas improductivas y 45 minutos de refrigerio por cada turno de 4 horas o más. <b>Incluye la prenda de servicio.</b>','<div id="bxEfi"></div>') +
+    panel('col12','Eficiencia y tiempo del período','Eficiencia = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos asistidos. Los minutos asistidos descuentan las horas improductivas y 45 minutos de refrigerio por cada turno de 4 horas o más. <b>Incluye la prenda de servicio.</b>','<div id="bxEfi"></div>') +
   '</div></div>' +
 
   '<div class="tabpane' + (TAB_ACT===1?' active':'') + '"><div class="grid">' +
@@ -1872,13 +1872,13 @@ function htmlTabs(){
   '<details class="help"><summary>¿Cómo leo este tablero?</summary>' +
   '<p><b>Qué período estoy viendo.</b> Los botones Semanal, Mensual y Anual cambian el tipo de período; el desplegable de al lado elige cuál. Las semanas van de lunes a domingo con sus fechas reales.</p>' +
   '<p><b>Todo habla del mismo período.</b> Las tarjetas, los gráficos, las tablas y el texto de arriba son todos del período que elegiste en el filtro. La flecha de cada tarjeta compara contra el período anterior del mismo tipo: una semana contra la semana anterior, un mes contra el mes anterior. Si el período todavía no termina, la cabecera lo dice y muestra hasta qué día hay datos.</p>' +
-  '<p><b>Re-inspección suelta.</b> Hay registros con carga cero: son prendas que llegaron de otro lado y se revisaron por segunda vuelta, sin carga propia. No entran en el % de primeras ni en el de defectos (no había carga que juzgar), pero sí suman minutos de trabajo para la eficiencia.</p>' +
+  '<p><b>Re-inspección suelta.</b> Hay registros con carga cero: son prendas que llegaron de otro lado y se revisaron por segunda vuelta, sin carga propia. No entran en el % de primeras ni en el de defectos (no había carga que juzgar), pero sí suman minutos producidos para la eficiencia.</p>' +
   '<p><b>Qué entra en cada indicador.</b> Primeras, con defecto y segundas se calculan <b>sin la prenda de servicio</b>: son indicadores de la calidad de las líneas. Eficiencia y tiempo <b>sí incluyen el servicio</b>, porque esas horas también se trabajaron. Cada tarjeta lo dice en su pie.</p>' +
-  '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = prendas con defecto ÷ prendas revisadas. % Segundas = prendas marcadas como segundas ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos productivos, donde los minutos productivos son las horas de turno menos las improductivas menos 45 minutos de refrigerio por cada turno de 4 horas o más. % Tiempo productivo = horas productivas ÷ horas de turno. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
+  '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = prendas con defecto ÷ prendas revisadas. % Segundas = prendas marcadas como segundas ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos asistidos, donde los minutos asistidos son las horas de turno menos las improductivas menos 45 minutos de refrigerio por cada turno de 4 horas o más. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
   '<p><b>Eficiencia.</b> El T. STD es el tiempo estándar en minutos que debería tomar inspeccionar una prenda de ese estilo. Las prendas re-inspeccionadas suman porque se revisaron dos veces; las primeras especiales no suman aparte, porque ya venían dentro de la carga. Del tiempo disponible se descuentan las horas improductivas y <b>45 minutos de refrigerio</b> por cada turno de 4 horas o más. Si un registro no tiene T. STD aporta cero minutos y la eficiencia baja: por eso el tablero avisa cuando hay estilos sin T. STD.</p>' +
   '<p><b>Lo que no descuenta.</b> <b>Primeras especiales</b> no resta: la prenda sale igual como primera, así que ya está contada en el % de primeras y no aparece en los gráficos de defectos. <b>Re-inspección</b> tampoco resta prendas, pero sí suma tiempo trabajado.</p>' +
   '<p><b>El gráfico de defectos.</b> Cada barra dice qué parte del total de prendas con defecto le corresponde a esa falla, así que <b>las barras suman 100%</b>. No es el porcentaje sobre las prendas revisadas: ese aparece al pasar el cursor y en la columna “% de lo revisado” de la tabla de abajo. La línea verde va acumulando las barras: donde llega al 80% están las pocas fallas que explican casi todo el problema.</p>' +
-  '<p><b>Eficiencia por inspectora.</b> Se calcula con los mismos minutos de trabajo y minutos productivos, separando los registros de cada una. Solo aparecen las que tienen hora de inicio y final registradas; sin horas no hay divisor y la barra no se puede dibujar.</p>' +
+  '<p><b>Eficiencia por inspectora.</b> Se calcula con los mismos minutos producidos y minutos asistidos, separando los registros de cada una. Solo aparecen las que tienen hora de inicio y final registradas; sin horas no hay divisor y la barra no se puede dibujar.</p>' +
   '<p><b>Los números sobre los gráficos.</b> Cada barra lleva su porcentaje y, debajo en letra chica, la cantidad de prendas, sin tener que pasar el cursor. Si dos etiquetas se fueran a encimar, la segunda no se dibuja. En la línea de tendencia, con muchos días se escriben salteadas.</p>' +
   '<p><b>No hay meta definida.</b> Por eso no hay semáforo de cumplimiento. El degradado de color de las barras es solo orden visual: el más alto en color fuerte, los siguientes más claros.</p>' +
   '<p><b>Cuidado con la eficiencia por inspectora.</b> Depende de tres cosas que no controla: el T. STD de los estilos que le tocaron, las horas que alcanzó a registrar y si esos estilos tienen T. STD cargado. Una inspectora con estilos sin T. STD sale con eficiencia baja aunque haya trabajado igual que el resto. No sirve para comparar personas hasta que todos los estilos tengan su tiempo estándar.</p>' +
@@ -2077,7 +2077,7 @@ function pintarEficiencia(mCur, nServ){
     '<div class="split3">' +
       '<div class="mini-kpi g"><div class="l">Eficiencia</div><div class="v">' + n1(mCur.pEfi) + '%</div>' +
       '<div class="s">del período</div></div>' +
-      '<div class="mini-kpi b"><div class="l">Horas trabajadas</div><div class="v">' + nh(mCur.hTot) + '</div>' +
+      '<div class="mini-kpi b"><div class="l">Horas de turno</div><div class="v">' + nh(mCur.hTot) + '</div>' +
       '<div class="s">' + n0(mCur.turnos) + ' turno(s) con refrigerio</div></div>' +
       '<div class="mini-kpi"><div class="l">Improductivas</div><div class="v">' + nh(mCur.hImp) + '</div>' +
       '<div class="s">' + n1(pct(mCur.hImp, mCur.hTot)) + '% del tiempo</div></div>' +
@@ -2085,11 +2085,11 @@ function pintarEficiencia(mCur, nServ){
     '<table><tbody>' +
       '<tr><td>Prendas revisadas</td><td class="num"><b>' + n0(mCur.carga) + '</b></td></tr>' +
       '<tr><td>Prendas re-inspeccionadas</td><td class="num"><b>' + n0(mCur.rein) + '</b></td></tr>' +
-      '<tr><td>Minutos de trabajo que valían</td><td class="num"><b>' + n0(mCur.min) + '</b></td></tr>' +
+      '<tr><td>Minutos producidos</td><td class="num"><b>' + n0(mCur.min) + '</b></td></tr>' +
       '<tr><td>Horas de turno</td><td class="num">' + nh(mCur.hTot) + '</td></tr>' +
       '<tr><td>− Improductivas</td><td class="num">' + nh(mCur.hImp) + '</td></tr>' +
       '<tr><td>− Refrigerio (45 min × ' + n0(mCur.turnos) + ' turno(s) de 4 h o más)</td><td class="num">' + nh(mCur.hRefr) + '</td></tr>' +
-      '<tr><td><b>Minutos productivos disponibles</b></td><td class="num"><b>' + n0(minDisp) + '</b></td></tr>' +
+      '<tr><td><b>Minutos asistidos</b></td><td class="num"><b>' + n0(minDisp) + '</b></td></tr>' +
     '</tbody></table>' +
     '<div class="nota">' + n0(mCur.min) + ' ÷ ' + n0(minDisp) + ' = <b>' + n1(mCur.pEfi) + '%</b>. ' +
     (mCur.cobStd < 99.5
@@ -2158,7 +2158,7 @@ function pintarInspectoras(rows){
               const k = orden[c.dataIndex];
               return ['Lote trabajado: ' + n0(M[k].carga) + ' de carga + ' + n0(M[k].rein) +
                       ' de re-inspección = ' + n0(M[k].carga + M[k].rein) + ' prendas',
-                      n0(M[k].min) + ' min de trabajo ÷ ' + n0(M[k].hProd*60) + ' min productivos',
+                      n0(M[k].min) + ' min producidos ÷ ' + n0(M[k].hProd*60) + ' min asistidos',
                       'Eficiencia: ' + n1(c.raw) + '%'];
             }}}},
           scales:{y:{beginAtZero:true, grace:'22%', grid:{color:'#F1F6F4'},
@@ -2172,7 +2172,7 @@ function pintarInspectoras(rows){
     const p = M[k].pEfi;
     return '<li><span class="n">' + (i+1) + '</span><span><span class="nm">' + esc(k) + '</span>' +
       '<span class="sub"> · lote ' + n0(M[k].carga + M[k].rein) + ' prendas (' + n0(M[k].carga) +
-      ' carga + ' + n0(M[k].rein) + ' re-insp.) · ' + nh(M[k].hProd) + ' h productivas</span>' +
+      ' carga + ' + n0(M[k].rein) + ' re-insp.) · ' + nh(M[k].hProd) + ' h asistidas</span>' +
       '<span class="track"><span class="fill" data-w="' + (p/maxp*100).toFixed(1) + '%" ' +
       'style="background:' + colores[i] + '"></span></span></span>' +
       '<span class="val" style="color:' + colores[i] + '">' + (M[k].hProd ? n1(p)+'%' : '—') + '</span></li>';
@@ -2182,7 +2182,7 @@ function pintarInspectoras(rows){
   document.getElementById('tbIns').innerHTML =
     '<table><thead><tr><th>INSPECTORA</th><th class="num">Inspecciones</th>' +
     '<th class="num">Prendas revisadas</th><th class="num">Re-inspeccionadas</th>' +
-    '<th class="num">Min. de trabajo</th><th class="num">H. productivas</th>' +
+    '<th class="num">Min. de trabajo</th><th class="num">H. asistidas</th>' +
     '<th class="num">% Eficiencia</th><th class="num">% Primeras</th></tr></thead><tbody>' +
     ks.map(k=>'<tr><td><b>' + esc(k) + '</b></td><td class="num">' + n0(M[k].n) + '</td>' +
       '<td class="num">' + n0(M[k].carga) + '</td><td class="num">' + n0(M[k].rein) + '</td>' +
@@ -2309,13 +2309,13 @@ function pintarPortada(k, mCur, mEfi, mPrev, R, ultima, parcial, nServ){
       n0(mCur.n) + ' inspecciones. Salieron primeras ' + n0(mCur.pri) + ' prendas, el ' + n1(mCur.pPri) +
       '% de lo revisado; ' + n1(mCur.pDef) + '% salió con defecto y ' + n1(mCur.pSeg) + '% fueron segundas. ' + cmp +
       (mEfi.hProd ? ' Se trabajaron ' + nh(mEfi.hTot) + ' horas, de las cuales ' + nh(mEfi.hProd) +
-        ' fueron productivas, con una eficiencia de ' + n1(mEfi.pEfi) + '%.' : '') +
+        ' fueron asistidas, con una eficiencia de ' + n1(mEfi.pEfi) + '%.' : '') +
       '<br><b>Qué entra en cada número.</b> Los indicadores de calidad (primeras, defectos, segundas) ' +
       'se calculan sin la prenda de servicio' + (nServ > 0 ? ' (' + n0(nServ) + ' registro(s) excluidos)' : '') +
       '. Los de tiempo y eficiencia sí la incluyen, porque esas horas también se trabajaron.' +
       '<br><b>Cómo se calcula.</b> Primeras = carga − defectos que descuentan; primeras especiales no ' +
       'descuenta, así que quedan contadas dentro de las primeras. Eficiencia = (prendas revisadas + ' +
-      're-inspeccionadas) × T. STD ÷ minutos productivos, descontando las horas improductivas y 45 ' +
+      're-inspeccionadas) × T. STD ÷ minutos asistidos, descontando las horas improductivas y 45 ' +
       'minutos de refrigerio por cada turno de 4 horas o más. Todos los porcentajes ' +
       'se obtienen sumando numeradores y denominadores del período, nunca promediando porcentajes diarios. ' +
       'No hay meta definida: las comparaciones son contra el período anterior.</div>';
