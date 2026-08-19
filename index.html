@@ -332,7 +332,19 @@ body.solotab .header .btn-tablero{display:none!important;}
 body.solotab .overlay{display:block;position:static;background:none;padding:0;}
 body.solotab .oinner{max-width:1440px;height:auto;border-radius:0;box-shadow:none;
 background:transparent;overflow:visible;}
-body.solotab .obar{background:var(--petrol-2);border-bottom:none;}
+/* En modo tablero la cabecera verde de la página ya lleva el título, así que
+   la barra del panel se queda solo con los botones, sin repetirlo. */
+body.solotab .obar,body.snap .obar{background:transparent;border-bottom:none;
+padding:14px 22px 0;}
+body.solotab .obar .ot,body.snap .obar .ot{display:none;}
+body.solotab .obar .os,body.snap .obar .os{color:var(--stone);font-size:12px;}
+body.solotab .obar button,body.snap .obar button{border-color:var(--warm);
+background:#fff;color:var(--sage);}
+body.solotab .obar button:hover,body.snap .obar button:hover{border-color:var(--sage);
+background:var(--warm-light);}
+body.solotab .obar button.pri,body.snap .obar button.pri{background:var(--sage);
+border-color:var(--sage);color:#fff;}
+body.solotab .obar button.pri:hover,body.snap .obar button.pri:hover{background:var(--sage-dark);}
 body.solotab #btnCerrar{display:none;}
 body.solotab .obody{overflow:visible;padding:16px 22px 44px;}
 body.solotab .bar{position:sticky;top:0;}
@@ -342,7 +354,6 @@ body.snap .header .btn-tablero{display:none!important;}
 body.snap .overlay{display:block;position:static;background:none;padding:0;}
 body.snap .oinner{max-width:1440px;height:auto;border-radius:0;box-shadow:none;
 background:transparent;overflow:visible;}
-body.snap .obar{background:var(--petrol-2);border-bottom:none;}
 body.snap #btnCerrar,body.snap #btnExp,body.snap #btnRef{display:none;}
 body.snap .obody{overflow:visible;padding:16px 22px 44px;}
 body.snap .bar{position:sticky;top:0;}
