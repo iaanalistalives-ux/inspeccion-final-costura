@@ -348,6 +348,8 @@ body.solotab #btnCerrar{display:none;}
 body.solotab .obody{overflow:visible;padding:16px 22px 44px;}
 body.solotab .bar{position:sticky;top:0;}
 
+body.soloreporte .tabs{display:none;}
+body.soloreporte #btnExp{display:none;}
 body.snap #app{display:none;}
 body.snap .header .btn-tablero{display:none!important;}
 body.snap .overlay{display:block;position:static;background:none;padding:0;}
@@ -598,7 +600,7 @@ body.snap .bar{position:sticky;top:0;}
       </div>
       <span class="osp"></span>
       <button id="btnRef" onclick="cargarDatos({full:true})">Actualizar</button>
-      <button id="btnPdf" onclick="imprimirReporte()">Reporte PDF</button>
+      <button id="btnPdf" onclick="exportarReporte()">Exportar reporte</button>
       <button id="btnExp" class="pri" onclick="exportar()">Exportar HTML</button>
       <button id="btnCerrar" onclick="cerrarTablero()">Cerrar ✕</button>
     </div>
@@ -851,6 +853,7 @@ function claveUnica(){
 }
 const GRUPOS_HORA = ['hini','hfin','edHi','edHf'];
 function initHoras(){
+  if(!document.getElementById('hini_h')) return;
   let oh = '<option value="">--</option>';
   for(let i = 1; i <= 12; i++){ const v = String(i).padStart(2,'0'); oh += '<option value="'+v+'">'+v+'</option>'; }
   let om = '';
@@ -962,7 +965,8 @@ function degradado(i, total, tono){
    ARRANQUE
    ================================================================ */
 async function iniciar(){
-  document.getElementById('fecha').value = hoyISO();
+  const inpFecha = document.getElementById('fecha');
+  if(inpFecha) inpFecha.value = hoyISO();
   initHoras();
   rangoHoy();
 
@@ -977,13 +981,25 @@ async function iniciar(){
   if(window.__SNAPSHOT__){
     SNAP = true;
     document.body.classList.add('snap');
+    if(window.__SOLO_REPORTE__){
+      document.body.classList.add('soloreporte');
+      TAB_ACT = 4;
+    }
     DATA = window.__SNAPSHOT__;
     DATA_COMPLETA = true;
     document.getElementById('overlay').classList.add('on');
     prepararFiltros(); render();
     document.getElementById('dEstado').innerHTML = n0(DATA.filas.length) + ' inspecciones · copia estática';
-    dAvisar('<b>Copia para consulta.</b> Los datos están congelados al ' + (DATA.generado||'—') +
-      '. Este archivo no se conecta al sistema: para ver el dato del día hay que entrar al tablero en línea.', 'snap');
+    if(window.__SOLO_REPORTE__){
+      document.querySelector('.htitle').textContent = 'Reporte de Inspección Final — Área de Costura';
+      document.querySelector('.hsub').textContent = 'Dpto. Ingeniería · reporte exportado';
+      dAvisar('<b>Reporte exportado.</b> Los datos están congelados al ' + (DATA.generado||'—') +
+        '. Los filtros de arriba siguen funcionando: se puede cambiar de día, semana, mes o año ' +
+        'y los gráficos se rehacen con la información guardada en este archivo.', 'snap');
+    }else{
+      dAvisar('<b>Copia para consulta.</b> Los datos están congelados al ' + (DATA.generado||'—') +
+        '. Este archivo no se conecta al sistema: para ver el dato del día hay que entrar al tablero en línea.', 'snap');
+    }
     document.getElementById('hstate').textContent = 'Copia estática';
     return;
   }
@@ -1013,19 +1029,23 @@ async function iniciar(){
 }
 function avisar(html){
   const a = document.getElementById('aviso');
+  if(!a) return;
   a.innerHTML = html; a.style.display = 'block';
 }
 function pintarCatalogos(){
   const opInsp = CAT.inspectoras.map(n=>'<option>'+esc(n)+'</option>').join('');
   const opLin  = CAT.lineas.map(n=>'<option>'+esc(n)+'</option>').join('');
-
-  document.getElementById('inspectora').innerHTML = '<option value="">— Elegir —</option>' + opInsp;
-  document.getElementById('linea').innerHTML = '<option value="">— Elegir —</option>' + opLin;
-  document.getElementById('edIns').innerHTML = '<option value="">— Elegir —</option>' + opInsp;
-  document.getElementById('edLin').innerHTML = '<option value="">— Elegir —</option>' + opLin;
-  document.getElementById('rIns').innerHTML = '<option value="">Todas</option>' + opInsp;
-  document.getElementById('rLin').innerHTML = '<option value="">Todas</option>' + opLin;
-  document.getElementById('listaEstilos').innerHTML = CAT.estilos.map(n=>'<option value="'+esc(n)+'">').join('');
+  function poner(id, html){
+    const e = document.getElementById(id);
+    if(e) e.innerHTML = html;
+  }
+  poner('inspectora', '<option value="">— Elegir —</option>' + opInsp);
+  poner('linea', '<option value="">— Elegir —</option>' + opLin);
+  poner('edIns', '<option value="">— Elegir —</option>' + opInsp);
+  poner('edLin', '<option value="">— Elegir —</option>' + opLin);
+  poner('rIns', '<option value="">Todas</option>' + opInsp);
+  poner('rLin', '<option value="">Todas</option>' + opLin);
+  poner('listaEstilos', CAT.estilos.map(n=>'<option value="'+esc(n)+'">').join(''));
 
   const cats = [];
   CAT.defectos.forEach(d=>{ if(cats.indexOf(d.categoria) === -1) cats.push(d.categoria); });
@@ -1037,15 +1057,16 @@ function pintarCatalogos(){
     });
     html += '</optgroup>';
   });
-  document.getElementById('selDefF').innerHTML = html;
-  document.getElementById('selDefE').innerHTML = html;
+  poner('selDefF', html);
+  poner('selDefE', html);
 
   const ult = localStorage.getItem('lives_ic_ult');
-  if(ult){
+  const si = document.getElementById('inspectora'), sl = document.getElementById('linea');
+  if(ult && si && sl){
     try{
       const u = JSON.parse(ult);
-      if(CAT.inspectoras.indexOf(u.inspectora) >= 0) document.getElementById('inspectora').value = u.inspectora;
-      if(CAT.lineas.indexOf(u.linea) >= 0) document.getElementById('linea').value = u.linea;
+      if(CAT.inspectoras.indexOf(u.inspectora) >= 0) si.value = u.inspectora;
+      if(CAT.lineas.indexOf(u.linea) >= 0) sl.value = u.linea;
     }catch(e){}
   }
 }
@@ -1301,18 +1322,20 @@ function limpiarEstilo(avisarUsuario){
    PESTAÑA DE REGISTROS
    ================================================================ */
 function rangoHoy(){
-  document.getElementById('rDesde').value = hoyISO();
-  document.getElementById('rHasta').value = hoyISO();
+  const d = document.getElementById('rDesde'), t = document.getElementById('rHasta');
+  if(!d || !t) return;
+  d.value = hoyISO(); t.value = hoyISO();
   pintarRegistros();
 }
 function rangoTodo(){
-  document.getElementById('rDesde').value = '';
-  document.getElementById('rHasta').value = '';
+  const d = document.getElementById('rDesde'), t = document.getElementById('rHasta');
+  if(!d || !t) return;
+  d.value = ''; t.value = '';
   if(DATA && !DATA_COMPLETA){ cargarDatos({full:true}); return; }
   pintarRegistros();
 }
 function filasRegistros(){
-  if(!DATA) return [];
+  if(!DATA || !document.getElementById('rDesde')) return [];
   const d = document.getElementById('rDesde').value;
   const h = document.getElementById('rHasta').value;
   const i = document.getElementById('rIns').value;
@@ -1327,6 +1350,7 @@ function filasRegistros(){
 }
 function pintarRegistros(){
   const cont = document.getElementById('tbRegistros');
+  if(!cont) return;                    /* el tablero solo no tiene esta tabla */
   if(!DATA){ cont.innerHTML = '<div class="mini">Cargando registros…</div>'; return; }
   const rows = filasRegistros();
   if(!rows.length){
@@ -1483,7 +1507,7 @@ function primerDiaMesAnterior(){
 async function cargarDatos(opciones){
   const o = opciones || {};
   const btn = document.getElementById('btnRef');
-  if(!o.silencioso){ btn.disabled = true; btn.textContent = 'Cargando…'; }
+  if(btn && !o.silencioso){ btn.disabled = true; btn.textContent = 'Cargando…'; }
   try{
     const par = {accion:'datos'};
     if(!o.full) par.desde = primerDiaMesAnterior();
@@ -1504,11 +1528,12 @@ async function cargarDatos(opciones){
     if(!o.silencioso){
       dAvisar('No se pudieron cargar los datos: ' + e.message +
         ' Si acabas de actualizar el Apps Script, revisa que hayas usado <b>Administrar implementaciones > Nueva versión</b>.');
-      document.getElementById('tbRegistros').innerHTML =
+      const cajaReg = document.getElementById('tbRegistros');
+      if(cajaReg) cajaReg.innerHTML =
         '<div class="mini">No se pudieron cargar los registros: ' + esc(e.message) + '</div>';
     }
   }finally{
-    if(!o.silencioso){ btn.disabled = false; btn.textContent = 'Actualizar'; }
+    if(btn && !o.silencioso){ btn.disabled = false; btn.textContent = 'Actualizar'; }
   }
 }
 
@@ -1880,6 +1905,7 @@ function htmlTabs(){
   '<p><b>Lo que no descuenta.</b> <b>Primeras especiales</b> no resta: la prenda sale igual como primera, así que ya está contada en el % de primeras y no aparece en los gráficos de defectos. <b>Re-inspección</b> tampoco resta prendas, pero sí suma tiempo trabajado.</p>' +
   '<p><b>El gráfico de defectos.</b> Cada barra dice qué parte del total de prendas con defecto le corresponde a esa falla, así que <b>las barras suman 100%</b>. No es el porcentaje sobre las prendas revisadas: ese aparece al pasar el cursor y en la columna “% de lo revisado” de la tabla de abajo. La línea verde va acumulando las barras: donde llega al 80% están las pocas fallas que explican casi todo el problema.</p>' +
   '<p><b>Eficiencia por inspectora.</b> Se calcula con los mismos minutos producidos y minutos asistidos, separando los registros de cada una. Solo aparecen las que tienen hora de inicio y final registradas; sin horas no hay divisor y la barra no se puede dibujar.</p>' +
+  '<p><b>Exportar reporte.</b> El botón de arriba descarga un archivo con la pestaña Reporte y los datos guardados dentro. Se abre con doble clic, no necesita conexión y los filtros de período siguen funcionando, así que quien lo reciba puede mirar otro día o mes sin pedir nada. Para tenerlo en PDF, se abre el archivo y se imprime con Ctrl+P eligiendo Guardar como PDF.</p>' +
   '<p><b>Los números sobre los gráficos.</b> Cada barra lleva su porcentaje y, debajo en letra chica, la cantidad de prendas, sin tener que pasar el cursor. Si dos etiquetas se fueran a encimar, la segunda no se dibuja. En la línea de tendencia, con muchos días se escriben salteadas.</p>' +
   '<p><b>No hay meta definida.</b> Por eso no hay semáforo de cumplimiento. El degradado de color de las barras es solo orden visual: el más alto en color fuerte, los siguientes más claros.</p>' +
   '<p><b>Cuidado con la eficiencia por inspectora.</b> Depende de tres cosas que no controla: el T. STD de los estilos que le tocaron, las horas que alcanzó a registrar y si esos estilos tienen T. STD cargado. Una inspectora con estilos sin T. STD sale con eficiencia baja aunque haya trabajado igual que el resto. No sirve para comparar personas hasta que todos los estilos tengan su tiempo estándar.</p>' +
@@ -2446,17 +2472,14 @@ function pintarPortada(k, mCur, mEfi, mPrev, R, ultima, parcial, nServ){
       'se obtienen sumando numeradores y denominadores del período, nunca promediando porcentajes diarios. ' +
       'No hay meta definida: las comparaciones son contra el período anterior.</div>';
 }
-function imprimirReporte(){
-  if(!DATA){ toast('Espera a que carguen los datos', true); return; }
-  const btns = document.querySelectorAll('.tabs button');
-  if(btns.length >= 5) tab(4, btns[4]);
-  setTimeout(()=>window.print(), 350);
-}
+/* Se puede seguir imprimiendo con Ctrl+P: sale la pestaña que esté abierta. */
 
 /* ---------------- exportar copia estática ---------------- */
-async function exportar(){
+function exportarReporte(){ return exportar(true); }
+async function exportar(soloReporte){
   if(!DATA){ toast('Espera a que carguen los datos', true); return; }
-  const btn = document.getElementById('btnExp');
+  const btn = document.getElementById(soloReporte ? 'btnPdf' : 'btnExp');
+  const rotulo = soloReporte ? 'Exportar reporte' : 'Exportar HTML';
   btn.disabled = true; btn.textContent = 'Generando…';
   try{
     const r = await fetch(location.href, {cache:'no-store'});
@@ -2464,10 +2487,13 @@ async function exportar(){
     let src = await r.text();
     if(src.indexOf('<!--DATOS-->') === -1) throw new Error('Plantilla no reconocida.');
     const payload = JSON.stringify(DATA).replace(/</g,'\\u003c');
-    src = src.replace('<!--DATOS-->', '<script>window.__SNAPSHOT__=' + payload + ';<\/script>');
+    const extra = soloReporte ? 'window.__SOLO_REPORTE__=true;' : '';
+    src = src.replace('<!--DATOS-->',
+      '<script>window.__SNAPSHOT__=' + payload + ';' + extra + '<\/script>');
     const h = new Date();
-    const nombre = 'Tablero_Inspeccion_Costura_' + h.getFullYear() +
-      String(h.getMonth()+1).padStart(2,'0') + String(h.getDate()).padStart(2,'0') + '.html';
+    const nombre = (soloReporte ? 'Reporte_Inspeccion_Costura_' : 'Tablero_Inspeccion_Costura_') +
+      h.getFullYear() + String(h.getMonth()+1).padStart(2,'0') +
+      String(h.getDate()).padStart(2,'0') + '.html';
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([src], {type:'text/html;charset=utf-8'}));
     a.download = nombre; a.click();
@@ -2476,7 +2502,7 @@ async function exportar(){
   }catch(e){
     toast('No se pudo exportar: ' + e.message + ' Hazlo desde la página publicada, no desde un archivo local.', true);
   }finally{
-    btn.disabled = false; btn.textContent = 'Exportar HTML';
+    btn.disabled = false; btn.textContent = rotulo;
   }
 }
 
@@ -2503,12 +2529,14 @@ document.addEventListener('input', e=>{
 });
 ['hini','hfin'].forEach(pre=>{
   ['_h','_m','_p'].forEach(s=>{
-    document.getElementById(pre+s).addEventListener('change', ()=>actualizarHoras('F'));
+    const e = document.getElementById(pre+s);
+    if(e) e.addEventListener('change', ()=>actualizarHoras('F'));
   });
 });
 ['edHi','edHf'].forEach(pre=>{
   ['_h','_m','_p'].forEach(s=>{
-    document.getElementById(pre+s).addEventListener('change', ()=>actualizarHoras('E'));
+    const e = document.getElementById(pre+s);
+    if(e) e.addEventListener('change', ()=>actualizarHoras('E'));
   });
 });
 document.addEventListener('keydown', e=>{
@@ -2528,10 +2556,14 @@ document.addEventListener('keydown', e=>{
     else if(!SNAP && !SOLO_TABLERO && document.getElementById('overlay').classList.contains('on')) cerrarTablero();
   }
 });
-document.getElementById('estilo').addEventListener('change', buscarSTD);
-document.getElementById('estilo').addEventListener('blur', buscarSTD);
+const inpEstilo = document.getElementById('estilo');
+if(inpEstilo){
+  inpEstilo.addEventListener('change', buscarSTD);
+  inpEstilo.addEventListener('blur', buscarSTD);
+}
 ['rDesde','rHasta','rIns','rLin'].forEach(id=>{
-  document.getElementById(id).addEventListener('change', pintarRegistros);
+  const e = document.getElementById(id);
+  if(e) e.addEventListener('change', pintarRegistros);
 });
 ['fPeriodo','fLinea','fIns'].forEach(id=>{
   document.getElementById(id).addEventListener('change', ()=>{
