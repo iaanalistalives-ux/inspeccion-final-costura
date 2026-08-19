@@ -299,6 +299,22 @@ transition:width .9s cubic-bezier(.2,.8,.2,1);}
 .mini-kpi.b .v{color:var(--slate);}
 .mini-kpi.g .v{color:var(--sage);}
 .mini-kpi .s{font-size:11px;color:var(--stone);}
+.bigk{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;}
+.bigk .b{background:var(--warm-light);border-radius:10px;padding:13px 15px;
+position:relative;overflow:hidden;}
+.bigk .b::after{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--slate);}
+.bigk .b.pri::after{background:var(--sage);}
+.bigk .b.def::after{background:var(--rose);}
+.bigk .l{font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--stone);}
+.bigk .v{font-size:34px;font-weight:700;line-height:1.05;color:var(--slate);}
+.bigk .b.pri .v{color:var(--sage);} .bigk .b.def .v{color:var(--rose);}
+.bigk .s{font-size:11.5px;color:var(--stone);margin-top:2px;}
+.linek{display:flex;gap:14px;flex-wrap:wrap;align-items:baseline;
+background:var(--warm-light);border-radius:10px;padding:9px 13px;margin-bottom:10px;}
+.linek .g{font-size:26px;font-weight:700;color:var(--sage);line-height:1;}
+.linek .r{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--stone);}
+.linek .o{font-size:12px;color:var(--stone);}
+.linek .o b{color:#333;}
 .nota{font-size:12px;color:var(--stone);background:var(--warm-light);border-radius:8px;
 padding:9px 11px;margin-top:10px;}
 .nota b{color:var(--sage-dark);}
@@ -1828,6 +1844,8 @@ function htmlKpis(A, P, E, PE, k, R, ultima, parcial, nServ){
         n0(A.seg) + ' segundas ÷ ' + n0(A.carga) + ' revisadas · sin servicio', 'spkSeg') +
     kpi('','% Eficiencia ' + eti, n1(E.pEfi)+'%', deltaHtml(E.pEfi, PE?PE.pEfi:null, true),
         n0(E.min) + ' min producidos ÷ ' + n0(E.hProd*60) + ' min asistidos · incluye servicio' +
+        (document.getElementById('fLinea').value
+          ? ' · <b>ojo:</b> con filtro de línea sale más baja, las horas son del turno completo' : '') +
         (E.cobStd < 99.5 ? ' · ojo: solo el ' + n1(E.cobStd) + '% tiene T. STD' : ''), 'spkEfi') +
   '</div>';
 }
@@ -1887,6 +1905,7 @@ function htmlTabs(){
   '</div></div>' +
 
   '<div class="tabpane' + (TAB_ACT===4?' active':'') + '"><div class="grid">' +
+    panel('col12','Resultado del período','Se recalcula con el filtro de período, de línea y de inspectora que esté puesto arriba.','<div class="bigk" id="repResumen"></div>') +
     panel('col12','Eficiencia por inspectora','Debajo de cada barra, el lote trabajado: carga más re-inspección. Incluye la prenda de servicio.','<div class="cwrap"><canvas id="chEfiInsR"></canvas></div>') +
     panel('col8','Los defectos que más pesan — todas las líneas','Cada barra es el porcentaje de las prendas revisadas que salió con esa falla, y debajo la cantidad de prendas.','<div class="cwrap"><canvas id="chParR"></canvas></div>') +
     panel('col4','Peso de cada grupo — todas las líneas','% sobre el total de prendas con defecto del período.','<div class="cwrap"><canvas id="chCatR"></canvas></div>') +
@@ -1908,6 +1927,7 @@ function htmlTabs(){
   '<p><b>Exportar reporte.</b> El botón de arriba descarga un archivo con la pestaña Reporte y los datos guardados dentro. Se abre con doble clic, no necesita conexión y los filtros de período siguen funcionando, así que quien lo reciba puede mirar otro día o mes sin pedir nada. Para tenerlo en PDF, se abre el archivo y se imprime con Ctrl+P eligiendo Guardar como PDF.</p>' +
   '<p><b>Los números sobre los gráficos.</b> Cada barra lleva su porcentaje y, debajo en letra chica, la cantidad de prendas, sin tener que pasar el cursor. Si dos etiquetas se fueran a encimar, la segunda no se dibuja. En la línea de tendencia, con muchos días se escriben salteadas.</p>' +
   '<p><b>No hay meta definida.</b> Por eso no hay semáforo de cumplimiento. El degradado de color de las barras es solo orden visual: el más alto en color fuerte, los siguientes más claros.</p>' +
+  '<p><b>La eficiencia no se puede repartir por línea.</b> Las horas de inicio y final se registran una vez por turno, no cada vez que se cambia de línea. Por eso, al filtrar una línea, los minutos producidos bajan pero las horas siguen siendo las del turno entero y la eficiencia sale más baja de lo real. Sin filtro de línea, y en la pestaña Inspectoras, el número sí es confiable. Para tener eficiencia por línea habría que registrar la hora cada vez que se cambia de línea.</p>' +
   '<p><b>Cuidado con la eficiencia por inspectora.</b> Depende de tres cosas que no controla: el T. STD de los estilos que le tocaron, las horas que alcanzó a registrar y si esos estilos tienen T. STD cargado. Una inspectora con estilos sin T. STD sale con eficiencia baja aunque haya trabajado igual que el resto. No sirve para comparar personas hasta que todos los estilos tengan su tiempo estándar.</p>' +
   '<p><b>Términos.</b> <b>Carga</b>: grupo de prendas que se revisa de una vez. <b>Primeras</b>: prendas conformes. <b>Segundas</b>: prenda con falla que ya no se recupera como primera. <b>Compostura</b>: falla de costura que se arregla cosiendo. <b>Zurcido</b>: falla de tela o puntada que se repara con aguja. <b>Limpieza</b>: hilos sueltos o sin cortar. <b>Re-inspección</b>: carga que hubo que volver a revisar.</p>' +
   '</details>';
@@ -2376,6 +2396,29 @@ function donutEn(canvasId, lista){
   });
 }
 function pintarReporte(rows, rowsEfi, A){
+  const E = met(rowsEfi);
+  const filtroLinea = document.getElementById('fLinea').value;
+  const res = document.getElementById('repResumen');
+  if(res){
+    res.innerHTML =
+      '<div class="b pri"><div class="l">Prendas primeras</div><div class="v">' + n0(A.pri) + '</div>' +
+        '<div class="s">' + n1(A.pPri) + '% de lo revisado</div></div>' +
+      '<div class="b"><div class="l">Prendas revisadas</div><div class="v">' + n0(A.carga) + '</div>' +
+        '<div class="s">en ' + n0(A.n) + ' inspecciones</div></div>' +
+      '<div class="b def"><div class="l">Con defecto</div><div class="v">' + n0(A.def) + '</div>' +
+        '<div class="s">' + n1(A.pDef) + '% de lo revisado</div></div>' +
+      '<div class="b def"><div class="l">Segundas</div><div class="v">' + n0(A.seg) + '</div>' +
+        '<div class="s">' + n1(A.pSeg) + '% de lo revisado</div></div>' +
+      '<div class="b"><div class="l">Eficiencia</div><div class="v">' + n1(E.pEfi) + '%</div>' +
+        '<div class="s">' + n0(E.min) + ' min producidos ÷ ' + n0(E.hProd*60) + ' min asistidos</div></div>' +
+      (filtroLinea
+        ? '<div class="b" style="grid-column:1/-1"><div class="s"><b>Ojo con la eficiencia al filtrar por línea.</b> ' +
+          'Las horas se registran una vez por turno, no por línea. Al filtrar ' + esc(filtroLinea) +
+          ' se cuentan solo los minutos producidos de esa línea, pero las horas siguen siendo las del turno ' +
+          'completo, así que la eficiencia sale más baja de lo real. Sin filtro de línea, y por inspectora, ' +
+          'el número sí es confiable.</div></div>'
+        : '');
+  }
   const el1 = document.getElementById('chEfiInsR');
   if(el1 && window.Chart){
     const m = {};
@@ -2422,11 +2465,15 @@ function pintarReporte(rows, rowsEfi, A){
 
   cont.innerHTML = lineas.map((L,i)=>{
     const mL = met(porLinea[L]);
-    const sub = n0(mL.carga) + ' prendas revisadas · ' + n0(mL.def) +
-                ' con defecto (' + n1(mL.pDef) + '%) · ' + n1(mL.pPri) + '% primeras';
+    const banda = '<div class="linek">' +
+        '<span><span class="r">Primeras</span><br><span class="g">' + n0(mL.pri) + '</span></span>' +
+        '<span class="o">' + n1(mL.pPri) + '% de <b>' + n0(mL.carga) + '</b> prendas revisadas · ' +
+        '<b>' + n0(mL.def) + '</b> con defecto (' + n1(mL.pDef) + '%) · ' +
+        '<b>' + n0(mL.seg) + '</b> segundas (' + n1(mL.pSeg) + '%)</span></div>';
     return '<div class="col8"><div class="panel">' +
         '<div class="pt">' + esc(L) + ' — defectos sobre lo revisado</div>' +
-        '<div class="ph">' + sub + '</div>' +
+        '<div class="ph">Cada barra es el % de las prendas revisadas de esta línea que salió con esa falla.</div>' +
+        banda +
         '<div class="cwrap"><canvas id="chLinRep' + i + '"></canvas></div></div></div>' +
       '<div class="col4"><div class="panel">' +
         '<div class="pt">' + esc(L) + ' — peso de cada grupo</div>' +
