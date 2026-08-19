@@ -1910,7 +1910,7 @@ function htmlTabs(){
   '<div class="tabpane' + (TAB_ACT===4?' active':'') + '"><div class="grid">' +
     panel('col12','Resultado del período','Se recalcula con el filtro de período, de línea y de inspectora que esté puesto arriba.','<div class="bigk" id="repResumen"></div>') +
     panel('col12','Eficiencia por inspectora','Debajo de cada barra, el lote trabajado: carga más re-inspección. Incluye la prenda de servicio.','<div class="cwrap"><canvas id="chEfiInsR"></canvas></div>') +
-    panel('col8','Los defectos que más pesan — todas las líneas','Cada barra es el porcentaje de las prendas revisadas que salió con esa falla, y debajo la cantidad de prendas.','<div class="cwrap"><canvas id="chParR"></canvas></div>') +
+    panel('col8','Defectos en todas las líneas','Cada barra es el porcentaje de las prendas revisadas que salió con esa falla, y debajo la cantidad de prendas.','<div id="repBandaGen"></div><div class="cwrap"><canvas id="chParR"></canvas></div>') +
     panel('col4','Peso de cada grupo — todas las líneas','% sobre el total de prendas con defecto del período.','<div class="cwrap"><canvas id="chCatR"></canvas></div>') +
     '<div class="col12"><div class="panel"><div class="pt">Defectos por línea</div>' +
       '<div class="ph">Para cada línea de producción, sus defectos más pesados y el peso de cada grupo al costado. Ambos se calculan sobre los defectos de esa línea, no sobre el total.</div>' +
@@ -2398,6 +2398,24 @@ function donutEn(canvasId, lista){
         }}}}}
   });
 }
+/* Banda de resultados: los mismos seis datos, en el reporte general y en
+   cada línea, para que se lean igual en los dos sitios. */
+function bandaMetricas(m){
+  return '<div class="linek">' +
+      '<div class="k"><div class="r">Prendas revisadas</div><div class="g gris">' + n0(m.carga) + '</div>' +
+        '<div class="o">en ' + n0(m.n) + ' inspecciones</div></div>' +
+      '<div class="k"><div class="r">Primeras</div><div class="g">' + n0(m.pri) + '</div>' +
+        '<div class="o">prendas conformes</div></div>' +
+      '<div class="k"><div class="r">% Primeras</div><div class="g">' + n1(m.pPri) + '%</div>' +
+        '<div class="o">de lo revisado</div></div>' +
+      '<div class="k"><div class="r">Con defecto</div><div class="g rojo">' + n0(m.def) + '</div>' +
+        '<div class="o">prendas con falla</div></div>' +
+      '<div class="k"><div class="r">% Con defecto</div><div class="g rojo">' + n1(m.pDef) + '%</div>' +
+        '<div class="o">de lo revisado</div></div>' +
+      '<div class="k"><div class="r">Segundas</div><div class="g rojo">' + n0(m.seg) + '</div>' +
+        '<div class="o">' + n1(m.pSeg) + '% de lo revisado</div></div>' +
+    '</div>';
+}
 function pintarReporte(rows, rowsEfi, A){
   const E = met(rowsEfi);
   const filtroLinea = document.getElementById('fLinea').value;
@@ -2451,6 +2469,9 @@ function pintarReporte(rows, rowsEfi, A){
     }
   }
 
+  const bg = document.getElementById('repBandaGen');
+  if(bg) bg.innerHTML = bandaMetricas(A);
+
   const gen = totalesDefectosDe(rows);
   charts.catR = donutEn('chCatR', gen);
   if(gen.length){ charts.parR = paretoEn('chParR', gen, A.carga, A.def, 12); }
@@ -2468,18 +2489,7 @@ function pintarReporte(rows, rowsEfi, A){
 
   cont.innerHTML = lineas.map((L,i)=>{
     const mL = met(porLinea[L]);
-    const banda = '<div class="linek">' +
-        '<div class="k"><div class="r">Prendas revisadas</div><div class="g gris">' + n0(mL.carga) + '</div>' +
-          '<div class="o">en ' + n0(mL.n) + ' inspecciones</div></div>' +
-        '<div class="k"><div class="r">Primeras</div><div class="g">' + n0(mL.pri) + '</div>' +
-          '<div class="o">prendas conformes</div></div>' +
-        '<div class="k"><div class="r">% Primeras</div><div class="g">' + n1(mL.pPri) + '%</div>' +
-          '<div class="o">de lo revisado</div></div>' +
-        '<div class="k"><div class="r">Con defecto</div><div class="g rojo">' + n0(mL.def) + '</div>' +
-          '<div class="o">' + n1(mL.pDef) + '% de lo revisado</div></div>' +
-        '<div class="k"><div class="r">Segundas</div><div class="g rojo">' + n0(mL.seg) + '</div>' +
-          '<div class="o">' + n1(mL.pSeg) + '% de lo revisado</div></div>' +
-      '</div>';
+    const banda = bandaMetricas(mL);
     return '<div class="col8"><div class="panel">' +
         '<div class="pt">' + esc(L) + ' — defectos sobre lo revisado</div>' +
         '<div class="ph">Cada barra es el % de las prendas revisadas de esta línea que salió con esa falla.</div>' +
