@@ -1873,7 +1873,7 @@ function htmlTabs(){
   '</div></div>' +
 
   '<div class="tabpane' + (TAB_ACT===1?' active':'') + '"><div class="grid">' +
-    panel('col8','Los defectos que más pesan','Cada barra es qué parte del total de prendas con defecto le corresponde a esa falla: las barras suman 100%. La línea verde va acumulando esas mismas barras, así se ve cuántas fallas concentran la mayor parte del problema.','<div class="cwrap tall"><canvas id="chPar"></canvas></div>') +
+    panel('col8','Los defectos que más pesan','Cada barra es el porcentaje de las prendas revisadas que salió con esa falla, y debajo la cantidad. La línea verde acumula el peso de cada falla dentro del total de prendas con defecto: donde llega al 80% están las pocas fallas que explican casi todo el problema.','<div class="cwrap tall"><canvas id="chPar"></canvas></div>') +
     panel('col4','Peso de cada grupo','% sobre el total de prendas con defecto del período.','<div class="cwrap tall"><canvas id="chCat"></canvas></div><div id="bxSplit"></div>') +
   '</div></div>' +
 
@@ -1888,7 +1888,7 @@ function htmlTabs(){
 
   '<div class="tabpane' + (TAB_ACT===4?' active':'') + '"><div class="grid">' +
     panel('col12','Eficiencia por inspectora','Debajo de cada barra, el lote trabajado: carga más re-inspección. Incluye la prenda de servicio.','<div class="cwrap"><canvas id="chEfiInsR"></canvas></div>') +
-    panel('col8','Los defectos que más pesan — todas las líneas','Las barras suman 100%: cada una es la parte del total de prendas con defecto que le corresponde a esa falla. Debajo, la cantidad de prendas.','<div class="cwrap"><canvas id="chParR"></canvas></div>') +
+    panel('col8','Los defectos que más pesan — todas las líneas','Cada barra es el porcentaje de las prendas revisadas que salió con esa falla, y debajo la cantidad de prendas.','<div class="cwrap"><canvas id="chParR"></canvas></div>') +
     panel('col4','Peso de cada grupo — todas las líneas','% sobre el total de prendas con defecto del período.','<div class="cwrap"><canvas id="chCatR"></canvas></div>') +
     '<div class="col12"><div class="panel"><div class="pt">Defectos por línea</div>' +
       '<div class="ph">Para cada línea de producción, sus defectos más pesados y el peso de cada grupo al costado. Ambos se calculan sobre los defectos de esa línea, no sobre el total.</div>' +
@@ -1903,7 +1903,7 @@ function htmlTabs(){
   '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = prendas con defecto ÷ prendas revisadas. % Segundas = prendas marcadas como segundas ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos asistidos, donde los minutos asistidos son las horas de turno menos las improductivas menos 45 minutos de refrigerio por cada turno de 4 horas o más. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
   '<p><b>Eficiencia.</b> El T. STD es el tiempo estándar en minutos que debería tomar inspeccionar una prenda de ese estilo. Las prendas re-inspeccionadas suman porque se revisaron dos veces; las primeras especiales no suman aparte, porque ya venían dentro de la carga. Del tiempo disponible se descuentan las horas improductivas y <b>45 minutos de refrigerio</b> por cada turno de 4 horas o más. Si un registro no tiene T. STD aporta cero minutos y la eficiencia baja: por eso el tablero avisa cuando hay estilos sin T. STD.</p>' +
   '<p><b>Lo que no descuenta.</b> <b>Primeras especiales</b> no resta: la prenda sale igual como primera, así que ya está contada en el % de primeras y no aparece en los gráficos de defectos. <b>Re-inspección</b> tampoco resta prendas, pero sí suma tiempo trabajado.</p>' +
-  '<p><b>El gráfico de defectos.</b> Cada barra dice qué parte del total de prendas con defecto le corresponde a esa falla, así que <b>las barras suman 100%</b>. No es el porcentaje sobre las prendas revisadas: ese aparece al pasar el cursor y en la columna “% de lo revisado” de la tabla de abajo. La línea verde va acumulando las barras: donde llega al 80% están las pocas fallas que explican casi todo el problema.</p>' +
+  '<p><b>El gráfico de defectos.</b> Cada barra es el <b>porcentaje sobre las prendas revisadas</b>: si dice 6,5%, quiere decir que 6 o 7 de cada 100 prendas revisadas salieron con esa falla. Debajo va la cantidad exacta. Como cada barra se mide sobre lo revisado, <b>no suman 100%</b>: entre todas suman el % con defecto del período. La línea verde es distinta: acumula el peso de cada falla dentro del total de prendas con defecto, y donde llega al 80% están las pocas fallas que explican casi todo el problema. Al pasar el cursor salen las dos cifras.</p>' +
   '<p><b>Eficiencia por inspectora.</b> Se calcula con los mismos minutos producidos y minutos asistidos, separando los registros de cada una. Solo aparecen las que tienen hora de inicio y final registradas; sin horas no hay divisor y la barra no se puede dibujar.</p>' +
   '<p><b>Exportar reporte.</b> El botón de arriba descarga un archivo con la pestaña Reporte y los datos guardados dentro. Se abre con doble clic, no necesita conexión y los filtros de período siguen funcionando, así que quien lo reciba puede mirar otro día o mes sin pedir nada. Para tenerlo en PDF, se abre el archivo y se imprime con Ctrl+P eligiendo Guardar como PDF.</p>' +
   '<p><b>Los números sobre los gráficos.</b> Cada barra lleva su porcentaje y, debajo en letra chica, la cantidad de prendas, sin tener que pasar el cursor. Si dos etiquetas se fueran a encimar, la segunda no se dibuja. En la línea de tendencia, con muchos días se escriben salteadas.</p>' +
@@ -2244,8 +2244,8 @@ function pintarDefectosDash(rows, A){
         plugins:[pluginEtiquetas({datasets:[0], minimo:0.05,
           segundaLinea:function(j){ return n0(top[j].v) + ' prendas'; }})],
         data:{labels:top.map(o=>defs[o.i].defecto), datasets:[
-          {type:'bar', label:'% del total de prendas con defecto',
-           data:top.map(o=>+pct(o.v, A.def).toFixed(1)),
+          {type:'bar', label:'% de las prendas revisadas',
+           data:top.map(o=>+pct(o.v, A.carga).toFixed(2)),
            backgroundColor:colores, borderRadius:4, yAxisID:'y'},
           {type:'line', label:'% acumulado', data:acumPct,
            borderColor:'#0F7A5A', borderWidth:2.2, tension:.25, pointRadius:3, yAxisID:'y1'}
@@ -2255,13 +2255,12 @@ function pintarDefectosDash(rows, A){
             tooltip:{callbacks:{label:c=>{
               const o = top[c.dataIndex];
               return c.datasetIndex === 0
-                ? n0(o.v) + ' prendas · ' + n1(c.raw) + '% de las ' + n0(A.def) +
-                  ' con defecto · ' + n1(pct(o.v, A.carga)) + '% de las ' + n0(A.carga) + ' revisadas'
-                : 'Acumulado: ' + n1(c.raw) + '%';
+                ? n0(o.v) + ' prendas · ' + n1(pct(o.v, A.carga)) + '% de las ' + n0(A.carga) +
+                  ' revisadas · ' + n1(pct(o.v, A.def)) + '% de las ' + n0(A.def) + ' con defecto'
+                : 'Acumulado sobre el total de defectos: ' + n1(c.raw) + '%';
             }}}},
-          scales:{y:{beginAtZero:true, max:112, grid:{color:'#F1F6F4'},
-              title:{display:true,text:'% del total de defectos'},
-              ticks:{callback:v=> v > 100 ? '' : v+'%', stepSize:20}},
+          scales:{y:{beginAtZero:true, grace:'22%', grid:{color:'#F1F6F4'},
+              title:{display:true,text:'% de lo revisado'}, ticks:{callback:v=>v+'%'}},
             y1:{position:'right', beginAtZero:true, max:100, grid:{display:false},
                 title:{display:true,text:'% acumulado'}, ticks:{callback:v=>v+'%'}},
             x:{grid:{display:false}, ticks:{maxRotation:60, minRotation:30, font:{size:10}}}}}
@@ -2323,7 +2322,9 @@ function totalesDefectosDe(rows){
   rows.forEach(f=> detPares(f).forEach(par=>{ if(par[0] < tot.length) tot[par[0]] += par[1]; }));
   return tot.map((v,i)=>({i:i, v:v})).filter(o=>o.v>0 && defs[o.i].resta).sort((a,b)=>b.v-a.v);
 }
-function paretoEn(canvasId, lista, totalDef, cuantos){
+/* Barras = % de las prendas revisadas afectadas por cada falla, con la
+   cantidad debajo. Es el número que se usa en piso.                      */
+function paretoEn(canvasId, lista, carga, totalDef, cuantos){
   if(!window.Chart) return null;
   const el = document.getElementById(canvasId);
   if(!el) return null;
@@ -2331,19 +2332,22 @@ function paretoEn(canvasId, lista, totalDef, cuantos){
   const top = lista.slice(0, cuantos || 12);
   const colores = top.map((o,i)=>degradado(i, top.length, 'azul'));
   return new Chart(el, {
-    plugins:[pluginEtiquetas({datasets:[0], minimo:0.05,
+    plugins:[pluginEtiquetas({datasets:[0], minimo:0.005,
       segundaLinea:function(j){ return n0(top[j].v) + ' prendas'; }})],
     data:{labels:top.map(o=>defs[o.i].defecto), datasets:[
-      {type:'bar', label:'% del total de prendas con defecto',
-       data:top.map(o=>+pct(o.v, totalDef).toFixed(1)),
+      {type:'bar', label:'% de las prendas revisadas',
+       data:top.map(o=>+pct(o.v, carga).toFixed(2)),
        backgroundColor:colores, borderRadius:4}
     ]},
     options:{responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:false},
-        tooltip:{callbacks:{label:c=> n0(top[c.dataIndex].v) + ' prendas · ' + n1(c.raw) +
-          '% de las ' + n0(totalDef) + ' con defecto'}}},
-      scales:{y:{beginAtZero:true, max:112, grid:{color:'#F1F6F4'},
-          ticks:{callback:v=> v > 100 ? '' : v+'%', stepSize:20}},
+        tooltip:{callbacks:{label:c=>{
+          const o = top[c.dataIndex];
+          return n0(o.v) + ' prendas · ' + n1(pct(o.v, carga)) + '% de las ' + n0(carga) +
+                 ' revisadas · ' + n1(pct(o.v, totalDef)) + '% de las ' + n0(totalDef) + ' con defecto';
+        }}}},
+      scales:{y:{beginAtZero:true, grace:'22%', grid:{color:'#F1F6F4'},
+          title:{display:true,text:'% de lo revisado'}, ticks:{callback:v=>v+'%'}},
         x:{grid:{display:false}, ticks:{maxRotation:60, minRotation:30, font:{size:9.5}}}}}
   });
 }
@@ -2403,7 +2407,7 @@ function pintarReporte(rows, rowsEfi, A){
 
   const gen = totalesDefectosDe(rows);
   charts.catR = donutEn('chCatR', gen);
-  if(gen.length){ charts.parR = paretoEn('chParR', gen, A.def, 12); }
+  if(gen.length){ charts.parR = paretoEn('chParR', gen, A.carga, A.def, 12); }
   else{
     const e = document.getElementById('chParR');
     if(e) e.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>';
@@ -2421,7 +2425,7 @@ function pintarReporte(rows, rowsEfi, A){
     const sub = n0(mL.carga) + ' prendas revisadas · ' + n0(mL.def) +
                 ' con defecto (' + n1(mL.pDef) + '%) · ' + n1(mL.pPri) + '% primeras';
     return '<div class="col8"><div class="panel">' +
-        '<div class="pt">' + esc(L) + ' — defectos que más pesan</div>' +
+        '<div class="pt">' + esc(L) + ' — defectos sobre lo revisado</div>' +
         '<div class="ph">' + sub + '</div>' +
         '<div class="cwrap"><canvas id="chLinRep' + i + '"></canvas></div></div></div>' +
       '<div class="col4"><div class="panel">' +
@@ -2441,7 +2445,7 @@ function pintarReporte(rows, rowsEfi, A){
       if(e2) e2.parentNode.innerHTML = aviso;
       return;
     }
-    charts['linRep'+i] = paretoEn('chLinRep' + i, lista, mL.def, 8);
+    charts['linRep'+i] = paretoEn('chLinRep' + i, lista, mL.carga, mL.def, 8);
     charts['linDon'+i] = donutEn('chLinDon' + i, lista);
   });
 }
