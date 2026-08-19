@@ -4,28 +4,2423 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LIVES — Tablero Inspección Final Costura</title>
-
-<!-- Este archivo solo abre el tablero. Toda la lógica y los datos viven en
-     index.html, así que no hay dos versiones que mantener: cualquier cambio
-     que se haga al tablero aparece aquí solo. -->
-<meta http-equiv="refresh" content="0; url=./index.html#tablero">
-<link rel="canonical" href="./index.html#tablero">
-<script>location.replace('./index.html#tablero');</script>
-
+<link rel="icon" href="data:image/png;base64,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">
+<!--DATOS-->
 <style>
-body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;
-background:#F1F6F4;font-family:Calibri,Arial,sans-serif;color:#5F726C;font-size:14px;}
-.caja{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(14,59,54,.06);
-padding:24px 28px;text-align:center;border-top:3px solid #10B981;}
-.caja b{color:#0E3B36;font-size:16px;display:block;margin-bottom:6px;}
-a{color:#0F7A5A;font-weight:700;}
+:root{
+  --petrol:#0E3B36; --petrol-2:#12463F; --emer:#10B981;
+  --sage:#0F7A5A; --sage-dark:#0B815E; --slate:#4E6B78;
+  --taupe:#B45309; --rose:#DC2626; --tan:#F59E0B;
+  --warm:#DCE5E2; --warm-light:#F1F6F4; --stone:#5F726C;
+  --card:#fff;
+  --sh:0 1px 3px rgba(14,59,54,.06),0 1px 2px rgba(14,59,54,.04);
+  --sh-h:0 4px 12px rgba(14,59,54,.10);
+  --r:12px;
+}
+body{margin:0;background:var(--warm-light);color:#333;
+font-family:Calibri,Arial,sans-serif;font-size:14px;line-height:1.45;
+font-variant-numeric:tabular-nums;}
+*{box-sizing:border-box;}
+
+.header{background:var(--petrol);border-bottom:3px solid var(--emer);min-height:70px;
+display:flex;align-items:center;gap:16px;padding:0 22px;flex-wrap:wrap;}
+.header img{height:38px;display:block;}
+.divider{width:1px;height:34px;background:rgba(255,255,255,.3);}
+.htitle{color:#fff;font-size:17px;font-weight:700;letter-spacing:.2px;}
+.hsub{color:#B9CFC9;font-size:11.5px;}
+.hstate{margin-left:auto;color:#B9CFC9;font-size:11.5px;text-align:right;}
+.btn-tablero{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);
+color:#fff;font-family:inherit;font-size:13px;font-weight:700;border-radius:8px;
+padding:9px 16px;cursor:pointer;min-height:42px;}
+.btn-tablero:hover{background:var(--emer);border-color:var(--emer);color:#06312A;}
+
+.wrap{width:100%;max-width:1180px;margin:0 auto;padding:18px 22px 60px;}
+
+.panel{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
+padding:16px 18px;margin-bottom:14px;}
+.panel .pt{font-size:15px;font-weight:700;}
+.panel .ph{font-size:11.5px;color:var(--stone);margin-top:2px;margin-bottom:12px;}
+.pthead{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.pthead .sp{margin-left:auto;}
+
+label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.5px;
+text-transform:uppercase;color:var(--stone);margin-bottom:4px;}
+select,input[type=text],input[type=date],input[type=time],input[type=number]{
+font-family:inherit;font-size:14px;font-weight:700;color:var(--sage);
+border:1px solid var(--warm);border-radius:8px;padding:9px 12px;background:#fff;
+width:100%;min-height:42px;}
+select:focus,input:focus{outline:none;border-color:var(--sage);}
+input::placeholder,textarea::placeholder{color:#B6C4BF;font-weight:400;}
+textarea{font-family:inherit;font-size:14px;color:#333;border:1px solid var(--warm);
+border-radius:8px;padding:10px 12px;background:#fff;width:100%;resize:vertical;line-height:1.4;}
+textarea:focus{outline:none;border-color:var(--sage);}
+.hint.mal b{color:var(--rose);}
+.obscell{max-width:230px;white-space:pre-wrap;word-break:break-word;}
+
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+.btn{font-family:inherit;font-size:13px;font-weight:700;border-radius:8px;padding:10px 16px;
+cursor:pointer;border:1px solid var(--warm);background:#fff;color:var(--sage);min-height:42px;}
+.btn:hover{border-color:var(--sage);}
+.btn.primary{background:var(--sage);color:#fff;border-color:var(--sage);}
+.btn.primary:hover{background:var(--sage-dark);}
+.btn.ghost{color:var(--stone);}
+.btn.small{font-size:12px;padding:7px 12px;min-height:36px;}
+.btn.danger{color:var(--rose);}
+.btn.danger:hover{border-color:var(--rose);}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+
+.hint{font-size:11.5px;color:var(--stone);margin-top:5px;}
+.hint b{color:var(--sage-dark);}
+
+.stepwrap{display:flex;gap:6px;align-items:stretch;}
+.stepwrap input{flex:1;}
+.stepbtn{width:44px;min-height:42px;border:1px solid var(--warm);background:#fff;
+border-radius:8px;font-size:20px;font-weight:700;color:var(--sage);cursor:pointer;
+line-height:1;flex:none;}
+input.spin{padding-right:4px;}
+input.spin::-webkit-inner-spin-button,
+input.spin::-webkit-outer-spin-button{opacity:1;height:36px;cursor:pointer;}
+input.spin{-moz-appearance:number-input;}
+.solo-movil{display:none;}
+@media(max-width:760px){ .solo-movil{display:block;} }
+.stepbtn:hover{border-color:var(--sage);background:var(--warm-light);}
+.stepbtn:active{background:var(--sage);color:#fff;border-color:var(--sage);}
+.timegrp{display:flex;gap:8px;align-items:center;}
+.timegrp select{flex:1 1 0;min-width:70px;padding:9px 8px;text-align:center;text-align-last:center;}
+.timegrp select.ap{flex:0 0 88px;}
+.tsep{font-weight:700;color:var(--stone);font-size:16px;flex:none;}
+.fgrid.horas{grid-template-columns:repeat(auto-fit,minmax(285px,1fr));}
+@media(max-width:400px){
+  .timegrp select{min-width:0;padding:9px 2px;}
+  .timegrp select.ap{flex:0 0 74px;}
+}
+
+.adder{display:grid;grid-template-columns:1fr 126px 120px 130px;gap:10px;align-items:end;}
+.deflist{list-style:none;margin:12px 0 0;padding:0;}
+.deflist li{display:grid;grid-template-columns:88px 1fr auto auto;align-items:center;
+gap:10px;padding:9px 0;border-bottom:1px solid var(--warm-light);}
+.deflist .nm{font-size:13px;font-weight:700;}
+.deflist .nr{font-size:10px;font-weight:700;color:var(--slate);background:#EDF1F3;
+padding:2px 7px;border-radius:20px;margin-left:6px;white-space:nowrap;}
+.tagc{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;text-align:center;
+letter-spacing:.3px;}
+.tagc.COMPOSTURA{background:#E7F4EF;color:var(--sage);}
+.tagc.MANCHAS{background:#FEF3E2;color:var(--taupe);}
+.tagc.ZURCIDO{background:#EDF1F3;color:var(--slate);}
+.tagc.LIMPIEZA{background:#E8F0FA;color:#2563EB;}
+.tagc.SEGUNDAS{background:#FCEBEB;color:var(--rose);}
+.tagc.NODESCUENTAN{background:#EDF1F3;color:var(--slate);}
+.tagc.OTROS{background:#F1F1F1;color:#666;}
+.qty{display:flex;align-items:center;gap:4px;}
+.qty button{width:40px;height:40px;border:1px solid var(--warm);background:#fff;
+border-radius:8px;font-size:19px;font-weight:700;color:var(--sage);cursor:pointer;line-height:1;}
+.qty button:hover{border-color:var(--sage);background:var(--warm-light);}
+.qty button:active{background:var(--sage);color:#fff;}
+.qty .n{min-width:46px;text-align:center;font-size:17px;font-weight:700;}
+.del{border:none;background:none;color:var(--rose);font-size:17px;cursor:pointer;padding:4px 8px;}
+.vacio2{font-size:12.5px;color:var(--stone);padding:14px 0;}
+
+.totbar{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;}
+.tot{background:var(--warm-light);border-radius:var(--r);padding:12px 14px;position:relative;
+overflow:hidden;}
+.tot::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--slate);}
+.tot.def::after{background:var(--rose);}
+.tot.nor::after{background:var(--tan);}
+.tot.pri::after{background:var(--sage);}
+.tot .l{font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--stone);}
+.tot .v{font-size:28px;font-weight:700;line-height:1.1;color:var(--slate);}
+.tot.def .v{color:var(--rose);} .tot.pri .v{color:var(--sage);} .tot.nor .v{color:var(--taupe);}
+.tot .s{font-size:11px;color:var(--stone);}
+
+.alerta{display:none;background:#FCEBEB;border-left:4px solid var(--rose);color:#8A1F1F;
+border-radius:0 8px 8px 0;padding:10px 14px;margin-top:12px;font-size:13px;font-weight:700;}
+.alerta.on{display:block;}
+.alerta.aviso{background:#EDF3FA;border-left-color:#2563EB;color:#1E4D6B;font-weight:400;}
+.avisoinfo{background:var(--card);border-left:4px solid var(--tan);border-radius:0 var(--r) var(--r) 0;
+box-shadow:var(--sh);padding:12px 16px;margin-bottom:14px;font-size:13.5px;}
+.avisoinfo b{color:var(--sage-dark);}
+
+.acciones{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;
+color:var(--stone);border-bottom:1px solid var(--warm);padding:8px 6px;}
+td{padding:8px 6px;border-bottom:1px solid var(--warm-light);vertical-align:top;}
+tr:hover td{background:var(--warm-light);}
+tfoot td{font-weight:700;font-size:14px;border-top:2px solid var(--warm);border-bottom:none;
+background:var(--warm-light);}
+.num{text-align:right;}
+.mini{font-size:11px;color:var(--stone);}
+.tablescroll{overflow-x:auto;}
+.acc{display:flex;gap:4px;}
+.iconbtn{border:1px solid var(--warm);background:#fff;border-radius:6px;cursor:pointer;
+font-size:13px;padding:5px 9px;color:var(--sage);font-family:inherit;font-weight:700;}
+.iconbtn:hover{border-color:var(--sage);}
+.iconbtn.d{color:var(--rose);} .iconbtn.d:hover{border-color:var(--rose);}
+
+details.help{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
+padding:12px 16px;margin-top:18px;font-size:13px;}
+details.help summary{cursor:pointer;font-weight:700;color:var(--sage-dark);}
+details.help p{color:var(--stone);margin:8px 0 0;}
+details.help b{color:#333;}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
+background:var(--petrol);color:#fff;padding:13px 22px;border-radius:30px;font-weight:700;
+font-size:14px;box-shadow:var(--sh-h);opacity:0;transition:.28s;z-index:300;pointer-events:none;
+max-width:92vw;text-align:center;}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.err{background:var(--rose);}
+
+/* ---------------- ventanas emergentes ---------------- */
+.overlay{display:none;position:fixed;inset:0;background:rgba(14,59,54,.55);z-index:100;padding:22px;}
+.overlay.on{display:block;}
+.oinner{background:var(--warm-light);border-radius:var(--r);box-shadow:0 18px 50px rgba(14,59,54,.35);
+width:100%;max-width:1440px;height:100%;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;}
+.obar{background:var(--petrol);border-bottom:3px solid var(--emer);padding:12px 18px;
+display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex:none;}
+.obar .ot{color:#fff;font-size:16px;font-weight:700;}
+.obar .os{color:#B9CFC9;font-size:11.5px;}
+.obar .osp{margin-left:auto;}
+.obar button{font-family:inherit;font-size:13px;font-weight:700;border-radius:8px;
+padding:8px 15px;cursor:pointer;min-height:40px;border:1px solid rgba(255,255,255,.35);
+background:rgba(255,255,255,.12);color:#fff;}
+.obar button:hover{background:rgba(255,255,255,.24);}
+.obar button.pri{background:var(--emer);border-color:var(--emer);color:#06312A;}
+.obar button:disabled{opacity:.5;cursor:not-allowed;}
+.obody{overflow:auto;padding:16px 18px 34px;flex:1;-webkit-overflow-scrolling:touch;}
+
+.modal{display:none;position:fixed;inset:0;background:rgba(14,59,54,.55);z-index:150;
+padding:22px;overflow:auto;}
+.modal.on{display:block;}
+.mbox{background:var(--card);border-radius:var(--r);box-shadow:0 18px 50px rgba(14,59,54,.35);
+width:100%;max-width:820px;margin:0 auto;overflow:hidden;}
+.mbox.sm{max-width:520px;}
+.mhead{background:var(--petrol);border-bottom:3px solid var(--emer);padding:13px 18px;
+display:flex;align-items:center;gap:12px;}
+.mhead .t{color:#fff;font-size:15.5px;font-weight:700;}
+.mhead .s{color:#B9CFC9;font-size:11.5px;}
+.mhead .x{margin-left:auto;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.35);
+color:#fff;font-family:inherit;font-weight:700;border-radius:8px;padding:7px 13px;cursor:pointer;}
+.mbody{padding:16px 18px;}
+.mfoot{padding:12px 18px 16px;display:flex;gap:10px;flex-wrap:wrap;}
+.mfoot .sp{margin-left:auto;}
+
+/* ---------------- tablero ---------------- */
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--card);
+border-radius:var(--r);box-shadow:var(--sh);padding:10px 14px;margin-bottom:14px;
+position:sticky;top:-16px;z-index:15;}
+.bar .lb{font-size:10.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+color:var(--stone);margin-right:-4px;}
+.bar select,.bar input{width:auto;min-height:40px;font-size:13.5px;padding:7px 12px;}
+.seg{display:inline-flex;background:var(--warm-light);border-radius:8px;padding:3px;gap:2px;}
+.seg button{background:none;border:none;font-family:inherit;font-size:13px;font-weight:700;
+color:var(--stone);padding:7px 14px;border-radius:6px;cursor:pointer;}
+.seg button.active{background:var(--sage);color:#fff;box-shadow:var(--sh);}
+
+.kpihead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:2px 0 8px;}
+.kpihead .t{font-size:15px;font-weight:700;color:var(--petrol);}
+.kpihead .t span{color:var(--sage-dark);}
+.kpihead .s{font-size:11.5px;color:var(--stone);}
+.kpiper{font-size:9.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+color:var(--slate);background:var(--warm-light);padding:2px 7px;border-radius:20px;
+margin-left:5px;vertical-align:middle;}
+
+.verdict{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:var(--r);
+box-shadow:var(--sh);padding:16px 20px;margin-bottom:14px;border-left:6px solid var(--rose);}
+.verdict .dot{width:44px;height:44px;border-radius:50%;background:#FCEBEB;color:var(--rose);
+display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex:none;}
+.verdict .t{font-size:19px;font-weight:700;color:var(--rose);line-height:1.2;}
+.verdict .s{font-size:13px;color:#333;margin-top:3px;}
+.verdict.ok{border-left-color:var(--sage);}
+.verdict.ok .dot{background:#E7F4EF;color:var(--sage);} .verdict.ok .t{color:var(--sage);}
+.verdict.warn{border-left-color:var(--tan);}
+.verdict.warn .dot{background:#FEF3E2;color:var(--taupe);} .verdict.warn .t{color:var(--taupe);}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:14px;}
+.kpi{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:14px 16px;
+position:relative;overflow:hidden;transition:box-shadow .15s,transform .15s;}
+.kpi:hover{box-shadow:var(--sh-h);transform:translateY(-1px);}
+.kpi::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sage);}
+.kpi.alert::after{background:var(--rose);} .kpi.neutro::after{background:var(--slate);}
+.kpi .l{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--stone);}
+.kpi .row{display:flex;align-items:baseline;gap:8px;margin-top:5px;}
+.kpi .v{font-size:32px;font-weight:700;line-height:1;color:var(--sage);}
+.kpi.alert .v{color:var(--rose);} .kpi.neutro .v{color:var(--slate);}
+.kpi .d{font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.d.mal{color:var(--rose);background:#FCEBEB;}
+.d.bien{color:var(--sage);background:#E7F4EF;}
+.d.flat{color:var(--stone);background:var(--warm-light);}
+.kpi .s{font-size:11.5px;color:var(--stone);margin-top:3px;}
+.kpi .spark{height:26px;margin-top:6px;position:relative;}
+.kpi .spark canvas{position:absolute;inset:0;}
+
+.insight{background:var(--card);border-left:4px solid var(--tan);border-radius:0 var(--r) var(--r) 0;
+box-shadow:var(--sh);padding:12px 16px;margin-bottom:16px;font-size:13.5px;}
+.insight b{color:var(--sage-dark);}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--warm);margin:22px 0 14px;flex-wrap:wrap;}
+.tabs button{background:none;border:none;font-family:inherit;font-size:13.5px;font-weight:700;
+color:var(--stone);padding:10px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px;}
+.tabs button:hover{color:var(--sage);}
+.tabs button.active{color:var(--sage-dark);border-bottom-color:var(--sage);}
+.tabpane{display:none;} .tabpane.active{display:block;}
+
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;}
+.col12{grid-column:span 12;} .col8{grid-column:span 8;}
+.col6{grid-column:span 6;} .col4{grid-column:span 4;}
+@media(max-width:1100px){.col8,.col6,.col4{grid-column:span 12;}}
+
+.cwrap{position:relative;width:100%;height:clamp(290px,32vh,390px);}
+.cwrap.tall{height:clamp(290px,32vh,390px);}
+.cwrap canvas{position:absolute;inset:0;}
+
+.rank{list-style:none;margin:0;padding:0;}
+.rank li{display:grid;grid-template-columns:24px 1fr 62px;align-items:center;gap:10px;
+padding:9px 0;border-bottom:1px solid var(--warm-light);}
+.rank .n{width:24px;height:24px;border-radius:50%;background:var(--warm-light);color:var(--stone);
+font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;}
+.rank .nm{font-size:13px;font-weight:700;}
+.rank .track{height:7px;background:var(--warm-light);border-radius:4px;margin-top:5px;overflow:hidden;}
+.rank .fill{height:100%;border-radius:4px;width:0;background:var(--sage);
+transition:width .9s cubic-bezier(.2,.8,.2,1);}
+.rank .val{text-align:right;font-size:15px;font-weight:700;color:var(--sage);}
+.rank .sub{font-size:11px;color:var(--stone);font-weight:400;}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.split3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+.mini-kpi{background:var(--warm-light);border-radius:10px;padding:11px 13px;position:relative;overflow:hidden;}
+.mini-kpi::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--taupe);}
+.mini-kpi.b::after{background:var(--slate);}
+.mini-kpi.g::after{background:var(--sage);}
+.mini-kpi .l{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--stone);}
+.mini-kpi .v{font-size:23px;font-weight:700;color:var(--taupe);line-height:1.15;}
+.mini-kpi.b .v{color:var(--slate);}
+.mini-kpi.g .v{color:var(--sage);}
+.mini-kpi .s{font-size:11px;color:var(--stone);}
+.nota{font-size:12px;color:var(--stone);background:var(--warm-light);border-radius:8px;
+padding:9px 11px;margin-top:10px;}
+.nota b{color:var(--sage-dark);}
+
+.pill{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;}
+.pill.ok{background:#E7F4EF;color:var(--sage);}
+.pill.warn{background:#FEF3E2;color:var(--taupe);}
+.pill.bad{background:#FCEBEB;color:var(--rose);}
+.pill.gris{background:#EDF1F3;color:var(--slate);}
+
+.dAviso{background:var(--card);border-left:4px solid var(--tan);border-radius:0 var(--r) var(--r) 0;
+box-shadow:var(--sh);padding:12px 16px;margin-bottom:14px;font-size:13.5px;}
+.dAviso b{color:var(--sage-dark);}
+.dAviso.snap{border-left-color:var(--slate);}
+.vacio{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:34px;
+text-align:center;color:var(--stone);}
+
+/* ---------------- portada del reporte impreso ---------------- */
+#printHead{display:none;}
+#printHead .rt{font-size:23px;font-weight:700;color:var(--petrol);}
+#printHead .rs{font-size:12.5px;color:var(--stone);margin-top:2px;}
+#printHead .rlogo{height:30px;}
+#printHead .rtop{display:flex;align-items:center;gap:14px;
+border-bottom:2px solid var(--emer);padding-bottom:8px;margin-bottom:10px;}
+#printHead .rexp{font-size:11.5px;color:var(--stone);margin-top:8px;line-height:1.45;}
+#printHead .rexp b{color:#333;}
+
+body.solotab #app{display:none;}
+body.solotab .header .btn-tablero{display:none!important;}
+body.solotab .overlay{display:block;position:static;background:none;padding:0;}
+body.solotab .oinner{max-width:1440px;height:auto;border-radius:0;box-shadow:none;
+background:transparent;overflow:visible;}
+/* En modo tablero la cabecera verde de la página ya lleva el título, así que
+   la barra del panel se queda solo con los botones, sin repetirlo. */
+body.solotab .obar,body.snap .obar{background:transparent;border-bottom:none;
+padding:14px 22px 0;}
+body.solotab .obar .ot,body.snap .obar .ot{display:none;}
+body.solotab .obar .os,body.snap .obar .os{color:var(--stone);font-size:12px;}
+body.solotab .obar button,body.snap .obar button{border-color:var(--warm);
+background:#fff;color:var(--sage);}
+body.solotab .obar button:hover,body.snap .obar button:hover{border-color:var(--sage);
+background:var(--warm-light);}
+body.solotab .obar button.pri,body.snap .obar button.pri{background:var(--sage);
+border-color:var(--sage);color:#fff;}
+body.solotab .obar button.pri:hover,body.snap .obar button.pri:hover{background:var(--sage-dark);}
+body.solotab #btnCerrar{display:none;}
+body.solotab .obody{overflow:visible;padding:16px 22px 44px;}
+body.solotab .bar{position:sticky;top:0;}
+
+body.snap #app{display:none;}
+body.snap .header .btn-tablero{display:none!important;}
+body.snap .overlay{display:block;position:static;background:none;padding:0;}
+body.snap .oinner{max-width:1440px;height:auto;border-radius:0;box-shadow:none;
+background:transparent;overflow:visible;}
+body.snap #btnCerrar,body.snap #btnExp,body.snap #btnRef{display:none;}
+body.snap .obody{overflow:visible;padding:16px 22px 44px;}
+body.snap .bar{position:sticky;top:0;}
+
+@media(max-width:760px){
+  .wrap{padding:14px 12px 60px;}
+  .adder{grid-template-columns:1fr;}
+  .totbar{grid-template-columns:1fr 1fr;}
+  .deflist li{grid-template-columns:1fr auto auto;}
+  .deflist .tagc{display:none;}
+  .header{padding:10px 14px;}
+  .hstate{margin-left:0;width:100%;text-align:left;}
+  table{min-width:560px;}
+  .overlay,.modal{padding:0;}
+  .oinner{border-radius:0;}
+  .mbox{border-radius:0;min-height:100%;}
+  .obody{padding:12px 12px 30px;}
+  .kpi:hover{transform:none;box-shadow:var(--sh);}
+  .kpi .spark{display:none;}
+  .cwrap,.cwrap.tall{height:260px;}
+  .tabs{flex-wrap:nowrap;overflow-x:auto;gap:0;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tabs button{flex:none;padding:12px 14px;}
+  .split,.split3{grid-template-columns:1fr;}
+  .bar{position:static;}
+}
+
+@media print{
+  @page{size:A4 landscape;margin:9mm;}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  #app,.header,.bar,.tabs,.obar,details.help,.toast,.no-print,.modal,.dAviso{display:none!important;}
+  body{background:#fff!important;}
+  .overlay{display:block!important;position:static!important;background:none!important;padding:0!important;}
+  .oinner{height:auto!important;box-shadow:none!important;background:#fff!important;overflow:visible!important;}
+  .obody{overflow:visible!important;padding:0!important;}
+  .tabpane{display:block!important;}
+  #printHead{display:block!important;margin-bottom:10px;}
+  .panel,.kpi,.insight,.verdict{box-shadow:none;border:1px solid var(--warm);break-inside:avoid;}
+  .cwrap,.cwrap.tall{height:165px!important;}
+  .grid{gap:8px;}
+}
 </style>
 </head>
 <body>
-  <div class="caja">
-    <b>Tablero de Inspección Final — Costura</b>
-    Abriendo el tablero…<br>
-    Si no carga solo, <a href="./index.html#tablero">entra por aquí</a>.
+
+<div class="header">
+  <img src="data:image/png;base64,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" alt="LIVES">
+  <div class="divider"></div>
+  <div>
+    <div class="htitle">Formato de Inspección Final — Área de Costura</div>
+    <div class="hsub">Dpto. Ingeniería · registro digital por estilo</div>
   </div>
+  <div class="hstate" id="hstate">Cargando catálogos…</div>
+  <button class="btn-tablero" onclick="abrirTablero()" style="display:none">📊 Ver tablero</button>
+</div>
+
+<div id="app">
+<div class="wrap">
+
+  <div class="avisoinfo" id="aviso" style="display:none"></div>
+
+  <!-- 1. CABECERA -->
+  <div class="panel">
+    <div class="pt">1. Datos de la inspección</div>
+    <div class="ph">Se llena una sola vez y queda fijo. Al guardar un estilo, estos datos NO se borran: solo se limpia el estilo para registrar el siguiente. Si cambias de línea, cambia el selector y sigue registrando: cada registro guarda la línea que estaba activa.</div>
+    <div class="fgrid">
+      <div>
+        <label>Nombre y apellido</label>
+        <select id="inspectora"><option value="">— Cargando —</option></select>
+      </div>
+      <div>
+        <label>Línea</label>
+        <select id="linea"><option value="">— Cargando —</option></select>
+      </div>
+      <div>
+        <label>Fecha</label>
+        <input type="date" id="fecha">
+      </div>
+    </div>
+
+    <div class="fgrid horas" style="margin-top:12px">
+      <div>
+        <label>Hora inicio <span class="mini">(opcional)</span></label>
+        <div class="timegrp">
+          <select id="hini_h"></select>
+          <span class="tsep">:</span>
+          <select id="hini_m"></select>
+          <select id="hini_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
+        </div>
+      </div>
+      <div>
+        <label>Hora final <span class="mini">(opcional)</span></label>
+        <div class="timegrp">
+          <select id="hfin_h"></select>
+          <span class="tsep">:</span>
+          <select id="hfin_m"></select>
+          <select id="hfin_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
+        </div>
+      </div>
+      <div>
+        <label>Horas improductivas <span class="mini">(opcional)</span></label>
+        <input type="number" id="horasImp" min="0" step="0.5" placeholder="0">
+        <div class="hint" id="hintHoras">Horas de turno: <b>—</b></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ESTILO, CARGA Y T. STD -->
+  <div class="panel">
+    <div class="pt">2. Estilo, carga y tiempo estándar</div>
+    <div class="ph">Carga = cantidad de prendas revisadas en ese estilo. Si son varias cargas, escríbelas separadas por espacio o con “+” (ejemplo: <b>20 30</b> o <b>10+10</b>) y el sistema las suma solo. Si fue una <b>re-inspección suelta</b>, de prendas que le trajeron y que no son de una carga propia, deja la carga vacía y anota la cantidad en RE-INSPECC.</div>
+    <div class="fgrid">
+      <div>
+        <label>Estilo</label>
+        <input type="text" id="estilo" list="listaEstilos" placeholder="Ej. 23581" autocomplete="off">
+        <datalist id="listaEstilos"></datalist>
+        <div class="hint" id="hintEstilo">Si el estilo es nuevo, escríbelo igual: queda guardado para la próxima vez.</div>
+      </div>
+      <div>
+        <label>Carga</label>
+        <div class="stepwrap">
+          <button class="stepbtn" type="button" onclick="pasoCarga(-1)">−</button>
+          <input type="text" id="carga" inputmode="numeric" placeholder="20  o  20 30" autocomplete="off">
+          <button class="stepbtn" type="button" onclick="pasoCarga(1)">+</button>
+        </div>
+        <div class="hint">Carga total: <b id="cargaCalc">0</b> prendas</div>
+      </div>
+      <div>
+        <label>T. STD <span class="mini">(minutos por prenda)</span></label>
+        <input type="number" id="std" min="0" step="0.05" placeholder="1.20" class="spin">
+        <div class="hint" id="hintStd">Aparece solo si el estilo ya lo tiene. Se puede cambiar aquí.</div>
+      </div>
+    </div>
+    <div class="acciones" style="margin-top:10px">
+      <button class="btn small" type="button" onclick="fijarSTD()">Guardar este T. STD para el estilo</button>
+    </div>
+  </div>
+
+  <!-- 3. DEFECTOS -->
+  <div class="panel">
+    <div class="pt">3. Defectos encontrados</div>
+    <div class="ph">Elige el defecto, pon cuántas prendas salieron con él y agrégalo. Se cuenta <b>una prenda con un solo defecto</b>. Las filas marcadas <b>“no resta”</b> (primeras especiales y re-inspección) se registran pero no descuentan de las primeras.</div>
+
+    <div class="adder">
+      <div>
+        <label>Defecto</label>
+        <select id="selDefF"><option value="">— Cargando —</option></select>
+      </div>
+      <div>
+        <label>Cantidad</label>
+        <div class="stepwrap">
+          <button class="stepbtn solo-movil" type="button" onclick="pasoQ('F',-1)">−</button>
+          <input type="number" id="qDefF" min="1" step="1" value="1" class="spin">
+          <button class="stepbtn solo-movil" type="button" onclick="pasoQ('F',1)">+</button>
+        </div>
+      </div>
+      <div>
+        <button class="btn primary" type="button" style="width:100%" onclick="agregarDefecto('F')">+ Agregar</button>
+      </div>
+      <div>
+        <button class="btn" type="button" style="width:100%" onclick="abrirNuevoDefecto()">✚ Defecto nuevo</button>
+      </div>
+    </div>
+
+    <ul class="deflist" id="deflistF"></ul>
+    <div class="vacio2" id="defVacioF">Todavía no se agregó ningún defecto. Si la carga salió limpia, deja esto vacío y guarda: todas las prendas van como primeras.</div>
+
+    <div class="totbar">
+      <div class="tot"><div class="l">Carga</div><div class="v" id="tCargaF">0</div>
+        <div class="s">prendas revisadas</div></div>
+      <div class="tot def"><div class="l">Defectos que restan</div><div class="v" id="tDefF">0</div>
+        <div class="s">descuentan de las primeras</div></div>
+      <div class="tot nor"><div class="l">No restan</div><div class="v" id="tNorF">0</div>
+        <div class="s">1ras especiales y re-inspección</div></div>
+      <div class="tot pri"><div class="l">Primeras</div><div class="v" id="tPriF">0</div>
+        <div class="s">carga − defectos que restan</div></div>
+    </div>
+
+    <div class="alerta" id="alertaF"></div>
+
+    <div style="margin-top:14px">
+      <label>Observaciones <span class="mini">(opcional)</span></label>
+      <textarea id="obs" rows="2" maxlength="500" placeholder="Ej. Línea parada por falta de habilitado; se revisó con muestra aprobada"></textarea>
+    </div>
+
+    <div class="acciones">
+      <button class="btn primary" type="button" id="btnGuardar" onclick="guardar()">Guardar y siguiente estilo</button>
+      <button class="btn ghost" type="button" onclick="limpiarEstilo(true)">Limpiar este estilo</button>
+    </div>
+  </div>
+
+  <!-- 4. REGISTROS -->
+  <div class="panel">
+    <div class="pthead">
+      <div>
+        <div class="pt">4. Todo lo registrado</div>
+        <div class="ph">Todas las inspecciones guardadas en el sistema, no solo las de este equipo. Filtra por fecha y edita o elimina cualquier registro.</div>
+      </div>
+      <span class="sp"></span>
+      <button class="btn small" type="button" onclick="cargarDatos({full:DATA_COMPLETA})">Actualizar</button>
+    </div>
+
+    <div class="fgrid" style="margin-bottom:12px">
+      <div><label>Desde</label><input type="date" id="rDesde"></div>
+      <div><label>Hasta</label><input type="date" id="rHasta"></div>
+      <div><label>Inspectora</label><select id="rIns"><option value="">Todas</option></select></div>
+      <div><label>Línea</label><select id="rLin"><option value="">Todas</option></select></div>
+      <div style="display:flex;align-items:flex-end;gap:8px">
+        <button class="btn" type="button" style="flex:1" onclick="rangoHoy()">Hoy</button>
+        <button class="btn" type="button" style="flex:1" onclick="rangoTodo()">Todo</button>
+      </div>
+    </div>
+
+    <div class="tablescroll" id="tbRegistros"><div class="mini">Cargando registros…</div></div>
+  </div>
+
+  <details class="help">
+    <summary>¿Cómo se calcula esto?</summary>
+    <p><b>Primeras = Carga − Defectos que restan.</b> Descuentan compostura, manchas, zurcido, limpieza y segundas. <b>No descuentan</b> primeras especiales ni re-inspección: la primera especial sale igual como prenda buena, y la re-inspección es una carga que hubo que volver a revisar, no una prenda perdida.</p>
+    <p><b>T. STD.</b> Es el tiempo estándar en minutos que toma inspeccionar una prenda de ese estilo. Aparece solo cuando el estilo ya lo tiene registrado. Si el estilo es nuevo o si esa prenda toma más o menos de lo normal, se escribe aquí y ese valor queda guardado solo en ese registro. Para que quede como el tiempo oficial del estilo hay que pulsar “Guardar este T. STD para el estilo”.</p>
+    <p><b>Re-inspección suelta.</b> A veces se revisan por segunda vuelta prendas que llegan de otro lado y que no son de una carga propia. En ese caso se deja la carga vacía y solo se pone la cantidad en RE-INSPECC. Ese registro no entra en el % de primeras ni en el de defectos, porque no hubo carga que juzgar, pero sí suma tiempo trabajado para la eficiencia, que es lo correcto: ese trabajo se hizo.</p>
+    <p><b>Eficiencia.</b> Se calcula en el tablero como (prendas revisadas + prendas re-inspeccionadas) × T. STD ÷ minutos asistidos. Los minutos asistidos son las horas del turno menos las horas improductivas menos 45 minutos de refrigerio si el turno duró 4 horas o más. Es decir: los minutos producidos por lo hecho, sobre los minutos que realmente se tuvo para trabajar.</p>
+    <p><b>Horas improductivas.</b> Con la hora de inicio y la hora final el sistema calcula cuántas horas duró el turno. Ahí se escribe cuántas de esas horas no se pudo trabajar (línea parada, falta de habilitado, corte de energía). El resto son horas asistidas. Como las horas son las mismas para todos los estilos del turno, en los totales <b>cada turno se cuenta una sola vez</b>, no una vez por estilo.</p>
+    <p><b>Servicio.</b> En la lista de líneas, debajo de las líneas existentes, está la opción SERVICIO, para la prenda que no viene de una línea interna. En el tablero se puede incluir o excluir con un interruptor.</p>
+    <p><b>Observaciones.</b> Texto libre por inspección, hasta 500 caracteres. Sirve para explicar lo que los números no dicen.</p>
+    <p><b>Regla de conteo:</b> cada prenda se marca en un solo defecto, el principal. Si una prenda con mancha y puntada saltada se marca en las dos filas, esa prenda se descuenta dos veces y las primeras quedan por debajo de lo real.</p>
+    <p><b>Defecto nuevo:</b> el botón “Defecto nuevo” agrega la falla a la lista para siempre, en el grupo que elijas. Se guarda en MAYÚSCULAS y no se puede repetir. Un defecto nuevo siempre resta de las primeras.</p>
+    <p><b>Eliminar:</b> el registro desaparece del formulario y del tablero, pero la fila queda tachada en el Google Sheet con la marca ANULADO.</p>
+    <p><b>Términos:</b> <b>Carga</b> = grupo de prendas que se revisa de una vez. <b>Primeras</b> = prendas conformes. <b>Segundas</b> = prendas con falla que no se recuperan como primera. <b>Compostura</b> = falla de costura que se arregla cosiendo. <b>Zurcido</b> = falla de tela o puntada que se repara con aguja. <b>Limpieza</b> = hilos sueltos o sin cortar.</p>
+  </details>
+
+</div>
+</div>
+
+<!-- ==================== TABLERO ==================== -->
+<div class="overlay" id="overlay">
+  <div class="oinner">
+    <div class="obar">
+      <div>
+        <div class="ot">Tablero de Inspección Final — Costura</div>
+        <div class="os" id="dEstado">Cargando datos…</div>
+      </div>
+      <span class="osp"></span>
+      <button id="btnRef" onclick="cargarDatos({full:true})">Actualizar</button>
+      <button id="btnPdf" onclick="imprimirReporte()">Reporte PDF</button>
+      <button id="btnExp" class="pri" onclick="exportar()">Exportar HTML</button>
+      <button id="btnCerrar" onclick="cerrarTablero()">Cerrar ✕</button>
+    </div>
+    <div class="obody">
+      <div class="dAviso" id="dAviso" style="display:none"></div>
+      <div class="bar no-print">
+        <div class="seg" id="segGran">
+          <button data-g="dia">Diario</button>
+          <button data-g="sem">Semanal</button>
+          <button data-g="mes" class="active">Mensual</button>
+          <button data-g="anio">Anual</button>
+        </div>
+        <span class="lb">Período</span><select id="fPeriodo"></select>
+        <span class="lb">Línea</span><select id="fLinea"><option value="">Todas</option></select>
+        <span class="lb">Inspectora</span><select id="fIns"><option value="">Todas</option></select>
+      </div>
+      <div id="printHead"></div>
+      <div id="contenido"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== EDITAR REGISTRO ==================== -->
+<div class="modal" id="mdEdit">
+  <div class="mbox">
+    <div class="mhead">
+      <div><div class="t">Editar registro</div><div class="s" id="edId">—</div></div>
+      <button class="x" type="button" onclick="cerrarEdit()">Cerrar ✕</button>
+    </div>
+    <div class="mbody">
+      <div class="fgrid" style="margin-bottom:12px">
+        <div><label>Inspectora</label><select id="edIns"></select></div>
+        <div><label>Línea</label><select id="edLin"></select></div>
+        <div><label>Fecha</label><input type="date" id="edFecha"></div>
+      </div>
+      <div class="fgrid horas" style="margin-bottom:12px">
+        <div><label>Hora inicio</label>
+          <div class="timegrp">
+            <select id="edHi_h"></select>
+            <span class="tsep">:</span>
+            <select id="edHi_m"></select>
+            <select id="edHi_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
+          </div>
+        </div>
+        <div><label>Hora final</label>
+          <div class="timegrp">
+            <select id="edHf_h"></select>
+            <span class="tsep">:</span>
+            <select id="edHf_m"></select>
+            <select id="edHf_p" class="ap"><option value="AM">AM</option><option value="PM">PM</option></select>
+          </div>
+        </div>
+        <div><label>Horas improductivas</label>
+          <input type="number" id="edHorasImp" min="0" step="0.5" placeholder="0">
+          <div class="hint" id="edHintHoras">Horas de turno: <b>—</b></div>
+        </div>
+      </div>
+      <div class="fgrid" style="margin-bottom:12px">
+        <div><label>Estilo</label><input type="text" id="edEstilo" list="listaEstilos" autocomplete="off"></div>
+        <div><label>Carga</label>
+          <div class="stepwrap">
+            <button class="stepbtn" type="button" onclick="pasoCargaEdit(-1)">−</button>
+            <input type="text" id="edCarga" inputmode="numeric">
+            <button class="stepbtn" type="button" onclick="pasoCargaEdit(1)">+</button>
+          </div>
+        </div>
+        <div><label>T. STD <span class="mini">(min/prenda)</span></label>
+          <input type="number" id="edStd" min="0" step="0.05" class="spin"></div>
+      </div>
+
+      <label>Defectos</label>
+      <div class="adder" style="grid-template-columns:1fr 126px 120px">
+        <div><select id="selDefE"></select></div>
+        <div>
+          <div class="stepwrap">
+            <button class="stepbtn solo-movil" type="button" onclick="pasoQ('E',-1)">−</button>
+            <input type="number" id="qDefE" min="1" step="1" value="1" class="spin">
+            <button class="stepbtn solo-movil" type="button" onclick="pasoQ('E',1)">+</button>
+          </div>
+        </div>
+        <div><button class="btn primary" type="button" style="width:100%" onclick="agregarDefecto('E')">+ Agregar</button></div>
+      </div>
+      <ul class="deflist" id="deflistE"></ul>
+      <div class="vacio2" id="defVacioE">Sin defectos en este registro.</div>
+
+      <div class="totbar">
+        <div class="tot"><div class="l">Carga</div><div class="v" id="tCargaE">0</div><div class="s">prendas revisadas</div></div>
+        <div class="tot def"><div class="l">Defectos que restan</div><div class="v" id="tDefE">0</div><div class="s">descuentan</div></div>
+        <div class="tot nor"><div class="l">No restan</div><div class="v" id="tNorE">0</div><div class="s">solo se registra</div></div>
+        <div class="tot pri"><div class="l">Primeras</div><div class="v" id="tPriE">0</div><div class="s">carga − defectos que restan</div></div>
+      </div>
+      <div class="alerta" id="alertaE"></div>
+
+      <div style="margin-top:14px">
+        <label>Observaciones</label>
+        <textarea id="edObs" rows="2" maxlength="500"></textarea>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn danger" type="button" onclick="eliminarDesdeEdit()">Eliminar registro</button>
+      <span class="sp"></span>
+      <button class="btn ghost" type="button" onclick="cerrarEdit()">Cancelar</button>
+      <button class="btn primary" type="button" id="btnGuardarEdit" onclick="guardarEdit()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DEFECTO NUEVO ==================== -->
+<div class="modal" id="mdNuevo">
+  <div class="mbox sm">
+    <div class="mhead">
+      <div><div class="t">Agregar un defecto nuevo</div>
+      <div class="s">Queda en la lista para siempre y para todos</div></div>
+      <button class="x" type="button" onclick="cerrarNuevoDefecto()">Cerrar ✕</button>
+    </div>
+    <div class="mbody">
+      <div style="margin-bottom:12px">
+        <label>Nombre del defecto</label>
+        <input type="text" id="ndNombre" placeholder="Ej. BASTA DESPAREJA" maxlength="60" autocomplete="off">
+        <div class="hint">Se guarda en MAYÚSCULAS. Antes de crearlo, revisa que no exista ya con otro nombre parecido: dos nombres para la misma falla parten el histórico en dos.</div>
+      </div>
+      <div>
+        <label>¿A qué grupo pertenece?</label>
+        <select id="ndCategoria">
+          <option value="COMPOSTURA">COMPOSTURA — falla de costura, se arregla cosiendo</option>
+          <option value="MANCHAS">MANCHAS — suciedad, aceite, tinta</option>
+          <option value="ZURCIDO">ZURCIDO — falla de tela o puntada, se repara con aguja</option>
+          <option value="LIMPIEZA">LIMPIEZA — hilos sueltos o sin cortar</option>
+          <option value="SEGUNDAS">SEGUNDAS — la prenda ya no sale como primera</option>
+        </select>
+      </div>
+      <div class="nota">Un defecto nuevo <b>siempre descuenta de las primeras</b>. Si necesitas uno que solo se registre sin descontar, avísale a Christian: se cambia con una marca en el Google Sheet.</div>
+    </div>
+    <div class="mfoot">
+      <span class="sp"></span>
+      <button class="btn ghost" type="button" onclick="cerrarNuevoDefecto()">Cancelar</button>
+      <button class="btn primary" type="button" id="btnCrearDef" onclick="crearDefecto()">Crear defecto</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==================================================================
+   CONEXIÓN — URL /exec del Apps Script
+   ================================================================== */
+const API_URL = "https://script.google.com/macros/s/AKfycbydA9gutwDeFqHaZaERnDI6D6N0fDDlFhsL0S9M6HGltAtrWSec8KTbu50TgldK7aFmug/exec";
+
+/* ================================================================== */
+
+const F_FEC=0, F_INS=1, F_LIN=2, F_EST=3, F_CAR=4, F_DEF=5, F_PRI=6, F_DET=7,
+      F_ID=8, F_HI=9, F_HF=10, F_NOR=11, F_OBS=12, F_HIMP=13, F_HTOT=14,
+      F_STD=15, F_GRP=16, F_MIN=17, F_REI=18;
+const MIN_REFRIGERIO = 45;          /* minutos de refrigerio por turno */
+const HORAS_MIN_REFRIGERIO = 4;    /* turnos más cortos no lo descuentan */
+const ROT = ['#B45309','#4E6B78','#2563EB','#DC2626','#F59E0B','#10B981'];
+const MES3 = ['ene','feb','mar','abr','may','jun','jul','ago','set','oct','nov','dic'];
+
+let CAT = {inspectoras:[], lineas:[], estilos:[], defectos:[], categorias:[], std:{}};
+let GRUPO_ACTUAL = '';
+let DATA = null;
+let DATA_COMPLETA = false;
+let GRAN = 'mes';
+let charts = {};
+let SNAP = false;
+/* Con #tablero al final del enlace, la página abre directamente el tablero,
+   sin el formulario. Sirve para compartirlo con quien solo va a mirar. */
+const SOLO_TABLERO = true;   /* este archivo es solo el tablero */
+const SOLO_LECTURA = true;   /* y no puede escribir nada en el Sheet */
+let editId = null;
+let TAB_ACT = 0;   /* pestaña abierta: se conserva al cambiar de filtro */
+
+const CTX = {
+  F:{obj:{}, sel:'selDefF', q:'qDefF', list:'deflistF', vacio:'defVacioF', carga:'carga',
+     tC:'tCargaF', tD:'tDefF', tN:'tNorF', tP:'tPriF', al:'alertaF'},
+  E:{obj:{}, sel:'selDefE', q:'qDefE', list:'deflistE', vacio:'defVacioE', carga:'edCarga',
+     tC:'tCargaE', tD:'tDefE', tN:'tNorE', tP:'tPriE', al:'alertaE'}
+};
+
+/* La librería de gráficos se descarga solo cuando se abre el tablero. */
+let chartPromesa = null;
+function cargarChart(){
+  if(window.Chart) return Promise.resolve();
+  if(chartPromesa) return chartPromesa;
+  chartPromesa = new Promise((resolve, reject)=>{
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js';
+    s.onload = ()=>{
+      Chart.defaults.maintainAspectRatio = false;
+      Chart.defaults.font.family = 'Calibri, Arial, sans-serif';
+      Chart.defaults.color = '#5F726C';
+      if(window.matchMedia('(max-width:600px)').matches){
+        Chart.defaults.font.size = 11;
+        Chart.defaults.plugins.legend.labels.boxWidth = 10;
+      }
+      resolve();
+    };
+    s.onerror = ()=>{ chartPromesa = null; reject(new Error('sin gráficos')); };
+    document.head.appendChild(s);
+  });
+  return chartPromesa;
+}
+
+/* ---------------- utilidades ---------------- */
+function n0(x){ return (Math.round(x)||0).toLocaleString('es-PE'); }
+function n1(x){ return (x||0).toLocaleString('es-PE',{minimumFractionDigits:1,maximumFractionDigits:1}); }
+function nh(x){ return (x||0).toLocaleString('es-PE',{minimumFractionDigits:0,maximumFractionDigits:2}); }
+function pct(num,den){ return den > 0 ? (num*100/den) : 0; }
+function hoyISO(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function fechaCorta(iso){ const p = String(iso||'').split('-'); return p.length===3 ? p[2]+'/'+p[1]+'/'+p[0] : ''; }
+function fechaLarga(iso){ const p = String(iso||'').split('-'); return p.length===3 ? Number(p[2])+' '+MES3[+p[1]-1]+' '+p[0] : ''; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escJs(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+function toast(msg, err){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast on' + (err?' err':'');
+  setTimeout(()=>{ t.className = 'toast' + (err?' err':''); }, 3000);
+}
+function jsonpUna(params){
+  return new Promise((resolve,reject)=>{
+    const cb = 'cb_' + Math.random().toString(36).slice(2);
+    const s  = document.createElement('script');
+    const to = setTimeout(()=>{ limpiar(); reject(new Error('la respuesta tardó demasiado')); }, 30000);
+    function limpiar(){ clearTimeout(to); delete window[cb]; if(s.parentNode) s.parentNode.removeChild(s); }
+    window[cb] = d => { limpiar(); resolve(d); };
+    s.onerror = () => { limpiar(); reject(new Error('no se pudo conectar')); };
+    const q = Object.keys(params).map(k=>encodeURIComponent(k)+'='+encodeURIComponent(params[k])).join('&');
+    s.src = API_URL + '?' + q + '&callback=' + cb + '&_=' + Date.now();
+    document.body.appendChild(s);
+  });
+}
+async function jsonp(params, intentos){
+  const max = (intentos === undefined) ? 2 : intentos;
+  let ultimo;
+  for(let i = 0; i < max; i++){
+    try{ return await jsonpUna(params); }
+    catch(e){
+      ultimo = e;
+      if(i < max - 1) await new Promise(r=>setTimeout(r, 900));
+    }
+  }
+  throw new Error('No se pudo conectar con el servidor (' + ultimo.message +
+    '). Revisa la señal e inténtalo de nuevo.');
+}
+function claveUnica(){
+  return Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,10);
+}
+const GRUPOS_HORA = ['hini','hfin','edHi','edHf'];
+function initHoras(){
+  let oh = '<option value="">--</option>';
+  for(let i = 1; i <= 12; i++){ const v = String(i).padStart(2,'0'); oh += '<option value="'+v+'">'+v+'</option>'; }
+  let om = '';
+  for(let i = 0; i < 60; i++){ const v = String(i).padStart(2,'0'); om += '<option value="'+v+'">'+v+'</option>'; }
+  GRUPOS_HORA.forEach(p=>{
+    document.getElementById(p+'_h').innerHTML = oh;
+    document.getElementById(p+'_m').innerHTML = om;
+    document.getElementById(p+'_p').value = 'AM';
+  });
+}
+function getHora(p){
+  const h = document.getElementById(p+'_h').value;
+  if(!h) return '';
+  const m  = document.getElementById(p+'_m').value || '00';
+  const ap = document.getElementById(p+'_p').value;
+  let H = parseInt(h,10) % 12;
+  if(ap === 'PM') H += 12;
+  return String(H).padStart(2,'0') + ':' + m;
+}
+function setHora(p, v){
+  const hs = document.getElementById(p+'_h');
+  const ms = document.getElementById(p+'_m');
+  const ps = document.getElementById(p+'_p');
+  const q = String(v || '').split(':');
+  const H = parseInt(q[0],10);
+  if(isNaN(H)){ hs.value = ''; ms.value = '00'; ps.value = 'AM'; return; }
+  ps.value = H >= 12 ? 'PM' : 'AM';
+  let h12 = H % 12; if(h12 === 0) h12 = 12;
+  hs.value = String(h12).padStart(2,'0');
+  ms.value = String(parseInt(q[1],10) || 0).padStart(2,'0');
+}
+function horasEntre(hi, hf){
+  const a = String(hi||'').split(':'), b = String(hf||'').split(':');
+  if(a.length < 2 || b.length < 2) return 0;
+  const m1 = Number(a[0])*60 + Number(a[1]);
+  const m2 = Number(b[0])*60 + Number(b[1]);
+  if(isNaN(m1) || isNaN(m2) || m2 <= m1) return 0;
+  return Math.round((m2-m1)/60*100)/100;
+}
+function actualizarHoras(k){
+  const pi = (k === 'F') ? 'hini' : 'edHi';
+  const pf = (k === 'F') ? 'hfin' : 'edHf';
+  const inp = document.getElementById(k === 'F' ? 'horasImp' : 'edHorasImp');
+  const box = document.getElementById(k === 'F' ? 'hintHoras' : 'edHintHoras');
+  const tot = horasEntre(getHora(pi), getHora(pf));
+  let imp = parseFloat(inp.value); if(isNaN(imp) || imp < 0) imp = 0;
+  if(!tot){
+    box.className = 'hint';
+    box.innerHTML = imp > 0
+      ? 'Horas de turno: <b>—</b> · faltan la hora de inicio y la final para calcularlas'
+      : 'Horas de turno: <b>—</b> · se calculan con la hora de inicio y la final';
+    return;
+  }
+  if(imp > tot){
+    box.className = 'hint mal';
+    box.innerHTML = 'Entre las dos horas hay <b>' + nh(tot) + ' h</b>, no puede haber <b>' + nh(imp) + ' h</b> improductivas';
+    return;
+  }
+  box.className = 'hint';
+  box.innerHTML = 'Horas de turno: <b>' + nh(tot) + '</b> · asistidas: <b>' + nh(tot-imp) + '</b>';
+}
+function hora12(v){
+  const q = String(v || '').split(':');
+  const H = parseInt(q[0],10);
+  if(isNaN(H)) return '';
+  const ap = H >= 12 ? 'PM' : 'AM';
+  let h12 = H % 12; if(h12 === 0) h12 = 12;
+  return String(h12).padStart(2,'0') + ':' + String(parseInt(q[1],10)||0).padStart(2,'0') + ' ' + ap;
+}
+function sumaTexto(txt){
+  const m = String(txt||'').match(/\d+(\.\d+)?/g);
+  return m ? m.reduce((a,b)=>a+Number(b),0) : 0;
+}
+/* El servidor manda solo los defectos con cantidad: [[indice, cantidad], ...] */
+function detPares(f){
+  const d = f[F_DET];
+  if(!d || !d.length) return [];
+  if(Array.isArray(d[0])) return d;
+  const out = [];
+  d.forEach((v,i)=>{ if(v > 0) out.push([i, v]); });
+  return out;
+}
+function detTexto(f){
+  const defs = (DATA && DATA.defectos) ? DATA.defectos : CAT.defectos;
+  const t = detPares(f).map(par=>{
+    const d = defs[par[0]];
+    return d ? esc(d.defecto) + ' ×' + par[1] : null;
+  }).filter(Boolean).join(' · ');
+  return t || '—';
+}
+function claseCat(c){ return String(c||'').replace(/[^A-Za-zÁÉÍÓÚÑ]/g,'').toUpperCase(); }
+function defInfo(nombre){
+  const lista = (DATA && DATA.defectos && DATA.defectos.length) ? DATA.defectos : CAT.defectos;
+  return lista.filter(d=>d.defecto === nombre)[0] || {categoria:'SEGUNDAS', resta:true};
+}
+/* Degradado: el primero del ranking en color fuerte, los siguientes más claros. */
+function degradado(i, total, tono){
+  const t = total <= 1 ? 0 : i/(total-1);
+  const pares = {
+    azul:  [[24,73,110],[188,214,231]],
+    verde: [[11,105,79],[186,224,209]],
+    pizarra:[[43,68,82],[203,216,222]]
+  };
+  const p = pares[tono || 'azul'];
+  return 'rgb(' + p[0].map((v,k)=>Math.round(v + (p[1][k]-v)*t)).join(',') + ')';
+}
+
+/* ================================================================
+   ARRANQUE
+   ================================================================ */
+async function iniciar(){
+  document.getElementById('fecha').value = hoyISO();
+  initHoras();
+  rangoHoy();
+
+  if(SOLO_TABLERO && !window.__SNAPSHOT__){
+    document.getElementById('mdEdit').remove();
+    document.getElementById('mdNuevo').remove();
+    document.getElementById('app').remove();
+    document.body.classList.add('solotab');
+    document.getElementById('overlay').classList.add('on');
+    document.querySelector('.htitle').textContent = 'Tablero de Inspección Final — Área de Costura';
+    document.querySelector('.hsub').textContent = 'Dpto. Ingeniería · solo consulta';
+    cargarChart().catch(()=>{});
+  }
+
+  if(window.__SNAPSHOT__){
+    SNAP = true;
+    document.body.classList.add('snap');
+    DATA = window.__SNAPSHOT__;
+    DATA_COMPLETA = true;
+    document.getElementById('overlay').classList.add('on');
+    prepararFiltros(); render();
+    document.getElementById('dEstado').innerHTML = n0(DATA.filas.length) + ' inspecciones · copia estática';
+    dAvisar('<b>Copia para consulta.</b> Los datos están congelados al ' + (DATA.generado||'—') +
+      '. Este archivo no se conecta al sistema: para ver el dato del día hay que entrar al tablero en línea.', 'snap');
+    document.getElementById('hstate').textContent = 'Copia estática';
+    return;
+  }
+  if(API_URL.indexOf('PEGA_AQUI') === 0){
+    avisar('⚠ Falta configurar la conexión: reemplaza el valor de API_URL por la URL /exec del Apps Script.');
+    document.getElementById('hstate').textContent = 'Sin conexión configurada';
+    return;
+  }
+  try{
+    const d = await jsonp({accion:'catalogos'});
+    if(!d.ok) throw new Error(d.error || 'Error del servidor');
+    CAT = d;
+    if(!CAT.std) CAT.std = {};
+    pintarCatalogos();
+    document.getElementById('hstate').innerHTML =
+      CAT.inspectoras.length + ' inspectora(s) · ' + CAT.lineas.length + ' línea(s) · ' +
+      CAT.defectos.length + ' defectos · ' + Object.keys(CAT.std).length + ' estilos con T. STD';
+    if(!CAT.inspectoras.length || !CAT.lineas.length){
+      avisar('Las listas de <b>INSPECTORAS</b> o <b>LINEAS</b> están vacías en el Google Sheet. Llénalas (una por fila, con SI en la columna ACTIVO) y refresca con Ctrl+Shift+R.');
+    }
+  }catch(e){
+    document.getElementById('hstate').textContent = 'Sin conexión';
+    avisar('No se pudo cargar el catálogo: ' + e.message);
+    return;
+  }
+  cargarDatos(SOLO_TABLERO ? {full:true} : undefined);
+}
+function avisar(html){
+  const a = document.getElementById('aviso');
+  a.innerHTML = html; a.style.display = 'block';
+}
+function pintarCatalogos(){
+  const opInsp = CAT.inspectoras.map(n=>'<option>'+esc(n)+'</option>').join('');
+  const opLin  = CAT.lineas.map(n=>'<option>'+esc(n)+'</option>').join('');
+
+  document.getElementById('inspectora').innerHTML = '<option value="">— Elegir —</option>' + opInsp;
+  document.getElementById('linea').innerHTML = '<option value="">— Elegir —</option>' + opLin;
+  document.getElementById('edIns').innerHTML = '<option value="">— Elegir —</option>' + opInsp;
+  document.getElementById('edLin').innerHTML = '<option value="">— Elegir —</option>' + opLin;
+  document.getElementById('rIns').innerHTML = '<option value="">Todas</option>' + opInsp;
+  document.getElementById('rLin').innerHTML = '<option value="">Todas</option>' + opLin;
+  document.getElementById('listaEstilos').innerHTML = CAT.estilos.map(n=>'<option value="'+esc(n)+'">').join('');
+
+  const cats = [];
+  CAT.defectos.forEach(d=>{ if(cats.indexOf(d.categoria) === -1) cats.push(d.categoria); });
+  let html = '<option value="">— Elegir defecto —</option>';
+  cats.forEach(c=>{
+    html += '<optgroup label="'+esc(c)+'">';
+    CAT.defectos.filter(d=>d.categoria===c).forEach(d=>{
+      html += '<option value="'+esc(d.defecto)+'">'+esc(d.defecto)+(d.resta?'':' — no resta')+'</option>';
+    });
+    html += '</optgroup>';
+  });
+  document.getElementById('selDefF').innerHTML = html;
+  document.getElementById('selDefE').innerHTML = html;
+
+  const ult = localStorage.getItem('lives_ic_ult');
+  if(ult){
+    try{
+      const u = JSON.parse(ult);
+      if(CAT.inspectoras.indexOf(u.inspectora) >= 0) document.getElementById('inspectora').value = u.inspectora;
+      if(CAT.lineas.indexOf(u.linea) >= 0) document.getElementById('linea').value = u.linea;
+    }catch(e){}
+  }
+}
+
+/* ---------------- tiempo estándar ---------------- */
+function buscarSTD(){
+  const est = document.getElementById('estilo').value.trim().toUpperCase();
+  const hint = document.getElementById('hintStd');
+  const hEst = document.getElementById('hintEstilo');
+  const info = CAT.std ? CAT.std[est] : null;
+  if(info && info.std > 0){
+    document.getElementById('std').value = info.std;
+    GRUPO_ACTUAL = info.grupo || '';
+    hint.className = 'hint';
+    hint.innerHTML = 'Del catálogo: <b>' + nh(info.std) + ' min</b> por prenda.';
+    hEst.innerHTML = GRUPO_ACTUAL ? 'Grupo: <b>' + esc(GRUPO_ACTUAL) + '</b>'
+                                  : 'Estilo conocido, sin grupo registrado.';
+  }else{
+    GRUPO_ACTUAL = '';
+    document.getElementById('std').value = '';
+    hint.className = est ? 'hint mal' : 'hint';
+    hint.innerHTML = est ? 'Este estilo todavía no tiene T. STD. Escríbelo aquí.'
+                         : 'Aparece solo si el estilo ya lo tiene. Se puede cambiar aquí.';
+    hEst.innerHTML = 'Si el estilo es nuevo, escríbelo igual: queda guardado para la próxima vez.';
+  }
+}
+async function fijarSTD(){
+  if(typeof SOLO_LECTURA !== 'undefined' && SOLO_LECTURA){ toast('Este tablero es solo de consulta', true); return; }
+  const est = document.getElementById('estilo').value.trim().toUpperCase();
+  const v = parseFloat(document.getElementById('std').value);
+  if(!est){ toast('Escribe primero el estilo', true); return; }
+  if(isNaN(v) || v <= 0){ toast('Escribe un T. STD mayor que cero', true); return; }
+  const antes = (CAT.std && CAT.std[est]) ? CAT.std[est].std : null;
+  const msj = antes
+    ? '¿Cambiar el T. STD del estilo ' + est + ' de ' + nh(antes) + ' a ' + nh(v) + ' minutos?\n\n' +
+      'Se usará en los registros nuevos. Los ya guardados conservan el que tenían.'
+    : '¿Guardar ' + nh(v) + ' minutos por prenda como T. STD del estilo ' + est + '?';
+  if(!confirm(msj)) return;
+  try{
+    const r = await jsonp({accion:'guardarSTD', estilo:est, grupo:GRUPO_ACTUAL, std:v});
+    if(!r.ok) throw new Error(r.error || 'Error del servidor');
+    CAT.std = r.std_map || CAT.std;
+    buscarSTD();
+    toast('T. STD guardado para ' + est);
+  }catch(e){ toast('No se guardó: ' + e.message, true); }
+}
+
+/* ================================================================
+   DEFECTOS (compartido entre formulario y edición)
+   ================================================================ */
+function agregarDefecto(k){
+  const c = CTX[k];
+  const s = document.getElementById(c.sel);
+  const nombre = s.value;
+  const q = Math.max(1, parseInt(document.getElementById(c.q).value, 10) || 1);
+  if(!nombre){ toast('Elige un defecto primero', true); return; }
+  c.obj[nombre] = (c.obj[nombre]||0) + q;
+  document.getElementById(c.q).value = 1;
+  s.value = '';
+  pintarDefectos(k); recalcular(k);
+}
+function pasoDef(k, nombre, n){
+  const c = CTX[k];
+  c.obj[nombre] = (c.obj[nombre]||0) + n;
+  if(c.obj[nombre] <= 0) delete c.obj[nombre];
+  pintarDefectos(k); recalcular(k);
+}
+function quitarDef(k, nombre){
+  delete CTX[k].obj[nombre];
+  pintarDefectos(k); recalcular(k);
+}
+function pintarDefectos(k){
+  const c = CTX[k];
+  const nombres = Object.keys(c.obj);
+  document.getElementById(c.vacio).style.display = nombres.length ? 'none' : 'block';
+  const orden = CAT.defectos.map(d=>d.defecto);
+  nombres.sort((a,b)=> orden.indexOf(a) - orden.indexOf(b));
+  document.getElementById(c.list).innerHTML = nombres.map(n=>{
+    const info = defInfo(n), e = escJs(n);
+    return '<li><span class="tagc '+claseCat(info.categoria)+'">'+esc(info.categoria)+'</span>' +
+      '<span class="nm">'+esc(n)+(info.resta?'':'<span class="nr">no resta</span>')+'</span>' +
+      '<span class="qty"><button type="button" onclick="pasoDef(\''+k+'\',\''+e+'\',-1)">−</button>' +
+      '<span class="n">'+c.obj[n]+'</span>' +
+      '<button type="button" onclick="pasoDef(\''+k+'\',\''+e+'\',1)">+</button></span>' +
+      '<button class="del" type="button" title="Quitar" onclick="quitarDef(\''+k+'\',\''+e+'\')">✕</button></li>';
+  }).join('');
+}
+function esReinspeccion(nombre){
+  return String(nombre).toUpperCase().indexOf('RE-INSPECC') === 0;
+}
+function totalesDe(obj){
+  let resta = 0, noResta = 0, rein = 0;
+  Object.keys(obj).forEach(n=>{
+    if(defInfo(n).resta === false){
+      noResta += obj[n];
+      if(esReinspeccion(n)) rein += obj[n];
+    }else{
+      resta += obj[n];
+    }
+  });
+  return {resta:resta, noResta:noResta, rein:rein};
+}
+function recalcular(k){
+  const c = CTX[k];
+  const carga = sumaTexto(document.getElementById(c.carga).value);
+  const T = totalesDe(c.obj);
+  const pri = carga - T.resta;
+  if(k === 'F') document.getElementById('cargaCalc').textContent = carga;
+  document.getElementById(c.tC).textContent = n0(carga);
+  document.getElementById(c.tD).textContent = n0(T.resta);
+  document.getElementById(c.tN).textContent = n0(T.noResta);
+  document.getElementById(c.tP).textContent = n0(pri);
+  const a = document.getElementById(c.al);
+  if(carga > 0 && T.resta > carga){
+    a.className = 'alerta on';
+    a.innerHTML = '⚠ Los defectos que restan ('+T.resta+') superan la carga ('+carga+'). Las primeras dan '+pri+
+      '. Revisa: puede que una misma prenda esté marcada en dos defectos, o que falte corregir la carga. Igual puedes guardar si así es.';
+  }else if(carga === 0 && T.rein > 0 && T.resta === 0){
+    a.className = 'alerta on aviso';
+    a.innerHTML = 'Re-inspección suelta: ' + T.rein + ' prenda(s) revisadas por segunda vuelta sin ' +
+      'carga propia. Se puede guardar así. No entra en el % de primeras ni en el de defectos, ' +
+      'pero sí suma tiempo trabajado para la eficiencia.';
+  }else if(carga === 0 && (T.resta + T.noResta) > 0){
+    a.className = 'alerta on';
+    a.innerHTML = '⚠ Hay defectos marcados pero la carga está en 0. Escribe la carga, o deja solo ' +
+      'la cantidad de re-inspección si fue una revisión suelta.';
+  }else{ a.className = 'alerta'; }
+}
+function pasoCarga(n){
+  const i = document.getElementById('carga');
+  const v = Math.max(0, sumaTexto(i.value) + n);
+  i.value = v ? String(v) : ''; recalcular('F');
+}
+function pasoQ(k, n){
+  const i = document.getElementById(CTX[k].q);
+  const v = Math.max(1, (parseInt(i.value, 10) || 0) + n);
+  i.value = String(v);
+}
+function pasoCargaEdit(n){
+  const i = document.getElementById('edCarga');
+  const v = Math.max(0, sumaTexto(i.value) + n);
+  i.value = v ? String(v) : ''; recalcular('E');
+}
+
+/* ---------------- defecto nuevo ---------------- */
+function abrirNuevoDefecto(){
+  document.getElementById('ndNombre').value = '';
+  document.getElementById('ndCategoria').value = 'COMPOSTURA';
+  document.getElementById('mdNuevo').classList.add('on');
+  setTimeout(()=>document.getElementById('ndNombre').focus(), 80);
+}
+function cerrarNuevoDefecto(){ document.getElementById('mdNuevo').classList.remove('on'); }
+async function crearDefecto(){
+  if(typeof SOLO_LECTURA !== 'undefined' && SOLO_LECTURA){ toast('Este tablero es solo de consulta', true); return; }
+  const nombre = document.getElementById('ndNombre').value.trim();
+  const cat = document.getElementById('ndCategoria').value;
+  if(!nombre){ toast('Escribe el nombre del defecto', true); return; }
+  const btn = document.getElementById('btnCrearDef');
+  btn.disabled = true; btn.textContent = 'Creando…';
+  try{
+    const r = await jsonp({accion:'nuevoDefecto', nombre:nombre, categoria:cat});
+    if(!r.ok) throw new Error(r.error || 'Error del servidor');
+    CAT.defectos = r.defectos;
+    pintarCatalogos();
+    document.getElementById('selDefF').value = r.nombre;
+    cerrarNuevoDefecto();
+    toast('Defecto creado: ' + r.nombre);
+    cargarDatos({silencioso:true, full:DATA_COMPLETA});
+  }catch(e){
+    toast('No se creó: ' + e.message, true);
+  }finally{
+    btn.disabled = false; btn.textContent = 'Crear defecto';
+  }
+}
+
+/* ================================================================
+   GUARDAR
+   ================================================================ */
+async function guardar(){
+  if(typeof SOLO_LECTURA !== 'undefined' && SOLO_LECTURA){ toast('Este tablero es solo de consulta', true); return; }
+  const inspectora = document.getElementById('inspectora').value;
+  const linea = document.getElementById('linea').value;
+  const fecha = document.getElementById('fecha').value;
+  const estilo = document.getElementById('estilo').value.trim().toUpperCase();
+  const carga = sumaTexto(document.getElementById('carga').value);
+
+  if(!inspectora){ toast('Falta elegir la inspectora', true); return; }
+  if(!linea){ toast('Falta elegir la línea', true); return; }
+  if(!fecha){ toast('Falta la fecha', true); return; }
+  if(!estilo){ toast('Falta el estilo', true); return; }
+  const TF = totalesDe(CTX.F.obj);
+  if(carga <= 0 && TF.rein <= 0){
+    toast('Falta la carga. Si fue una re-inspección suelta, pon la cantidad en RE-INSPECC.', true); return;
+  }
+
+  const btn = document.getElementById('btnGuardar');
+  btn.disabled = true; btn.textContent = 'Guardando…';
+  try{
+    const hini = getHora('hini'), hfin = getHora('hfin');
+    const horasImp = parseFloat(document.getElementById('horasImp').value) || 0;
+    const obs = document.getElementById('obs').value.trim();
+    const std = parseFloat(document.getElementById('std').value) || 0;
+    const detalle = Object.assign({}, CTX.F.obj);
+
+    const r = await jsonp({accion:'guardar', clave:claveUnica(), fecha:fecha,
+      inspectora:inspectora, linea:linea, estilo:estilo, carga:carga,
+      hini:hini, hfin:hfin, horasImp:horasImp, obs:obs,
+      std:std, grupo:GRUPO_ACTUAL,
+      defectos:JSON.stringify(detalle)});
+    if(!r.ok) throw new Error(r.error || 'Error del servidor');
+
+    localStorage.setItem('lives_ic_ult', JSON.stringify({inspectora:inspectora, linea:linea}));
+    agregarLocal(r, {fecha:fecha, inspectora:inspectora, linea:linea, estilo:estilo,
+      carga:carga, hini:hini, hfin:hfin, obs:obs, detalle:detalle,
+      std:(r.std || std), grupo:GRUPO_ACTUAL});
+    limpiarEstilo(false);
+    toast('Guardado: ' + estilo + ' · ' + r.primeras + ' primeras');
+    document.getElementById('estilo').focus();
+  }catch(e){
+    toast('No se guardó: ' + e.message, true);
+  }finally{
+    btn.disabled = false; btn.textContent = 'Guardar y siguiente estilo';
+  }
+}
+function agregarLocal(r, d){
+  if(!DATA) return;
+  const defs = DATA.defectos || CAT.defectos;
+  const det = [];
+  defs.forEach((x,i)=>{ if(d.detalle[x.defecto] > 0) det.push([i, d.detalle[x.defecto]]); });
+  DATA.filas.push([
+    d.fecha, d.inspectora, d.linea, d.estilo, d.carga,
+    r.totalDefectos, r.primeras, det, r.id, d.hini, d.hfin,
+    r.noResta || 0, d.obs, r.horasImp || 0, r.horasTotal || 0,
+    d.std || 0, d.grupo || '', r.minutos || 0, r.rein || 0
+  ]);
+  if(d.estilo && CAT.estilos.indexOf(d.estilo) === -1){
+    CAT.estilos.push(d.estilo);
+    document.getElementById('listaEstilos').innerHTML =
+      CAT.estilos.map(n=>'<option value="'+esc(n)+'">').join('');
+  }
+  pintarRegistros();
+}
+function limpiarEstilo(avisarUsuario){
+  document.getElementById('estilo').value = '';
+  document.getElementById('carga').value = '';
+  document.getElementById('obs').value = '';
+  document.getElementById('std').value = '';
+  GRUPO_ACTUAL = '';
+  buscarSTD();
+  CTX.F.obj = {};
+  pintarDefectos('F'); recalcular('F');
+  if(avisarUsuario) toast('Estilo limpiado');
+}
+
+/* ================================================================
+   PESTAÑA DE REGISTROS
+   ================================================================ */
+function rangoHoy(){
+  document.getElementById('rDesde').value = hoyISO();
+  document.getElementById('rHasta').value = hoyISO();
+  pintarRegistros();
+}
+function rangoTodo(){
+  document.getElementById('rDesde').value = '';
+  document.getElementById('rHasta').value = '';
+  if(DATA && !DATA_COMPLETA){ cargarDatos({full:true}); return; }
+  pintarRegistros();
+}
+function filasRegistros(){
+  if(!DATA) return [];
+  const d = document.getElementById('rDesde').value;
+  const h = document.getElementById('rHasta').value;
+  const i = document.getElementById('rIns').value;
+  const l = document.getElementById('rLin').value;
+  return DATA.filas.filter(f=>{
+    if(d && f[F_FEC] < d) return false;
+    if(h && f[F_FEC] > h) return false;
+    if(i && f[F_INS] !== i) return false;
+    if(l && f[F_LIN] !== l) return false;
+    return true;
+  }).sort((a,b)=> a[F_FEC] === b[F_FEC] ? (a[F_ID] < b[F_ID] ? 1 : -1) : (a[F_FEC] < b[F_FEC] ? 1 : -1));
+}
+function pintarRegistros(){
+  const cont = document.getElementById('tbRegistros');
+  if(!DATA){ cont.innerHTML = '<div class="mini">Cargando registros…</div>'; return; }
+  const rows = filasRegistros();
+  if(!rows.length){
+    cont.innerHTML = '<div class="mini">No hay registros con estos filtros. Prueba con “Todo” o cambia las fechas.</div>';
+    return;
+  }
+  let sC=0, sD=0, sP=0, sM=0;
+  rows.forEach(f=>{ sC+=f[F_CAR]; sD+=f[F_DEF]; sP+=f[F_PRI]; sM+=(f[F_MIN]||0); });
+  const H = agregarHoras(rows);
+  const mostrar = rows.slice(0,500);
+
+  cont.innerHTML =
+    '<table><thead><tr><th>Fecha</th><th>Inspectora</th><th>Línea</th><th>Estilo</th>' +
+    '<th class="num">Carga</th><th class="num">Defectos</th><th class="num">Primeras</th>' +
+    '<th class="num">T. STD</th><th class="num">H. improd.</th><th>Detalle</th>' +
+    '<th>Observación</th><th></th></tr></thead><tbody>' +
+    mostrar.map(f=>{
+      const det = detTexto(f);
+      const id = escJs(f[F_ID]);
+      const hh = [hora12(f[F_HI]), hora12(f[F_HF])].filter(Boolean).join(' – ');
+      return '<tr><td>'+fechaCorta(f[F_FEC]) + (hh ? '<br><span class="mini">'+hh+'</span>' : '') +
+        '</td><td>'+esc(f[F_INS])+'</td><td>'+esc(f[F_LIN])+'</td>' +
+        '<td><b>'+esc(f[F_EST])+'</b>' + (f[F_GRP] ? '<br><span class="mini">'+esc(f[F_GRP])+'</span>' : '') +
+        '</td><td class="num">'+n0(f[F_CAR])+'</td>' +
+        '<td class="num">'+n0(f[F_DEF])+'</td>' +
+        '<td class="num"><b>'+n0(f[F_PRI])+'</b></td>' +
+        '<td class="num">'+(f[F_STD]?nh(f[F_STD]):'—')+'</td>' +
+        '<td class="num">'+(f[F_HIMP]?nh(f[F_HIMP]):'—')+'</td>' +
+        '<td class="mini">'+det+'</td>' +
+        '<td class="mini obscell">'+(f[F_OBS]?esc(f[F_OBS]):'—')+'</td>' +
+        '<td><span class="acc">' +
+        '<button class="iconbtn" type="button" title="Editar" onclick="abrirEdit(\''+id+'\')">✎</button>' +
+        '<button class="iconbtn d" type="button" title="Eliminar" onclick="eliminar(\''+id+'\')">🗑</button>' +
+        '</span></td></tr>';
+    }).join('') +
+    '</tbody><tfoot><tr><td colspan="4">TOTAL — ' + n0(rows.length) + ' registro(s)' +
+    (rows.length > 500 ? ' (se muestran los 500 más recientes)' : '') + '</td>' +
+    '<td class="num">'+n0(sC)+'</td><td class="num">'+n0(sD)+'</td><td class="num">'+n0(sP)+'</td>' +
+    '<td class="num">—</td><td class="num">'+(H.imp?nh(H.imp):'—')+'</td>' +
+    '<td colspan="3" class="mini">' +
+    (sC>0 ? 'Primeras = <b>'+n1(pct(sP,sC))+'%</b> de '+n0(sC)+' prendas revisadas' : '') +
+    (H.tot ? ' · Horas de turno <b>'+nh(H.tot)+'</b>, asistidas <b>'+nh(H.prod)+'</b>' : '') +
+    (H.prod>0 && sM>0 ? ' · Eficiencia <b>'+n1(pct(sM, H.prod*60))+'%</b>' : '') +
+    '</td></tr></tfoot></table>';
+}
+
+/* ---------------- editar ---------------- */
+function abrirEdit(id){
+  const f = DATA.filas.filter(x=>x[F_ID] === id)[0];
+  if(!f){ toast('No se encontró el registro', true); return; }
+  editId = id;
+  document.getElementById('edId').textContent = 'ID ' + id;
+  document.getElementById('edIns').value = f[F_INS];
+  document.getElementById('edLin').value = f[F_LIN];
+  document.getElementById('edFecha').value = f[F_FEC];
+  setHora('edHi', f[F_HI]);
+  setHora('edHf', f[F_HF]);
+  document.getElementById('edHorasImp').value = f[F_HIMP] || '';
+  document.getElementById('edObs').value = f[F_OBS] || '';
+  document.getElementById('edStd').value = f[F_STD] || '';
+  actualizarHoras('E');
+  document.getElementById('edEstilo').value = f[F_EST];
+  document.getElementById('edCarga').value = f[F_CAR];
+  CTX.E.obj = {};
+  detPares(f).forEach(par=>{
+    const d = DATA.defectos[par[0]];
+    if(d) CTX.E.obj[d.defecto] = par[1];
+  });
+  pintarDefectos('E'); recalcular('E');
+  document.getElementById('mdEdit').classList.add('on');
+}
+function cerrarEdit(){
+  document.getElementById('mdEdit').classList.remove('on');
+  editId = null; CTX.E.obj = {};
+}
+async function guardarEdit(){
+  if(typeof SOLO_LECTURA !== 'undefined' && SOLO_LECTURA){ toast('Este tablero es solo de consulta', true); return; }
+  if(!editId) return;
+  const inspectora = document.getElementById('edIns').value;
+  const linea = document.getElementById('edLin').value;
+  const fecha = document.getElementById('edFecha').value;
+  const estilo = document.getElementById('edEstilo').value.trim().toUpperCase();
+  const carga = sumaTexto(document.getElementById('edCarga').value);
+
+  const TE = totalesDe(CTX.E.obj);
+  if(!inspectora || !linea || !fecha || !estilo){
+    toast('Faltan datos: inspectora, línea, fecha y estilo son obligatorios', true); return;
+  }
+  if(carga <= 0 && TE.rein <= 0){
+    toast('Falta la carga. Si fue una re-inspección suelta, pon la cantidad en RE-INSPECC.', true); return;
+  }
+  const previa = DATA.filas.filter(x=>x[F_ID] === editId)[0] || [];
+  const btn = document.getElementById('btnGuardarEdit');
+  btn.disabled = true; btn.textContent = 'Guardando…';
+  try{
+    const r = await jsonp({accion:'editar', id:editId, fecha:fecha, inspectora:inspectora,
+      linea:linea, estilo:estilo, carga:carga,
+      hini:getHora('edHi'), hfin:getHora('edHf'),
+      horasImp:document.getElementById('edHorasImp').value || 0,
+      obs:document.getElementById('edObs').value.trim(),
+      std:parseFloat(document.getElementById('edStd').value) || 0,
+      grupo:previa[F_GRP] || '',
+      defectos:JSON.stringify(CTX.E.obj)});
+    if(!r.ok) throw new Error(r.error || 'Error del servidor');
+    const i = DATA.filas.findIndex(x=>x[F_ID] === editId);
+    if(i >= 0){
+      const defs = DATA.defectos || CAT.defectos;
+      const det = [];
+      defs.forEach((x,k)=>{ if(CTX.E.obj[x.defecto] > 0) det.push([k, CTX.E.obj[x.defecto]]); });
+      DATA.filas[i] = [fecha, inspectora, linea, estilo, carga, r.totalDefectos, r.primeras,
+        det, editId, getHora('edHi'), getHora('edHf'), r.noResta || 0,
+        document.getElementById('edObs').value.trim(), r.horasImp || 0, r.horasTotal || 0,
+        r.std || 0, previa[F_GRP] || '', r.minutos || 0, r.rein || 0];
+    }
+    cerrarEdit();
+    pintarRegistros();
+    if(document.getElementById('overlay').classList.contains('on')) render();
+    toast('Cambios guardados · ' + r.primeras + ' primeras');
+  }catch(e){
+    toast('No se guardó: ' + e.message, true);
+  }finally{
+    btn.disabled = false; btn.textContent = 'Guardar cambios';
+  }
+}
+function eliminarDesdeEdit(){
+  const id = editId;
+  if(!id) return;
+  cerrarEdit();
+  eliminar(id);
+}
+async function eliminar(id){
+  if(typeof SOLO_LECTURA !== 'undefined' && SOLO_LECTURA){ toast('Este tablero es solo de consulta', true); return; }
+  const f = DATA ? DATA.filas.filter(x=>x[F_ID] === id)[0] : null;
+  const txt = f ? ('\n\n' + f[F_INS] + ' · Línea ' + f[F_LIN] + ' · Estilo ' + f[F_EST] +
+                   ' · ' + fechaCorta(f[F_FEC]) + '\nCarga ' + f[F_CAR] + ', primeras ' + f[F_PRI]) : '';
+  if(!confirm('¿Eliminar este registro?' + txt +
+    '\n\nDesaparece del formulario y del tablero. La fila queda tachada en el Google Sheet como ANULADO.')) return;
+  try{
+    const r = await jsonp({accion:'eliminar', id:id});
+    if(!r.ok) throw new Error(r.error || 'Error del servidor');
+    DATA.filas = DATA.filas.filter(x=>x[F_ID] !== id);
+    pintarRegistros();
+    if(document.getElementById('overlay').classList.contains('on')) render();
+    toast('Registro eliminado');
+  }catch(e){ toast('No se pudo eliminar: ' + e.message, true); }
+}
+
+/* ================================================================
+   DATOS
+   ================================================================ */
+function primerDiaMesAnterior(){
+  const d = new Date();
+  d.setDate(1); d.setMonth(d.getMonth() - 1);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-01';
+}
+async function cargarDatos(opciones){
+  const o = opciones || {};
+  const btn = document.getElementById('btnRef');
+  if(!o.silencioso){ btn.disabled = true; btn.textContent = 'Cargando…'; }
+  try{
+    const par = {accion:'datos'};
+    if(!o.full) par.desde = primerDiaMesAnterior();
+    const d = await jsonp(par);
+    if(!d.ok) throw new Error(d.error || 'Error del servidor');
+    DATA = d;
+    DATA_COMPLETA = !!o.full;
+    IDX_SEG = null;
+    document.getElementById('dAviso').style.display = 'none';
+    pintarRegistros();
+    prepararFiltros();
+    if(document.getElementById('overlay').classList.contains('on')) render();
+    document.getElementById('dEstado').innerHTML =
+      n0(DATA.filas.length) + ' inspecciones' + (DATA_COMPLETA ? '' : ' (desde ' + fechaCorta(DATA.desde) + ')') +
+      ' · datos al ' + (DATA.generado || '—');
+  }catch(e){
+    document.getElementById('dEstado').textContent = 'Sin conexión';
+    if(!o.silencioso){
+      dAvisar('No se pudieron cargar los datos: ' + e.message +
+        ' Si acabas de actualizar el Apps Script, revisa que hayas usado <b>Administrar implementaciones > Nueva versión</b>.');
+      document.getElementById('tbRegistros').innerHTML =
+        '<div class="mini">No se pudieron cargar los registros: ' + esc(e.message) + '</div>';
+    }
+  }finally{
+    if(!o.silencioso){ btn.disabled = false; btn.textContent = 'Actualizar'; }
+  }
+}
+
+/* ================================================================
+   TABLERO — períodos reales (semana lunes a domingo, mes, año)
+   ================================================================ */
+function isoDe(d){
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function sumarDias(iso, n){
+  const d = new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return isoDe(d);
+}
+function lunesDe(iso){
+  const d = new Date(iso+'T00:00:00');
+  const dow = (d.getDay()+6)%7;      /* 0 = lunes */
+  d.setDate(d.getDate()-dow);
+  return isoDe(d);
+}
+function clavePeriodo(iso, g){
+  const gr = g || GRAN;
+  if(gr === 'dia')  return iso;
+  if(gr === 'sem')  return lunesDe(iso);
+  if(gr === 'anio') return iso.slice(0,4);
+  return iso.slice(0,7);
+}
+function etiquetaPeriodo(k, g){
+  const gr = g || GRAN;
+  if(!k) return '';
+  if(gr === 'dia')  return fechaLarga(k);
+  if(gr === 'anio') return k;
+  if(gr === 'mes'){ const p = k.split('-'); return MES3[+p[1]-1] + ' ' + p[0]; }
+  const fin = sumarDias(k, 6);
+  const a = k.split('-'), b = fin.split('-');
+  if(a[1] === b[1] && a[0] === b[0]) return Number(a[2])+'–'+Number(b[2])+' '+MES3[+a[1]-1]+' '+a[0];
+  return Number(a[2])+' '+MES3[+a[1]-1]+' – '+Number(b[2])+' '+MES3[+b[1]-1]+' '+b[0];
+}
+function rangoPeriodo(k, g){
+  const gr = g || GRAN;
+  if(gr === 'dia')  return {ini:k, fin:k};
+  if(gr === 'sem')  return {ini:k, fin:sumarDias(k,6)};
+  if(gr === 'anio') return {ini:k+'-01-01', fin:k+'-12-31'};
+  const p = k.split('-');
+  const ult = new Date(+p[0], +p[1], 0).getDate();
+  return {ini:k+'-01', fin:k+'-'+String(ult).padStart(2,'0')};
+}
+function anioDe(k, g){ return ((g||GRAN) === 'anio') ? k : k.slice(0,4); }
+function periodoAnterior(k, g){
+  const gr = g || GRAN;
+  if(gr === 'dia')  return sumarDias(k,-1);
+  if(gr === 'sem')  return sumarDias(k,-7);
+  if(gr === 'anio') return String(+k - 1);
+  const p = k.split('-'); let a = +p[0], m = +p[1]-1;
+  if(m === 0){ m = 12; a--; }
+  return a + '-' + String(m).padStart(2,'0');
+}
+function granGrafico(){ return GRAN === 'anio' ? 'mes' : 'dia'; }
+function nombrePeriodoLargo(){
+  return GRAN === 'dia' ? 'día' : (GRAN === 'sem' ? 'semana' : (GRAN === 'anio' ? 'año' : 'mes'));
+}
+function claveGrafico(iso){ return granGrafico() === 'mes' ? iso.slice(0,7) : iso; }
+function etiquetaGrafico(k){
+  if(granGrafico() === 'mes') return etiquetaPeriodo(k, 'mes');
+  const p = k.split('-'); return p[2]+'/'+p[1];
+}
+function nombrePeriodo(){ return nombrePeriodoLargo(); }
+
+/* ---------------- filtros ---------------- */
+function esServicio(l){ return String(l||'').trim().toUpperCase() === 'SERVICIO'; }
+/* Los indicadores de calidad (primeras, defectos, segundas) NO consideran la
+   prenda de servicio. Los de tiempo y eficiencia SÍ la consideran, porque esas
+   horas también se trabajaron. */
+function pasaBase(f, conServicio){
+  const L = document.getElementById('fLinea').value;
+  const I = document.getElementById('fIns').value;
+  if(!conServicio && esServicio(f[F_LIN])) return false;
+  if(L && f[F_LIN] !== L) return false;
+  if(I && f[F_INS] !== I) return false;
+  return true;
+}
+function filtrarRango(ini, fin){
+  return DATA.filas.filter(f=> pasaBase(f, false) && f[F_FEC] >= ini && f[F_FEC] <= fin);
+}
+function filtrarRangoEfi(ini, fin){
+  return DATA.filas.filter(f=> pasaBase(f, true) && f[F_FEC] >= ini && f[F_FEC] <= fin);
+}
+function clavesPeriodo(){
+  const s = {};
+  DATA.filas.forEach(f=>{ if(pasaBase(f, true)) s[clavePeriodo(f[F_FEC])] = 1; });
+  return Object.keys(s).sort();
+}
+function abrirTablero(){
+  document.getElementById('overlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+  cargarChart().catch(()=>{});
+  if(!DATA || !DATA_COMPLETA){ cargarDatos({full:true}); }
+  else { prepararFiltros(); render(); }
+}
+function cerrarTablero(){
+  document.getElementById('overlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
+function dAvisar(html, clase){
+  const a = document.getElementById('dAviso');
+  a.innerHTML = html; a.className = 'dAviso ' + (clase||''); a.style.display = 'block';
+}
+function prepararFiltros(){
+  if(!DATA) return;
+  const lineas = [], insp = [];
+  DATA.filas.forEach(f=>{
+    if(f[F_LIN] && lineas.indexOf(f[F_LIN]) === -1) lineas.push(f[F_LIN]);
+    if(f[F_INS] && insp.indexOf(f[F_INS]) === -1) insp.push(f[F_INS]);
+  });
+  lineas.sort(); insp.sort();
+
+  const sl = document.getElementById('fLinea'), al = sl.value;
+  sl.innerHTML = '<option value="">Todas las líneas</option>' + lineas.map(l=>'<option>'+esc(l)+'</option>').join('');
+  sl.value = al;
+
+  const si = document.getElementById('fIns'), ai = si.value;
+  si.innerHTML = '<option value="">Todas las inspectoras</option>' + insp.map(i=>'<option>'+esc(i)+'</option>').join('');
+  si.value = ai;
+
+  const sp = document.getElementById('fPeriodo'), ap = sp.value;
+  let claves = clavesPeriodo().reverse();
+  if(GRAN === 'dia') claves = claves.slice(0, 180);
+  sp.innerHTML = claves.map(k=>'<option value="'+k+'">'+etiquetaPeriodo(k)+'</option>').join('');
+  sp.value = (ap && claves.indexOf(ap) >= 0) ? ap : (claves[0] || '');
+}
+
+/* ---------------- métricas ---------------- */
+/* Las horas de inicio y final se repiten en cada estilo del mismo turno, así que
+   cada turno (fecha + inspectora + horario + improductivas) se cuenta una vez. */
+function agregarHoras(rows){
+  const vistos = {};
+  let tot = 0, imp = 0, turnos = 0;
+  rows.forEach(f=>{
+    if(!f[F_HTOT] && !f[F_HIMP]) return;
+    const k = [f[F_FEC], f[F_INS], f[F_HI], f[F_HF], f[F_HIMP]].join('|');
+    if(vistos[k]) return;
+    vistos[k] = 1;
+    tot += f[F_HTOT] || 0;
+    imp += f[F_HIMP] || 0;
+    /* El refrigerio solo corresponde en turnos de 4 horas o más. */
+    if(f[F_HTOT] >= HORAS_MIN_REFRIGERIO) turnos++;
+  });
+  const refr = Math.round(turnos * (MIN_REFRIGERIO/60) * 100)/100;
+  tot = Math.round(tot*100)/100; imp = Math.round(imp*100)/100;
+  return {tot:tot, imp:imp, turnos:turnos, refr:refr,
+          prod:Math.round(Math.max(0, tot - imp - refr)*100)/100};
+}
+/* Índices de los defectos del grupo SEGUNDAS, para el KPI de segundas. */
+let IDX_SEG = null;
+function idxSegundas(){
+  if(IDX_SEG) return IDX_SEG;
+  IDX_SEG = [];
+  (DATA && DATA.defectos ? DATA.defectos : []).forEach((d,i)=>{
+    if(String(d.categoria).toUpperCase() === 'SEGUNDAS') IDX_SEG.push(i);
+  });
+  return IDX_SEG;
+}
+function met(rows){
+  const iSeg = idxSegundas();
+  let carga=0, def=0, pri=0, rein=0, min=0, cargaStd=0, espec=0, seg=0;
+  rows.forEach(f=>{
+    carga += f[F_CAR]; def += f[F_DEF]; pri += f[F_PRI];
+    rein += (f[F_REI]||0); min += (f[F_MIN]||0);
+    if(f[F_STD] > 0) cargaStd += f[F_CAR];
+    espec += Math.max(0, (f[F_NOR]||0) - (f[F_REI]||0));
+    detPares(f).forEach(par=>{ if(iSeg.indexOf(par[0]) >= 0) seg += par[1]; });
+  });
+  const H = agregarHoras(rows);
+  return {
+    n:rows.length, carga:carga, def:def, pri:pri, rein:rein, min:min, espec:espec, seg:seg,
+    hTot:H.tot, hImp:H.imp, hProd:H.prod, hRefr:H.refr, turnos:H.turnos,
+    pPri: pct(pri,carga), pDef: pct(def,carga), pSeg: pct(seg,carga),
+    pProd: pct(H.prod, H.tot),
+    pEfi: H.prod > 0 ? pct(min, H.prod*60) : 0,
+    cobStd: pct(cargaStd, carga)
+  };
+}
+
+/* ---------------- render ---------------- */
+async function render(){
+  Object.keys(charts).forEach(k=>{ try{ charts[k].destroy(); }catch(e){} });
+  charts = {};
+  if(!DATA) return;
+  try{ await cargarChart(); }catch(e){ /* sin CDN: tablas sí, gráficos no */ }
+
+  const cont = document.getElementById('contenido');
+  const k = document.getElementById('fPeriodo').value;
+  if(!k){
+    cont.innerHTML = '<div class="vacio">No hay inspecciones con estos filtros. Prueba con otro período, con otra línea, o enciende el interruptor de SERVICIO.</div>';
+    document.getElementById('printHead').innerHTML = '';
+    return;
+  }
+  const R = rangoPeriodo(k);
+  const CUR = filtrarRango(R.ini, R.fin);
+  if(!CUR.length){
+    cont.innerHTML = '<div class="vacio">No hay inspecciones en ' + etiquetaPeriodo(k) + ' con estos filtros.</div>';
+    document.getElementById('printHead').innerHTML = '';
+    return;
+  }
+  const CUR_EFI = filtrarRangoEfi(R.ini, R.fin);
+  const kPrev = periodoAnterior(k);
+  const RP = rangoPeriodo(kPrev);
+  const PREVrows = filtrarRango(RP.ini, RP.fin);
+  const PREV_EFI = filtrarRangoEfi(RP.ini, RP.fin);
+
+  const mCur  = met(CUR);
+  const mEfi  = met(CUR_EFI);
+  const mPrev = PREVrows.length ? met(PREVrows) : null;
+  const mPrevEfi = PREV_EFI.length ? met(PREV_EFI) : null;
+
+  const todas = CUR_EFI.concat(CUR);
+  const ultimaFecha = todas.reduce((mx,f)=> f[F_FEC] > mx ? f[F_FEC] : mx, todas[0][F_FEC]);
+  const parcial = ultimaFecha < R.fin;
+  const nServ = CUR_EFI.length - CUR.length;
+
+  cont.innerHTML =
+    htmlVerdicto(mCur, mPrev, k, kPrev) +
+    htmlKpis(mCur, mPrev, mEfi, mPrevEfi, k, R, ultimaFecha, parcial, nServ) +
+    htmlInsight(CUR, mCur, k) +
+    htmlTabs();
+
+  pintarSparklines();
+  pintarTendencia(CUR, CUR_EFI);
+  pintarEficiencia(mEfi, nServ);
+  pintarCategorias(CUR);
+  pintarInspectoras(CUR_EFI);
+  pintarDefectosDash(CUR, mCur);
+  pintarDetalleDash(CUR, nServ);
+  pintarPortada(k, mCur, mEfi, mPrev, R, ultimaFecha, parcial, nServ);
+
+  setTimeout(()=>{ document.querySelectorAll('.rank .fill').forEach(f=>{ f.style.width = f.dataset.w; }); }, 120);
+
+  if(!DATA_COMPLETA){
+    dAvisar('Solo están cargados los datos del mes actual y el anterior, así que el acumulado del año puede quedar corto. Pulsa <b>Actualizar</b> para traer todo el histórico.');
+  }
+}
+
+function htmlVerdicto(A, P, k, kPrev){
+  const per = etiquetaPeriodo(k);
+  if(!P){
+    return '<div class="verdict warn"><div class="dot">i</div><div>' +
+      '<div class="t">Sin comparación disponible</div><div class="s">En ' + per +
+      ' se revisaron <b>' + n0(A.carga) + '</b> prendas y salieron <b>' + n0(A.pri) +
+      '</b> primeras, o sea el <b>' + n1(A.pPri) + '%</b> de lo revisado. No hay ' + nombrePeriodo() +
+      ' anterior con datos ni una meta definida, así que todavía no se puede decir si esto es bueno o malo.</div></div></div>';
+  }
+  const dif = A.pPri - P.pPri;
+  const mejor = dif >= 0;
+  const igual = Math.abs(dif) < 0.5;
+  const cls = igual ? 'warn' : (mejor ? 'ok' : '');
+  const icono = igual ? '=' : (mejor ? '↑' : '↓');
+  const titulo = igual ? ('Igual que el ' + nombrePeriodoLargo() + ' anterior')
+    : (mejor ? 'Mejor que antes' : 'Peor que antes');
+  const equiv = Math.round(Math.abs(dif) * A.carga / 100);
+  return '<div class="verdict ' + cls + '"><div class="dot">' + icono + '</div><div>' +
+    '<div class="t">' + titulo + '</div><div class="s">En <b>' + per + '</b> salieron primeras el <b>' +
+    n1(A.pPri) + '%</b> de las ' + n0(A.carga) + ' prendas revisadas, contra ' + n1(P.pPri) + '% en ' +
+    etiquetaPeriodo(kPrev) + '. Son <b>' + n1(Math.abs(dif)) + ' puntos ' + (mejor?'más':'menos') +
+    '</b>, equivalente a unas <b>' + n0(equiv) + '</b> prendas ' + (mejor?'salvadas':'perdidas') +
+    ' sobre este volumen. No hay meta definida: la comparación es contra el período anterior, no contra un objetivo.</div></div></div>';
+}
+function deltaHtml(actual, anterior, subirEsBueno){
+  if(anterior === null || anterior === undefined) return '';
+  const dif = actual - anterior;
+  if(Math.abs(dif) < 0.05) return '<span class="d flat">sin cambio</span>';
+  const bueno = subirEsBueno ? dif > 0 : dif < 0;
+  return '<span class="d ' + (bueno?'bien':'mal') + '">' + (dif>0?'▲':'▼') + ' ' + n1(Math.abs(dif)) + ' pts</span>';
+}
+function nombreFiltro(){
+  return GRAN === 'dia' ? 'Día' : (GRAN === 'sem' ? 'Semana' : (GRAN === 'anio' ? 'Año' : 'Mes'));
+}
+function htmlKpis(A, P, E, PE, k, R, ultima, parcial, nServ){
+  const cab = '<div class="kpihead">' +
+      '<span class="t">' + nombreFiltro() + ': <span>' + etiquetaPeriodo(k) + '</span></span>' +
+      '<span class="s">' +
+        (parcial ? 'Parcial · con datos hasta el ' + fechaLarga(ultima)
+                 : 'Período completo · del ' + fechaLarga(R.ini) + ' al ' + fechaLarga(R.fin)) +
+        ' · ' + n0(A.carga) + ' prendas revisadas en ' + n0(A.n) + ' inspecciones' +
+        (nServ > 0 ? ' · ' + n0(nServ) + ' registro(s) de SERVICIO fuera de los indicadores de calidad' : '') +
+      '</span></div>';
+  const eti = '<span class="kpiper">' + nombreFiltro().toLowerCase() + '</span>';
+  return cab + '<div class="kpis">' +
+    kpi('','% Primeras ' + eti, n1(A.pPri)+'%', deltaHtml(A.pPri, P?P.pPri:null, true),
+        n0(A.pri) + ' primeras ÷ ' + n0(A.carga) + ' prendas revisadas · sin servicio', 'spkPri') +
+    kpi('alert','% Con defecto ' + eti, n1(A.pDef)+'%', deltaHtml(A.pDef, P?P.pDef:null, false),
+        n0(A.def) + ' con defecto ÷ ' + n0(A.carga) + ' revisadas · sin servicio', 'spkDef') +
+    kpi('alert','% Segundas ' + eti, n1(A.pSeg)+'%', deltaHtml(A.pSeg, P?P.pSeg:null, false),
+        n0(A.seg) + ' segundas ÷ ' + n0(A.carga) + ' revisadas · sin servicio', 'spkSeg') +
+    kpi('','% Eficiencia ' + eti, n1(E.pEfi)+'%', deltaHtml(E.pEfi, PE?PE.pEfi:null, true),
+        n0(E.min) + ' min producidos ÷ ' + n0(E.hProd*60) + ' min asistidos · incluye servicio' +
+        (E.cobStd < 99.5 ? ' · ojo: solo el ' + n1(E.cobStd) + '% tiene T. STD' : ''), 'spkEfi') +
+  '</div>';
+}
+function kpi(cls,label,valor,delta,sub,sparkId){
+  return '<div class="kpi ' + cls + '"><div class="l">' + label + '</div>' +
+    '<div class="row"><div class="v">' + valor + '</div>' + delta + '</div>' +
+    '<div class="s">' + sub + '</div><div class="spark"><canvas id="' + sparkId + '"></canvas></div></div>';
+}
+function totalesPorDefecto(rows){
+  const tot = new Array(DATA.defectos.length).fill(0);
+  rows.forEach(f=> detPares(f).forEach(par=>{ if(par[0] < tot.length) tot[par[0]] += par[1]; }));
+  return tot;
+}
+function htmlInsight(rows, A, k){
+  const defs = DATA.defectos;
+  const tot = totalesPorDefecto(rows);
+  const idx = tot.map((v,i)=>({i:i,v:v})).filter(o=>o.v>0 && defs[o.i].resta).sort((a,b)=>b.v-a.v);
+  if(!idx.length){
+    return '<div class="insight">En ' + etiquetaPeriodo(k) + ' no se registró ningún defecto que descuente: las ' +
+      n0(A.carga) + ' prendas revisadas salieron todas como primeras.</div>';
+  }
+  const top3 = idx.slice(0,3);
+  const conc = pct(top3.reduce((a,o)=>a+o.v,0), A.def);
+  const nom = top3.map(o=>esc(defs[o.i].defecto)).join(', ');
+  const siBaja = pct(A.pri + top3[0].v, A.carga);
+  return '<div class="insight">En ' + etiquetaPeriodo(k) + ', los <b>' + top3.length +
+    '</b> defectos más frecuentes (' + nom + ') concentran el <b>' + n1(conc) +
+    '%</b> de todas las prendas con defecto. Si <b>' + esc(defs[top3[0].i].defecto) + '</b> (' +
+    n0(top3[0].v) + ' prendas) se eliminara por completo, las primeras subirían de ' +
+    n1(A.pPri) + '% a <b>' + n1(siBaja) + '%</b>.</div>';
+}
+function htmlTabs(){
+  const nom = ['Inspectoras','Defectos','Detalle','Tendencia'];
+  return '<div class="tabs no-print">' +
+    nom.map((t,i)=>'<button' + (i===TAB_ACT?' class="active"':'') +
+      ' onclick="tab(' + i + ',this)">' + t + '</button>').join('') + '</div>' +
+
+  '<div class="tabpane' + (TAB_ACT===0?' active':'') + '"><div class="grid">' +
+    panel('col8','Eficiencia por inspectora','Debajo de cada barra está el lote que trabajó: carga más re-inspección. La eficiencia son los minutos producidos por ese lote ÷ los minutos asistidos que tuvo. <b>Incluye la prenda de servicio.</b> Solo aparecen las que tienen hora de inicio y final registradas.','<div class="cwrap"><canvas id="chEfiIns"></canvas></div>') +
+    panel('col4','Orden por eficiencia','Depende del T. STD de los estilos que le tocaron y de las horas que registró, no solo de su ritmo.','<ul class="rank" id="rkIns"></ul>') +
+    panel('col12','Detalle por inspectora','Los totales suman el total general del período.','<div class="tablescroll" id="tbIns"></div>') +
+    panel('col12','Eficiencia y tiempo del período','Eficiencia = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos asistidos. Los minutos asistidos descuentan las horas improductivas y 45 minutos de refrigerio por cada turno de 4 horas o más. <b>Incluye la prenda de servicio.</b>','<div id="bxEfi"></div>') +
+  '</div></div>' +
+
+  '<div class="tabpane' + (TAB_ACT===1?' active':'') + '"><div class="grid">' +
+    panel('col8','Los defectos que más pesan','Cada barra es qué parte del total de prendas con defecto le corresponde a esa falla: las barras suman 100%. La línea verde va acumulando esas mismas barras, así se ve cuántas fallas concentran la mayor parte del problema.','<div class="cwrap tall"><canvas id="chPar"></canvas></div>') +
+    panel('col4','Peso de cada grupo','% sobre el total de prendas con defecto del período.','<div class="cwrap tall"><canvas id="chCat"></canvas></div><div id="bxSplit"></div>') +
+  '</div></div>' +
+
+  '<div class="tabpane' + (TAB_ACT===2?' active':'') + '"><div class="grid">' +
+    panel('col12','Inspecciones del período','Una fila por estilo/carga registrado, sin la prenda de servicio, igual que el resto de los indicadores de calidad. Los registros eliminados no aparecen.','<div class="tablescroll" id="tbDetDash"></div>') +
+  '</div></div>' +
+
+  '<div class="tabpane' + (TAB_ACT===3?' active':'') + '"><div class="grid">' +
+    panel('col8','Cómo se movió el período','Las tres líneas son porcentajes y se leen en el eje de la izquierda (0 a 100%). Las barras grises al fondo son el volumen de prendas revisadas, en el eje de la derecha. Primeras y segundas van sin la prenda de servicio; la eficiencia sí la incluye.','<div class="cwrap tall"><canvas id="chTend"></canvas></div>') +
+    panel('col4','Cómo leer esta pestaña','Sirve para ver si el indicador sube o baja a lo largo del período. Con el filtro diario muestra un solo punto, así que se aprovecha mejor en semanal, mensual o anual.','<div class="nota">Si solo te interesa el dato del día, usa el filtro <b>Diario</b> y mira las tarjetas de arriba y la pestaña Inspectoras: ahí está el reproceso y la eficiencia de esa jornada.</div>') +
+  '</div></div>' +
+
+  '<details class="help"><summary>¿Cómo leo este tablero?</summary>' +
+  '<p><b>Qué período estoy viendo.</b> Los botones Semanal, Mensual y Anual cambian el tipo de período; el desplegable de al lado elige cuál. Las semanas van de lunes a domingo con sus fechas reales.</p>' +
+  '<p><b>Todo habla del mismo período.</b> Las tarjetas, los gráficos, las tablas y el texto de arriba son todos del período que elegiste en el filtro. La flecha de cada tarjeta compara contra el período anterior del mismo tipo: una semana contra la semana anterior, un mes contra el mes anterior. Si el período todavía no termina, la cabecera lo dice y muestra hasta qué día hay datos.</p>' +
+  '<p><b>Re-inspección suelta.</b> Hay registros con carga cero: son prendas que llegaron de otro lado y se revisaron por segunda vuelta, sin carga propia. No entran en el % de primeras ni en el de defectos (no había carga que juzgar), pero sí suman minutos producidos para la eficiencia.</p>' +
+  '<p><b>Qué entra en cada indicador.</b> Primeras, con defecto y segundas se calculan <b>sin la prenda de servicio</b>: son indicadores de la calidad de las líneas. Eficiencia y tiempo <b>sí incluyen el servicio</b>, porque esas horas también se trabajaron. Cada tarjeta lo dice en su pie.</p>' +
+  '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = prendas con defecto ÷ prendas revisadas. % Segundas = prendas marcadas como segundas ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos asistidos, donde los minutos asistidos son las horas de turno menos las improductivas menos 45 minutos de refrigerio por cada turno de 4 horas o más. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
+  '<p><b>Eficiencia.</b> El T. STD es el tiempo estándar en minutos que debería tomar inspeccionar una prenda de ese estilo. Las prendas re-inspeccionadas suman porque se revisaron dos veces; las primeras especiales no suman aparte, porque ya venían dentro de la carga. Del tiempo disponible se descuentan las horas improductivas y <b>45 minutos de refrigerio</b> por cada turno de 4 horas o más. Si un registro no tiene T. STD aporta cero minutos y la eficiencia baja: por eso el tablero avisa cuando hay estilos sin T. STD.</p>' +
+  '<p><b>Lo que no descuenta.</b> <b>Primeras especiales</b> no resta: la prenda sale igual como primera, así que ya está contada en el % de primeras y no aparece en los gráficos de defectos. <b>Re-inspección</b> tampoco resta prendas, pero sí suma tiempo trabajado.</p>' +
+  '<p><b>El gráfico de defectos.</b> Cada barra dice qué parte del total de prendas con defecto le corresponde a esa falla, así que <b>las barras suman 100%</b>. No es el porcentaje sobre las prendas revisadas: ese aparece al pasar el cursor y en la columna “% de lo revisado” de la tabla de abajo. La línea verde va acumulando las barras: donde llega al 80% están las pocas fallas que explican casi todo el problema.</p>' +
+  '<p><b>Eficiencia por inspectora.</b> Se calcula con los mismos minutos producidos y minutos asistidos, separando los registros de cada una. Solo aparecen las que tienen hora de inicio y final registradas; sin horas no hay divisor y la barra no se puede dibujar.</p>' +
+  '<p><b>Los números sobre los gráficos.</b> Cada barra lleva su porcentaje y, debajo en letra chica, la cantidad de prendas, sin tener que pasar el cursor. Si dos etiquetas se fueran a encimar, la segunda no se dibuja. En la línea de tendencia, con muchos días se escriben salteadas.</p>' +
+  '<p><b>No hay meta definida.</b> Por eso no hay semáforo de cumplimiento. El degradado de color de las barras es solo orden visual: el más alto en color fuerte, los siguientes más claros.</p>' +
+  '<p><b>Cuidado con la eficiencia por inspectora.</b> Depende de tres cosas que no controla: el T. STD de los estilos que le tocaron, las horas que alcanzó a registrar y si esos estilos tienen T. STD cargado. Una inspectora con estilos sin T. STD sale con eficiencia baja aunque haya trabajado igual que el resto. No sirve para comparar personas hasta que todos los estilos tengan su tiempo estándar.</p>' +
+  '<p><b>Términos.</b> <b>Carga</b>: grupo de prendas que se revisa de una vez. <b>Primeras</b>: prendas conformes. <b>Segundas</b>: prenda con falla que ya no se recupera como primera. <b>Compostura</b>: falla de costura que se arregla cosiendo. <b>Zurcido</b>: falla de tela o puntada que se repara con aguja. <b>Limpieza</b>: hilos sueltos o sin cortar. <b>Re-inspección</b>: carga que hubo que volver a revisar.</p>' +
+  '</details>';
+}
+function panel(col,titulo,sub,cuerpo){
+  return '<div class="' + col + '"><div class="panel"><div class="pt">' + titulo +
+    '</div><div class="ph">' + sub + '</div>' + cuerpo + '</div></div>';
+}
+function tab(i,btn){
+  TAB_ACT = i;
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tabpane').forEach((p,k)=>p.classList.toggle('active', k===i));
+}
+
+/* ---------------- sparklines por período ---------------- */
+function seriePeriodos(nMax){
+  const claves = clavesPeriodo().slice(-nMax);
+  return claves.map(k=>{
+    const r = rangoPeriodo(k);
+    return {cal: met(filtrarRango(r.ini, r.fin)), efi: met(filtrarRangoEfi(r.ini, r.fin))};
+  });
+}
+function sparkline(id, valores){
+  if(!window.Chart) return;
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(valores.length < 3){ el.parentNode.style.display = 'none'; return; }
+  charts[id] = new Chart(el, {
+    type:'line',
+    data:{labels:valores.map(()=>''), datasets:[{data:valores, borderColor:'#0F7A5A',
+      borderWidth:1.8, pointRadius:0, tension:.35, fill:true, backgroundColor:'rgba(15,122,90,.08)'}]},
+    options:{responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false}, tooltip:{enabled:false}},
+      scales:{x:{display:false}, y:{display:false}}}
+  });
+}
+function pintarSparklines(){
+  const s = seriePeriodos(8);
+  sparkline('spkPri', s.map(o=>o.cal.pPri));
+  sparkline('spkDef', s.map(o=>o.cal.pDef));
+  sparkline('spkSeg', s.map(o=>o.cal.pSeg));
+  sparkline('spkEfi', s.map(o=>o.efi.pEfi));
+}
+
+/* ---------------- etiquetas de valor sobre los gráficos ----------------
+   Dibuja el número encima de cada barra o punto, sin librerías extra.     */
+function pluginEtiquetas(op){
+  const o = op || {};
+  return {
+    id: 'etiquetasLives',
+    afterDatasetsDraw(chart){
+      const ctx  = chart.ctx;
+      const area = chart.chartArea;
+      const cajas = [];
+      /* Si una etiqueta pisaría a otra ya dibujada, se omite. Así nunca se
+         encima nada, por muy juntos que estén los valores. */
+      function libre(x, y, an, al){
+        for(let i = 0; i < cajas.length; i++){
+          const c = cajas[i];
+          if(Math.abs(x - c.x) < (an + c.an)/2 + 3 && Math.abs(y - c.y) < (al + c.al)/2 + 2) return false;
+        }
+        return true;
+      }
+      ctx.save();
+      ctx.font = '700 11px Calibri, Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineJoin = 'round';
+      const orden = o.datasets || chart.data.datasets.map((d,i)=>i);
+      orden.forEach(i=>{
+        const ds = chart.data.datasets[i];
+        if(!ds) return;
+        const meta = chart.getDatasetMeta(i);
+        if(!meta || meta.hidden) return;
+        const paso = o.paso || 1;
+        const dy = (o.desplazar && o.desplazar[i] !== undefined) ? o.desplazar[i] : -11;
+        meta.data.forEach((el, j)=>{
+          if(paso > 1 && j % paso !== 0 && j !== meta.data.length - 1) return;
+          const v = ds.data[j];
+          if(v === null || v === undefined) return;
+          if(o.minimo !== undefined && v < o.minimo) return;
+          const txt = (o.entero ? n0(v) : n1(v)) + (o.sufijo === undefined ? '%' : o.sufijo);
+          const txt2 = o.segundaLinea ? o.segundaLinea(j) : '';
+          const an = Math.max(ctx.measureText(txt).width, txt2 ? ctx.measureText(txt2).width : 0) + 4;
+          const al = txt2 ? 25 : 13;
+          let y = el.y + dy - (txt2 ? 6 : 0);
+          if(y - al/2 < area.top) y = el.y + Math.abs(dy) + (txt2 ? 6 : 0);
+          if(y + al/2 > area.bottom) y = el.y - Math.abs(dy) - (txt2 ? 6 : 0);
+          if(!libre(el.x, y, an, al)) return;
+          cajas.push({x:el.x, y:y, an:an, al:al});
+          const color = o.color || (ds.borderColor && typeof ds.borderColor === 'string' ? ds.borderColor : '#33474F');
+          function linea(t, yy, gris){
+            ctx.lineWidth = 3.5;
+            ctx.strokeStyle = 'rgba(255,255,255,.92)';
+            ctx.strokeText(t, el.x, yy);
+            ctx.fillStyle = gris ? '#5F726C' : color;
+            ctx.fillText(t, el.x, yy);
+          }
+          if(txt2){
+            ctx.font = '700 11px Calibri, Arial, sans-serif';
+            linea(txt, y - 6, false);
+            ctx.font = '400 10px Calibri, Arial, sans-serif';
+            linea(txt2, y + 7, true);
+            ctx.font = '700 11px Calibri, Arial, sans-serif';
+          }else{
+            linea(txt, y, false);
+          }
+        });
+      });
+      ctx.restore();
+    }
+  };
+}
+/* Porcentaje dentro de cada porción del gráfico de anillo. */
+function pluginEtiquetasAnillo(){
+  return {
+    id: 'etiquetasAnillo',
+    afterDatasetsDraw(chart){
+      const ctx = chart.ctx;
+      const ds = chart.data.datasets[0];
+      const total = ds.data.reduce((a,b)=>a+b, 0);
+      if(!total) return;
+      ctx.save();
+      ctx.font = '700 12px Calibri, Arial, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.lineJoin = 'round';
+      chart.getDatasetMeta(0).data.forEach((el, j)=>{
+        const p = pct(ds.data[j], total);
+        if(p < 5) return;
+        const c = el.getCenterPoint();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'rgba(0,0,0,.28)';
+        ctx.strokeText(n1(p) + '%', c.x, c.y);
+        ctx.fillStyle = '#fff';
+        ctx.fillText(n1(p) + '%', c.x, c.y);
+      });
+      ctx.restore();
+    }
+  };
+}
+
+/* ---------------- gráficos ---------------- */
+function pintarTendencia(rows, rowsEfi){
+  if(!window.Chart) return;
+  const m = {}, me = {};
+  rows.forEach(f=>{ const k = claveGrafico(f[F_FEC]); (m[k] = m[k] || []).push(f); });
+  (rowsEfi||rows).forEach(f=>{ const k = claveGrafico(f[F_FEC]); (me[k] = me[k] || []).push(f); });
+  const ks = Object.keys(m).sort();
+  const serie = ks.map(k=>met(m[k]));
+  const serieE = ks.map(k=>met(me[k] || []));
+  const pasoT = Math.max(1, Math.ceil(ks.length/10));
+  charts.tend = new Chart(document.getElementById('chTend'), {
+    plugins:[pluginEtiquetas({datasets:[1,2,3], paso:pasoT,
+      desplazar:{1:-12, 2:14, 3:-12}})],
+    data:{labels:ks.map(etiquetaGrafico), datasets:[
+      {type:'bar', label:'Prendas revisadas', data:serie.map(x=>x.carga),
+       backgroundColor:'rgba(220,229,226,.85)', borderRadius:4, order:4, yAxisID:'y1'},
+      {type:'line', label:'% Primeras', data:serie.map(x=>+x.pPri.toFixed(1)),
+       borderColor:'#0F7A5A', backgroundColor:'#0F7A5A', borderWidth:2.6, tension:.3,
+       pointRadius:3, order:1, yAxisID:'y'},
+      {type:'line', label:'% Eficiencia', data:serieE.map(x=>+x.pEfi.toFixed(1)),
+       borderColor:'#B45309', backgroundColor:'#B45309', borderWidth:2.2, tension:.3,
+       pointRadius:3, borderDash:[6,3], order:2, yAxisID:'y'},
+      {type:'line', label:'% Segundas', data:serie.map(x=>+x.pSeg.toFixed(1)),
+       borderColor:'#DC2626', backgroundColor:'#DC2626', borderWidth:2, tension:.3,
+       pointRadius:2.5, order:3, yAxisID:'y'}
+    ]},
+    options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14}},
+        tooltip:{callbacks:{label:c=> c.dataset.yAxisID === 'y'
+          ? c.dataset.label + ': ' + n1(c.raw) + '%'
+          : c.dataset.label + ': ' + n0(c.raw)}}},
+      scales:{
+        y:{position:'left', beginAtZero:true, max:108, grid:{color:'#F1F6F4'},
+           title:{display:true,text:'Porcentaje'},
+           ticks:{callback:v=> v > 100 ? '' : v+'%', stepSize:20}},
+        y1:{position:'right', beginAtZero:true, grid:{display:false},
+            title:{display:true,text:'Prendas revisadas'}},
+        x:{grid:{display:false}, ticks:{maxRotation:0, autoSkip:true, maxTicksLimit:14}}}}
+  });
+}
+function pintarEficiencia(mCur, nServ){
+  const el = document.getElementById('bxEfi');
+  if(!el) return;
+  if(!mCur.hProd){
+    el.innerHTML = '<div class="nota">En este período no se registraron horas de inicio y final, ' +
+      'así que no se puede calcular ni el tiempo productivo ni la eficiencia. El campo es opcional en el formulario.</div>';
+    return;
+  }
+  const minDisp = mCur.hProd * 60;
+  el.innerHTML =
+    '<div class="split3">' +
+      '<div class="mini-kpi g"><div class="l">Eficiencia</div><div class="v">' + n1(mCur.pEfi) + '%</div>' +
+      '<div class="s">del período</div></div>' +
+      '<div class="mini-kpi b"><div class="l">Horas de turno</div><div class="v">' + nh(mCur.hTot) + '</div>' +
+      '<div class="s">' + n0(mCur.turnos) + ' turno(s) con refrigerio</div></div>' +
+      '<div class="mini-kpi"><div class="l">Improductivas</div><div class="v">' + nh(mCur.hImp) + '</div>' +
+      '<div class="s">' + n1(pct(mCur.hImp, mCur.hTot)) + '% del tiempo</div></div>' +
+    '</div>' +
+    '<table><tbody>' +
+      '<tr><td>Prendas revisadas</td><td class="num"><b>' + n0(mCur.carga) + '</b></td></tr>' +
+      '<tr><td>Prendas re-inspeccionadas</td><td class="num"><b>' + n0(mCur.rein) + '</b></td></tr>' +
+      '<tr><td>Minutos producidos</td><td class="num"><b>' + n0(mCur.min) + '</b></td></tr>' +
+      '<tr><td>Horas de turno</td><td class="num">' + nh(mCur.hTot) + '</td></tr>' +
+      '<tr><td>− Improductivas</td><td class="num">' + nh(mCur.hImp) + '</td></tr>' +
+      '<tr><td>− Refrigerio (45 min × ' + n0(mCur.turnos) + ' turno(s) de 4 h o más)</td><td class="num">' + nh(mCur.hRefr) + '</td></tr>' +
+      '<tr><td><b>Minutos asistidos</b></td><td class="num"><b>' + n0(minDisp) + '</b></td></tr>' +
+    '</tbody></table>' +
+    '<div class="nota">' + n0(mCur.min) + ' ÷ ' + n0(minDisp) + ' = <b>' + n1(mCur.pEfi) + '%</b>. ' +
+    (mCur.cobStd < 99.5
+      ? 'Solo el <b>' + n1(mCur.cobStd) + '%</b> de las prendas del período tiene T. STD registrado; las que no lo tienen aportan cero minutos y hunden el resultado.'
+      : 'Todas las prendas del período tienen T. STD registrado.') +
+    (nServ > 0 ? ' Incluye los ' + n0(nServ) + ' registro(s) de SERVICIO, porque esas horas también se trabajaron.' : '') +
+    '</div>';
+}
+function pintarCategorias(rows){
+  if(!window.Chart) return;
+  const defs = DATA.defectos, cats = {};
+  const tot = totalesPorDefecto(rows);
+  tot.forEach((v,i)=>{ if(v > 0 && defs[i].resta){ cats[defs[i].categoria] = (cats[defs[i].categoria]||0)+v; } });
+  const ks = Object.keys(cats).sort((a,b)=>cats[b]-cats[a]);
+  const el = document.getElementById('chCat');
+  if(!el) return;
+  if(!ks.length){ el.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>'; return; }
+  charts.cat = new Chart(el, {
+    type:'doughnut',
+    plugins:[pluginEtiquetasAnillo()],
+    data:{labels:ks, datasets:[{data:ks.map(k=>cats[k]),
+      backgroundColor:ks.map((k,i)=>ROT[i%ROT.length]), borderWidth:2, borderColor:'#fff'}]},
+    options:{responsive:true, maintainAspectRatio:false, cutout:'58%',
+      plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:12}},
+        tooltip:{callbacks:{label:c=>{
+          const t = c.dataset.data.reduce((a,b)=>a+b,0);
+          return c.label + ': ' + n1(pct(c.raw,t)) + '% (' + n0(c.raw) + ' prendas)';
+        }}}}}
+  });
+}
+/* Pestaña Inspectoras: eficiencia, no defectos. */
+function pintarInspectoras(rows){
+  const m = {};
+  rows.forEach(f=>{
+    const k = f[F_INS] || '(sin dato)';
+    if(!m[k]) m[k] = [];
+    m[k].push(f);
+  });
+  const M = {}; Object.keys(m).forEach(k=>{ M[k] = met(m[k]); });
+  const ks = Object.keys(m).sort((a,b)=> M[b].pEfi - M[a].pEfi);
+  const conHoras = ks.filter(k=> M[k].hProd > 0);
+  const orden = conHoras.length ? conHoras : ks;
+  const maxp = Math.max(...orden.map(k=>M[k].pEfi), 0.0001);
+  const colores = orden.map((k,i)=>degradado(i, orden.length, 'verde'));
+
+  const el = document.getElementById('chEfiIns');
+  if(el){
+    if(!conHoras.length){
+      el.parentNode.innerHTML = '<div class="nota">Ninguna inspectora tiene horas de turno ' +
+        'registradas en este período, así que no se puede calcular la eficiencia. La hora de inicio ' +
+        'y la final son opcionales en el formulario, pero sin ellas no hay divisor.</div>';
+    }else if(window.Chart){
+      charts.efiIns = new Chart(el, {
+        plugins:[pluginEtiquetas({datasets:[0],
+          segundaLinea:function(j){
+            const k = orden[j];
+            return n0(M[k].carga + M[k].rein) + ' prendas';
+          }})],
+        data:{labels:orden, datasets:[
+          {type:'bar', label:'% Eficiencia', data:orden.map(k=>+M[k].pEfi.toFixed(1)),
+           backgroundColor:colores, borderRadius:4, maxBarThickness:90}
+        ]},
+        options:{responsive:true, maintainAspectRatio:false,
+          plugins:{legend:{display:false},
+            tooltip:{callbacks:{label:c=>{
+              const k = orden[c.dataIndex];
+              return ['Lote trabajado: ' + n0(M[k].carga) + ' de carga + ' + n0(M[k].rein) +
+                      ' de re-inspección = ' + n0(M[k].carga + M[k].rein) + ' prendas',
+                      n0(M[k].min) + ' min producidos ÷ ' + n0(M[k].hProd*60) + ' min asistidos',
+                      'Eficiencia: ' + n1(c.raw) + '%'];
+            }}}},
+          scales:{y:{beginAtZero:true, grace:'22%', grid:{color:'#F1F6F4'},
+              title:{display:true,text:'% Eficiencia'}, ticks:{callback:v=>v+'%'}},
+            x:{grid:{display:false}}}}
+      });
+    }
+  }
+
+  document.getElementById('rkIns').innerHTML = orden.map((k,i)=>{
+    const p = M[k].pEfi;
+    return '<li><span class="n">' + (i+1) + '</span><span><span class="nm">' + esc(k) + '</span>' +
+      '<span class="sub"> · lote ' + n0(M[k].carga + M[k].rein) + ' prendas (' + n0(M[k].carga) +
+      ' carga + ' + n0(M[k].rein) + ' re-insp.) · ' + nh(M[k].hProd) + ' h asistidas</span>' +
+      '<span class="track"><span class="fill" data-w="' + (p/maxp*100).toFixed(1) + '%" ' +
+      'style="background:' + colores[i] + '"></span></span></span>' +
+      '<span class="val" style="color:' + colores[i] + '">' + (M[k].hProd ? n1(p)+'%' : '—') + '</span></li>';
+  }).join('');
+
+  const T = met(rows);
+  document.getElementById('tbIns').innerHTML =
+    '<table><thead><tr><th>INSPECTORA</th><th class="num">Inspecciones</th>' +
+    '<th class="num">Prendas revisadas</th><th class="num">Re-inspeccionadas</th>' +
+    '<th class="num">Min. de trabajo</th><th class="num">H. asistidas</th>' +
+    '<th class="num">% Eficiencia</th><th class="num">% Primeras</th></tr></thead><tbody>' +
+    ks.map(k=>'<tr><td><b>' + esc(k) + '</b></td><td class="num">' + n0(M[k].n) + '</td>' +
+      '<td class="num">' + n0(M[k].carga) + '</td><td class="num">' + n0(M[k].rein) + '</td>' +
+      '<td class="num">' + n0(M[k].min) + '</td><td class="num">' + nh(M[k].hProd) + '</td>' +
+      '<td class="num">' + (M[k].hProd ? '<span class="pill ok">'+n1(M[k].pEfi)+'%</span>' : '—') + '</td>' +
+      '<td class="num">' + n1(M[k].pPri) + '%</td></tr>').join('') +
+    '</tbody><tfoot><tr><td>TOTAL</td><td class="num">' + n0(T.n) + '</td>' +
+    '<td class="num">' + n0(T.carga) + '</td><td class="num">' + n0(T.rein) + '</td>' +
+    '<td class="num">' + n0(T.min) + '</td><td class="num">' + nh(T.hProd) + '</td>' +
+    '<td class="num">' + (T.hProd ? n1(T.pEfi)+'%' : '—') + '</td>' +
+    '<td class="num">' + n1(T.pPri) + '%</td></tr></tfoot></table>';
+}
+function pintarDefectosDash(rows, A){
+  const defs = DATA.defectos;
+  const tot = totalesPorDefecto(rows);
+  const conResta = tot.map((v,i)=>({i:i,v:v})).filter(o=>o.v>0 && defs[o.i].resta).sort((a,b)=>b.v-a.v);
+  const sinResta = tot.map((v,i)=>({i:i,v:v})).filter(o=>o.v>0 && !defs[o.i].resta).sort((a,b)=>b.v-a.v);
+  const elPar = document.getElementById('chPar');
+
+  if(elPar){
+    if(!conResta.length){
+      elPar.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>';
+    }else if(!window.Chart){
+      elPar.parentNode.innerHTML = '<div class="nota">No se pudo cargar la librería de gráficos ' +
+        '(hace falta internet). Los números de la tabla de abajo sí están completos.</div>';
+    }else{
+      const top = conResta.slice(0,12);
+      const colores = top.map((o,i)=>degradado(i, top.length, 'azul'));
+      let acum = 0;
+      const acumPct = top.map(o=>{ acum += o.v; return +pct(acum, A.def).toFixed(1); });
+      charts.par = new Chart(elPar, {
+        plugins:[pluginEtiquetas({datasets:[0], minimo:0.05,
+          segundaLinea:function(j){ return n0(top[j].v) + ' prendas'; }})],
+        data:{labels:top.map(o=>defs[o.i].defecto), datasets:[
+          {type:'bar', label:'% del total de prendas con defecto',
+           data:top.map(o=>+pct(o.v, A.def).toFixed(1)),
+           backgroundColor:colores, borderRadius:4, yAxisID:'y'},
+          {type:'line', label:'% acumulado', data:acumPct,
+           borderColor:'#0F7A5A', borderWidth:2.2, tension:.25, pointRadius:3, yAxisID:'y1'}
+        ]},
+        options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
+          plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14}},
+            tooltip:{callbacks:{label:c=>{
+              const o = top[c.dataIndex];
+              return c.datasetIndex === 0
+                ? n0(o.v) + ' prendas · ' + n1(c.raw) + '% de las ' + n0(A.def) +
+                  ' con defecto · ' + n1(pct(o.v, A.carga)) + '% de las ' + n0(A.carga) + ' revisadas'
+                : 'Acumulado: ' + n1(c.raw) + '%';
+            }}}},
+          scales:{y:{beginAtZero:true, max:112, grid:{color:'#F1F6F4'},
+              title:{display:true,text:'% del total de defectos'},
+              ticks:{callback:v=> v > 100 ? '' : v+'%', stepSize:20}},
+            y1:{position:'right', beginAtZero:true, max:100, grid:{display:false},
+                title:{display:true,text:'% acumulado'}, ticks:{callback:v=>v+'%'}},
+            x:{grid:{display:false}, ticks:{maxRotation:60, minRotation:30, font:{size:10}}}}}
+      });
+    }
+  }
+
+  const bx = document.getElementById('bxSplit');
+  if(bx){
+    bx.innerHTML = (A.rein || A.espec)
+      ? '<div class="split3">' +
+        '<div class="mini-kpi"><div class="l">Descuentan de las primeras</div>' +
+        '<div class="v">' + n1(A.pDef) + '%</div><div class="s">' + n0(A.def) + ' prendas</div></div>' +
+        '<div class="mini-kpi g"><div class="l">Primeras especiales</div>' +
+        '<div class="v">' + n0(A.espec) + '</div><div class="s">ya contadas dentro de las primeras</div></div>' +
+        '<div class="mini-kpi b"><div class="l">Re-inspección</div>' +
+        '<div class="v">' + n0(A.rein) + '</div><div class="s">no descuenta, pero suma tiempo</div></div></div>' +
+        '<div class="nota"><b>Primeras especiales</b> no es un defecto: la prenda igual sale como primera, ' +
+        'por eso ya está incluida en el % de primeras y no aparece en los gráficos de defectos. ' +
+        '<b>Re-inspección</b> tampoco descuenta prendas, pero sí suma trabajo: esas prendas se revisaron ' +
+        'dos veces y por eso entran en la eficiencia.</div>'
+      : '';
+  }
+}
+function pintarDetalleDash(rows, nServ){
+  const ord = rows.slice().sort((a,b)=> a[F_FEC] < b[F_FEC] ? 1 : -1);
+  const T = met(rows);
+  document.getElementById('tbDetDash').innerHTML =
+    '<table><thead><tr><th>Fecha</th><th>Inspectora</th><th>Línea</th><th>Estilo</th>' +
+    '<th class="num">Revisadas</th><th class="num">Con defecto</th>' +
+    '<th class="num">Primeras</th><th class="num">% Primeras</th><th class="num">T. STD</th>' +
+    '<th>Defectos</th><th>Observación</th></tr></thead><tbody>' +
+    ord.slice(0,400).map(f=>{
+      const det = detTexto(f);
+      return '<tr><td>' + fechaCorta(f[F_FEC]) + '</td><td>' + esc(f[F_INS]) + '</td><td>' + esc(f[F_LIN]) +
+        '</td><td><b>' + esc(f[F_EST]) + '</b></td><td class="num">' + n0(f[F_CAR]) + '</td>' +
+        '<td class="num">' + n0(f[F_DEF]) + '</td>' +
+        '<td class="num">' + n0(f[F_PRI]) + '</td><td class="num">' + n1(pct(f[F_PRI],f[F_CAR])) + '%</td>' +
+        '<td class="num">' + (f[F_STD]?nh(f[F_STD]):'—') + '</td>' +
+        '<td style="font-size:11px;color:#5F726C">' + det + '</td>' +
+        '<td class="mini obscell">' + (f[F_OBS]?esc(f[F_OBS]):'—') + '</td></tr>';
+    }).join('') +
+    '</tbody><tfoot><tr><td colspan="4">TOTAL ' + n0(T.n) + ' inspecciones' +
+    (ord.length > 400 ? ' (se muestran las 400 más recientes)' : '') +
+    (nServ > 0 ? ' · ' + n0(nServ) + ' de SERVICIO no aparecen aquí' : '') + '</td>' +
+    '<td class="num">' + n0(T.carga) + '</td><td class="num">' + n0(T.def) + '</td>' +
+    '<td class="num">' + n0(T.pri) + '</td><td class="num">' + n1(T.pPri) + '%</td>' +
+    '<td colspan="3"></td></tr></tfoot></table>';
+}
+
+/* ---------------- portada del reporte impreso ---------------- */
+function pintarPortada(k, mCur, mEfi, mPrev, R, ultima, parcial, nServ){
+  const tipo = GRAN === 'sem' ? 'Reporte semanal' : (GRAN === 'anio' ? 'Reporte anual' : 'Reporte mensual');
+  const cmp = mPrev
+    ? 'Frente al período anterior, las primeras pasaron de ' + n1(mPrev.pPri) + '% a ' + n1(mCur.pPri) + '%.'
+    : 'No hay período anterior con datos para comparar.';
+  const filtros = [];
+  const L = document.getElementById('fLinea').value;
+  const I = document.getElementById('fIns').value;
+  if(L) filtros.push('línea ' + L);
+  if(I) filtros.push('inspectora ' + I);
+  filtros.push(parcial ? 'parcial, con datos hasta el ' + fechaLarga(ultima) : 'período completo');
+
+  document.getElementById('printHead').innerHTML =
+    '<div class="rtop">' +
+      '<img class="rlogo" src="data:image/png;base64,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" alt="LIVES">' +
+      '<div><div class="rt">' + tipo + ' — ' + etiquetaPeriodo(k) + '</div>' +
+      '<div class="rs">Inspección Final · Área de Costura · Dpto. Ingeniería · ' +
+      'del ' + fechaLarga(R.ini) + ' al ' + fechaLarga(R.fin) + ' · ' + filtros.join(' · ') + '</div></div>' +
+    '</div>' +
+    '<div class="rexp"><b>Resumen del período.</b> Se revisaron ' + n0(mCur.carga) + ' prendas en ' +
+      n0(mCur.n) + ' inspecciones. Salieron primeras ' + n0(mCur.pri) + ' prendas, el ' + n1(mCur.pPri) +
+      '% de lo revisado; ' + n1(mCur.pDef) + '% salió con defecto y ' + n1(mCur.pSeg) + '% fueron segundas. ' + cmp +
+      (mEfi.hProd ? ' Se trabajaron ' + nh(mEfi.hTot) + ' horas, de las cuales ' + nh(mEfi.hProd) +
+        ' fueron asistidas, con una eficiencia de ' + n1(mEfi.pEfi) + '%.' : '') +
+      '<br><b>Qué entra en cada número.</b> Los indicadores de calidad (primeras, defectos, segundas) ' +
+      'se calculan sin la prenda de servicio' + (nServ > 0 ? ' (' + n0(nServ) + ' registro(s) excluidos)' : '') +
+      '. Los de tiempo y eficiencia sí la incluyen, porque esas horas también se trabajaron.' +
+      '<br><b>Cómo se calcula.</b> Primeras = carga − defectos que descuentan; primeras especiales no ' +
+      'descuenta, así que quedan contadas dentro de las primeras. Eficiencia = (prendas revisadas + ' +
+      're-inspeccionadas) × T. STD ÷ minutos asistidos, descontando las horas improductivas y 45 ' +
+      'minutos de refrigerio por cada turno de 4 horas o más. Todos los porcentajes ' +
+      'se obtienen sumando numeradores y denominadores del período, nunca promediando porcentajes diarios. ' +
+      'No hay meta definida: las comparaciones son contra el período anterior.</div>';
+}
+function imprimirReporte(){
+  if(!DATA){ toast('Espera a que carguen los datos', true); return; }
+  window.print();
+}
+
+/* ---------------- exportar copia estática ---------------- */
+async function exportar(){
+  if(!DATA){ toast('Espera a que carguen los datos', true); return; }
+  const btn = document.getElementById('btnExp');
+  btn.disabled = true; btn.textContent = 'Generando…';
+  try{
+    const r = await fetch(location.href, {cache:'no-store'});
+    if(!r.ok) throw new Error('No se pudo leer la página.');
+    let src = await r.text();
+    if(src.indexOf('<!--DATOS-->') === -1) throw new Error('Plantilla no reconocida.');
+    const payload = JSON.stringify(DATA).replace(/</g,'\\u003c');
+    src = src.replace('<!--DATOS-->', '<script>window.__SNAPSHOT__=' + payload + ';<\/script>');
+    const h = new Date();
+    const nombre = 'Tablero_Inspeccion_Costura_' + h.getFullYear() +
+      String(h.getMonth()+1).padStart(2,'0') + String(h.getDate()).padStart(2,'0') + '.html';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([src], {type:'text/html;charset=utf-8'}));
+    a.download = nombre; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+    toast('Archivo generado: ' + nombre);
+  }catch(e){
+    toast('No se pudo exportar: ' + e.message + ' Hazlo desde la página publicada, no desde un archivo local.', true);
+  }finally{
+    btn.disabled = false; btn.textContent = 'Exportar HTML';
+  }
+}
+
+/* ---------------- eventos ---------------- */
+document.addEventListener('wheel', e=>{
+  const t = e.target;
+  if(!t || t.tagName !== 'INPUT' || t.type !== 'number' || t.disabled) return;
+  e.preventDefault();
+  const paso = parseFloat(t.step) || 1;
+  const min  = (t.min !== '') ? parseFloat(t.min) : -Infinity;
+  let v = parseFloat(t.value);
+  if(isNaN(v)) v = 0;
+  v += (e.deltaY < 0 ? paso : -paso);
+  if(v < min) v = min;
+  t.value = String(Math.round(v * 100) / 100);
+  t.dispatchEvent(new Event('input', {bubbles:true}));
+}, {passive:false});
+
+document.addEventListener('input', e=>{
+  if(e.target.id === 'carga') recalcular('F');
+  if(e.target.id === 'edCarga') recalcular('E');
+  if(e.target.id === 'horasImp') actualizarHoras('F');
+  if(e.target.id === 'edHorasImp') actualizarHoras('E');
+});
+['hini','hfin'].forEach(pre=>{
+  ['_h','_m','_p'].forEach(s=>{
+    document.getElementById(pre+s).addEventListener('change', ()=>actualizarHoras('F'));
+  });
+});
+['edHi','edHf'].forEach(pre=>{
+  ['_h','_m','_p'].forEach(s=>{
+    document.getElementById(pre+s).addEventListener('change', ()=>actualizarHoras('E'));
+  });
+});
+document.addEventListener('keydown', e=>{
+  if((e.target.id === 'carga' || e.target.id === 'edCarga') && e.key === 'Enter'){
+    e.preventDefault();
+    const v = sumaTexto(e.target.value);
+    e.target.value = v ? String(v) : '';
+    recalcular(e.target.id === 'carga' ? 'F' : 'E');
+  }
+  if((e.target.id === 'qDefF' || e.target.id === 'qDefE') && e.key === 'Enter'){
+    e.preventDefault();
+    agregarDefecto(e.target.id === 'qDefF' ? 'F' : 'E');
+  }
+  if(e.key === 'Escape'){
+    if(document.getElementById('mdNuevo').classList.contains('on')) cerrarNuevoDefecto();
+    else if(document.getElementById('mdEdit').classList.contains('on')) cerrarEdit();
+    else if(!SNAP && !SOLO_TABLERO && document.getElementById('overlay').classList.contains('on')) cerrarTablero();
+  }
+});
+document.getElementById('estilo').addEventListener('change', buscarSTD);
+document.getElementById('estilo').addEventListener('blur', buscarSTD);
+['rDesde','rHasta','rIns','rLin'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', pintarRegistros);
+});
+['fPeriodo','fLinea','fIns'].forEach(id=>{
+  document.getElementById(id).addEventListener('change', ()=>{
+    if(id !== 'fPeriodo') prepararFiltros();
+    render();
+  });
+});
+document.querySelectorAll('#segGran button').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    document.querySelectorAll('#segGran button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    GRAN = b.dataset.g;
+    document.getElementById('fPeriodo').value = '';
+    prepararFiltros();
+    render();
+  });
+});
+iniciar();
+</script>
 </body>
 </html>
