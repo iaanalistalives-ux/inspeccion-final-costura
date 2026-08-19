@@ -1887,11 +1887,11 @@ function htmlTabs(){
   '</div></div>' +
 
   '<div class="tabpane' + (TAB_ACT===4?' active':'') + '"><div class="grid">' +
-    panel('col6','Eficiencia por inspectora','Debajo de cada barra, el lote trabajado: carga más re-inspección. Incluye la prenda de servicio.','<div class="cwrap"><canvas id="chEfiInsR"></canvas></div>') +
-    panel('col6','Peso de cada grupo de defecto','% sobre el total de prendas con defecto del período.','<div class="cwrap"><canvas id="chCatR"></canvas></div>') +
-    panel('col12','Los defectos que más pesan','Las barras suman 100%: cada una es la parte del total de prendas con defecto que le corresponde a esa falla. Debajo, la cantidad de prendas.','<div class="cwrap"><canvas id="chParR"></canvas></div>') +
+    panel('col12','Eficiencia por inspectora','Debajo de cada barra, el lote trabajado: carga más re-inspección. Incluye la prenda de servicio.','<div class="cwrap"><canvas id="chEfiInsR"></canvas></div>') +
+    panel('col8','Los defectos que más pesan — todas las líneas','Las barras suman 100%: cada una es la parte del total de prendas con defecto que le corresponde a esa falla. Debajo, la cantidad de prendas.','<div class="cwrap"><canvas id="chParR"></canvas></div>') +
+    panel('col4','Peso de cada grupo — todas las líneas','% sobre el total de prendas con defecto del período.','<div class="cwrap"><canvas id="chCatR"></canvas></div>') +
     '<div class="col12"><div class="panel"><div class="pt">Defectos por línea</div>' +
-      '<div class="ph">Los defectos que más pesan en cada línea de producción, dentro del mismo período. Cada gráfico se calcula sobre los defectos de esa línea, no sobre el total.</div>' +
+      '<div class="ph">Para cada línea de producción, sus defectos más pesados y el peso de cada grupo al costado. Ambos se calculan sobre los defectos de esa línea, no sobre el total.</div>' +
       '<div class="grid" id="repLineas"></div></div></div>' +
   '</div></div>' +
 
@@ -2347,6 +2347,30 @@ function paretoEn(canvasId, lista, totalDef, cuantos){
         x:{grid:{display:false}, ticks:{maxRotation:60, minRotation:30, font:{size:9.5}}}}}
   });
 }
+function donutEn(canvasId, lista){
+  if(!window.Chart) return null;
+  const el = document.getElementById(canvasId);
+  if(!el) return null;
+  const defs = DATA.defectos, cats = {};
+  lista.forEach(o=>{ cats[defs[o.i].categoria] = (cats[defs[o.i].categoria] || 0) + o.v; });
+  const ks = Object.keys(cats).sort((a,b)=>cats[b]-cats[a]);
+  if(!ks.length){
+    el.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>';
+    return null;
+  }
+  return new Chart(el, {
+    type:'doughnut',
+    plugins:[pluginEtiquetasAnillo()],
+    data:{labels:ks, datasets:[{data:ks.map(k=>cats[k]),
+      backgroundColor:ks.map((k,i)=>ROT[i%ROT.length]), borderWidth:2, borderColor:'#fff'}]},
+    options:{responsive:true, maintainAspectRatio:false, cutout:'58%',
+      plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:10, font:{size:11}}},
+        tooltip:{callbacks:{label:c=>{
+          const t = c.dataset.data.reduce((a,b)=>a+b,0);
+          return c.label + ': ' + n1(pct(c.raw,t)) + '% (' + n0(c.raw) + ' prendas)';
+        }}}}}
+  });
+}
 function pintarReporte(rows, rowsEfi, A){
   const el1 = document.getElementById('chEfiInsR');
   if(el1 && window.Chart){
@@ -2377,32 +2401,8 @@ function pintarReporte(rows, rowsEfi, A){
     }
   }
 
-  const el2 = document.getElementById('chCatR');
-  if(el2 && window.Chart){
-    const defs = DATA.defectos, cats = {};
-    totalesDefectosDe(rows).forEach(o=>{
-      cats[defs[o.i].categoria] = (cats[defs[o.i].categoria] || 0) + o.v;
-    });
-    const ks = Object.keys(cats).sort((a,b)=>cats[b]-cats[a]);
-    if(!ks.length){
-      el2.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>';
-    }else{
-      charts.catR = new Chart(el2, {
-        type:'doughnut',
-        plugins:[pluginEtiquetasAnillo()],
-        data:{labels:ks, datasets:[{data:ks.map(k=>cats[k]),
-          backgroundColor:ks.map((k,i)=>ROT[i%ROT.length]), borderWidth:2, borderColor:'#fff'}]},
-        options:{responsive:true, maintainAspectRatio:false, cutout:'58%',
-          plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:12}},
-            tooltip:{callbacks:{label:c=>{
-              const t = c.dataset.data.reduce((a,b)=>a+b,0);
-              return c.label + ': ' + n1(pct(c.raw,t)) + '% (' + n0(c.raw) + ' prendas)';
-            }}}}}
-      });
-    }
-  }
-
   const gen = totalesDefectosDe(rows);
+  charts.catR = donutEn('chCatR', gen);
   if(gen.length){ charts.parR = paretoEn('chParR', gen, A.def, 12); }
   else{
     const e = document.getElementById('chParR');
@@ -2416,25 +2416,33 @@ function pintarReporte(rows, rowsEfi, A){
   const lineas = Object.keys(porLinea).sort();
   if(!lineas.length){ cont.innerHTML = '<div class="nota">Sin registros en el período.</div>'; return; }
 
-  const ancho = lineas.length >= 3 ? 'col4' : (lineas.length === 2 ? 'col6' : 'col12');
   cont.innerHTML = lineas.map((L,i)=>{
     const mL = met(porLinea[L]);
-    return '<div class="' + ancho + '"><div class="panel">' +
-      '<div class="pt">' + esc(L) + '</div>' +
-      '<div class="ph">' + n0(mL.carga) + ' prendas revisadas · ' + n0(mL.def) +
-      ' con defecto (' + n1(mL.pDef) + '%) · ' + n1(mL.pPri) + '% primeras</div>' +
-      '<div class="cwrap"><canvas id="chLinRep' + i + '"></canvas></div></div></div>';
+    const sub = n0(mL.carga) + ' prendas revisadas · ' + n0(mL.def) +
+                ' con defecto (' + n1(mL.pDef) + '%) · ' + n1(mL.pPri) + '% primeras';
+    return '<div class="col8"><div class="panel">' +
+        '<div class="pt">' + esc(L) + ' — defectos que más pesan</div>' +
+        '<div class="ph">' + sub + '</div>' +
+        '<div class="cwrap"><canvas id="chLinRep' + i + '"></canvas></div></div></div>' +
+      '<div class="col4"><div class="panel">' +
+        '<div class="pt">' + esc(L) + ' — peso de cada grupo</div>' +
+        '<div class="ph">% sobre las ' + n0(mL.def) + ' prendas con defecto de esta línea.</div>' +
+        '<div class="cwrap"><canvas id="chLinDon' + i + '"></canvas></div></div></div>';
   }).join('');
 
   lineas.forEach((L,i)=>{
     const lista = totalesDefectosDe(porLinea[L]);
     const mL = met(porLinea[L]);
-    const e = document.getElementById('chLinRep' + i);
     if(!lista.length){
-      if(e) e.parentNode.innerHTML = '<div class="nota">Sin defectos registrados en esta línea durante el período.</div>';
+      const e1 = document.getElementById('chLinRep' + i);
+      const e2 = document.getElementById('chLinDon' + i);
+      const aviso = '<div class="nota">Sin defectos registrados en esta línea durante el período.</div>';
+      if(e1) e1.parentNode.innerHTML = aviso;
+      if(e2) e2.parentNode.innerHTML = aviso;
       return;
     }
     charts['linRep'+i] = paretoEn('chLinRep' + i, lista, mL.def, 8);
+    charts['linDon'+i] = donutEn('chLinDon' + i, lista);
   });
 }
 
