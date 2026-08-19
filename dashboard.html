@@ -309,12 +309,15 @@ position:relative;overflow:hidden;}
 .bigk .v{font-size:34px;font-weight:700;line-height:1.05;color:var(--slate);}
 .bigk .b.pri .v{color:var(--sage);} .bigk .b.def .v{color:var(--rose);}
 .bigk .s{font-size:11.5px;color:var(--stone);margin-top:2px;}
-.linek{display:flex;gap:14px;flex-wrap:wrap;align-items:baseline;
-background:var(--warm-light);border-radius:10px;padding:9px 13px;margin-bottom:10px;}
-.linek .g{font-size:26px;font-weight:700;color:var(--sage);line-height:1;}
-.linek .r{font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--stone);}
-.linek .o{font-size:12px;color:var(--stone);}
-.linek .o b{color:#333;}
+.linek{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;
+background:var(--warm-light);border-radius:10px;padding:11px 13px;margin-bottom:10px;}
+.linek .k{padding-left:9px;border-left:3px solid var(--sage);}
+.linek .g{font-size:25px;font-weight:700;color:var(--sage);line-height:1.05;}
+.linek .g.gris{color:var(--slate);} .linek .g.rojo{color:var(--rose);}
+.linek .r{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--stone);}
+.linek .o{font-size:10.5px;color:var(--stone);margin-top:1px;}
+@media(max-width:760px){ .linek{grid-template-columns:repeat(auto-fit,minmax(105px,1fr));}
+  .linek .g{font-size:21px;} }
 .nota{font-size:12px;color:var(--stone);background:var(--warm-light);border-radius:8px;
 padding:9px 11px;margin-top:10px;}
 .nota b{color:var(--sage-dark);}
@@ -2407,10 +2410,10 @@ function pintarReporte(rows, rowsEfi, A){
   const res = document.getElementById('repResumen');
   if(res){
     res.innerHTML =
-      '<div class="b pri"><div class="l">Prendas primeras</div><div class="v">' + n0(A.pri) + '</div>' +
-        '<div class="s">' + n1(A.pPri) + '% de lo revisado</div></div>' +
       '<div class="b"><div class="l">Prendas revisadas</div><div class="v">' + n0(A.carga) + '</div>' +
         '<div class="s">en ' + n0(A.n) + ' inspecciones</div></div>' +
+      '<div class="b pri"><div class="l">Prendas primeras</div><div class="v">' + n0(A.pri) + '</div>' +
+        '<div class="s">' + n1(A.pPri) + '% de lo revisado</div></div>' +
       '<div class="b def"><div class="l">Con defecto</div><div class="v">' + n0(A.def) + '</div>' +
         '<div class="s">' + n1(A.pDef) + '% de lo revisado</div></div>' +
       '<div class="b def"><div class="l">Segundas</div><div class="v">' + n0(A.seg) + '</div>' +
@@ -2472,10 +2475,17 @@ function pintarReporte(rows, rowsEfi, A){
   cont.innerHTML = lineas.map((L,i)=>{
     const mL = met(porLinea[L]);
     const banda = '<div class="linek">' +
-        '<span><span class="r">Primeras</span><br><span class="g">' + n0(mL.pri) + '</span></span>' +
-        '<span class="o">' + n1(mL.pPri) + '% de <b>' + n0(mL.carga) + '</b> prendas revisadas · ' +
-        '<b>' + n0(mL.def) + '</b> con defecto (' + n1(mL.pDef) + '%) · ' +
-        '<b>' + n0(mL.seg) + '</b> segundas (' + n1(mL.pSeg) + '%)</span></div>';
+        '<div class="k"><div class="r">Prendas revisadas</div><div class="g gris">' + n0(mL.carga) + '</div>' +
+          '<div class="o">en ' + n0(mL.n) + ' inspecciones</div></div>' +
+        '<div class="k"><div class="r">Primeras</div><div class="g">' + n0(mL.pri) + '</div>' +
+          '<div class="o">prendas conformes</div></div>' +
+        '<div class="k"><div class="r">% Primeras</div><div class="g">' + n1(mL.pPri) + '%</div>' +
+          '<div class="o">de lo revisado</div></div>' +
+        '<div class="k"><div class="r">Con defecto</div><div class="g rojo">' + n0(mL.def) + '</div>' +
+          '<div class="o">' + n1(mL.pDef) + '% de lo revisado</div></div>' +
+        '<div class="k"><div class="r">Segundas</div><div class="g rojo">' + n0(mL.seg) + '</div>' +
+          '<div class="o">' + n1(mL.pSeg) + '% de lo revisado</div></div>' +
+      '</div>';
     return '<div class="col8"><div class="panel">' +
         '<div class="pt">' + esc(L) + ' — defectos sobre lo revisado</div>' +
         '<div class="ph">Cada barra es el % de las prendas revisadas de esta línea que salió con esa falla.</div>' +
