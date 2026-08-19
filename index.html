@@ -33,7 +33,6 @@ display:flex;align-items:center;gap:16px;padding:0 22px;flex-wrap:wrap;}
 color:#fff;font-family:inherit;font-size:13px;font-weight:700;border-radius:8px;
 padding:9px 16px;cursor:pointer;min-height:42px;}
 .btn-tablero:hover{background:var(--emer);border-color:var(--emer);color:#06312A;}
-.btn-tablero.volver{display:inline-flex;align-items:center;text-decoration:none;}
 
 .wrap{width:100%;max-width:1180px;margin:0 auto;padding:18px 22px 60px;}
 
@@ -407,7 +406,6 @@ body.snap .bar{position:sticky;top:0;}
     <div class="hsub">Dpto. Ingeniería · registro digital por estilo</div>
   </div>
   <div class="hstate" id="hstate">Cargando catálogos…</div>
-  <a class="btn-tablero volver" id="btnPortal" href="#" style="display:none">← Menú principal</a>
   <button class="btn-tablero" onclick="abrirTablero()">📊 Ver tablero</button>
 </div>
 
@@ -749,9 +747,6 @@ body.snap .bar{position:sticky;top:0;}
    ================================================================== */
 const API_URL = "https://script.google.com/macros/s/AKfycbydA9gutwDeFqHaZaERnDI6D6N0fDDlFhsL0S9M6HGltAtrWSec8KTbu50TgldK7aFmug/exec";
 
-/* Dirección del portal o menú principal. Si se deja vacía (""),
-   el botón "← Menú principal" no aparece.                         */
-const URL_PORTAL = "https://iaanalistalives-ux.github.io/tablero-margot/";
 /* ================================================================== */
 
 const F_FEC=0, F_INS=1, F_LIN=2, F_EST=3, F_CAR=4, F_DEF=5, F_PRI=6, F_DET=7,
@@ -970,11 +965,6 @@ async function iniciar(){
   initHoras();
   rangoHoy();
 
-  if(URL_PORTAL){
-    const b = document.getElementById('btnPortal');
-    b.href = URL_PORTAL;
-    b.style.display = 'inline-flex';
-  }
   if(SOLO_TABLERO && !window.__SNAPSHOT__){
     document.body.classList.add('solotab');
     document.getElementById('overlay').classList.add('on');
