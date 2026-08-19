@@ -388,7 +388,8 @@ body.snap .bar{position:sticky;top:0;}
   .overlay{display:block!important;position:static!important;background:none!important;padding:0!important;}
   .oinner{height:auto!important;box-shadow:none!important;background:#fff!important;overflow:visible!important;}
   .obody{overflow:visible!important;padding:0!important;}
-  .tabpane{display:block!important;}
+  .tabpane{display:none!important;}
+  .tabpane.active{display:block!important;}
   #printHead{display:block!important;margin-bottom:10px;}
   .panel,.kpi,.insight,.verdict{box-shadow:none;border:1px solid var(--warm);break-inside:avoid;}
   .cwrap,.cwrap.tall{height:165px!important;}
@@ -1748,6 +1749,7 @@ async function render(){
   pintarInspectoras(CUR_EFI);
   pintarDefectosDash(CUR, mCur);
   pintarDetalleDash(CUR, nServ);
+  pintarReporte(CUR, CUR_EFI, mCur);
   pintarPortada(k, mCur, mEfi, mPrev, R, ultimaFecha, parcial, nServ);
 
   setTimeout(()=>{ document.querySelectorAll('.rank .fill').forEach(f=>{ f.style.width = f.dataset.w; }); }, 120);
@@ -1842,7 +1844,7 @@ function htmlInsight(rows, A, k){
     n1(A.pPri) + '% a <b>' + n1(siBaja) + '%</b>.</div>';
 }
 function htmlTabs(){
-  const nom = ['Inspectoras','Defectos','Detalle','Tendencia'];
+  const nom = ['Inspectoras','Defectos','Detalle','Tendencia','Reporte'];
   return '<div class="tabs no-print">' +
     nom.map((t,i)=>'<button' + (i===TAB_ACT?' class="active"':'') +
       ' onclick="tab(' + i + ',this)">' + t + '</button>').join('') + '</div>' +
@@ -1866,6 +1868,15 @@ function htmlTabs(){
   '<div class="tabpane' + (TAB_ACT===3?' active':'') + '"><div class="grid">' +
     panel('col8','Cómo se movió el período','Las tres líneas son porcentajes y se leen en el eje de la izquierda (0 a 100%). Las barras grises al fondo son el volumen de prendas revisadas, en el eje de la derecha. Primeras y segundas van sin la prenda de servicio; la eficiencia sí la incluye.','<div class="cwrap tall"><canvas id="chTend"></canvas></div>') +
     panel('col4','Cómo leer esta pestaña','Sirve para ver si el indicador sube o baja a lo largo del período. Con el filtro diario muestra un solo punto, así que se aprovecha mejor en semanal, mensual o anual.','<div class="nota">Si solo te interesa el dato del día, usa el filtro <b>Diario</b> y mira las tarjetas de arriba y la pestaña Inspectoras: ahí está el reproceso y la eficiencia de esa jornada.</div>') +
+  '</div></div>' +
+
+  '<div class="tabpane' + (TAB_ACT===4?' active':'') + '"><div class="grid">' +
+    panel('col6','Eficiencia por inspectora','Debajo de cada barra, el lote trabajado: carga más re-inspección. Incluye la prenda de servicio.','<div class="cwrap"><canvas id="chEfiInsR"></canvas></div>') +
+    panel('col6','Peso de cada grupo de defecto','% sobre el total de prendas con defecto del período.','<div class="cwrap"><canvas id="chCatR"></canvas></div>') +
+    panel('col12','Los defectos que más pesan','Las barras suman 100%: cada una es la parte del total de prendas con defecto que le corresponde a esa falla. Debajo, la cantidad de prendas.','<div class="cwrap"><canvas id="chParR"></canvas></div>') +
+    '<div class="col12"><div class="panel"><div class="pt">Defectos por línea</div>' +
+      '<div class="ph">Los defectos que más pesan en cada línea de producción, dentro del mismo período. Cada gráfico se calcula sobre los defectos de esa línea, no sobre el total.</div>' +
+      '<div class="grid" id="repLineas"></div></div></div>' +
   '</div></div>' +
 
   '<details class="help"><summary>¿Cómo leo este tablero?</summary>' +
@@ -2285,6 +2296,131 @@ function pintarDetalleDash(rows, nServ){
 }
 
 /* ---------------- portada del reporte impreso ---------------- */
+/* ---------------- pestaña Reporte ----------------
+   Reúne lo que se imprime: eficiencia por inspectora, peso de cada grupo,
+   los defectos que más pesan y el desglose por línea. Todo se recalcula
+   con el período que esté elegido en el filtro.                          */
+function totalesDefectosDe(rows){
+  const defs = DATA.defectos;
+  const tot = new Array(defs.length).fill(0);
+  rows.forEach(f=> detPares(f).forEach(par=>{ if(par[0] < tot.length) tot[par[0]] += par[1]; }));
+  return tot.map((v,i)=>({i:i, v:v})).filter(o=>o.v>0 && defs[o.i].resta).sort((a,b)=>b.v-a.v);
+}
+function paretoEn(canvasId, lista, totalDef, cuantos){
+  if(!window.Chart) return null;
+  const el = document.getElementById(canvasId);
+  if(!el) return null;
+  const defs = DATA.defectos;
+  const top = lista.slice(0, cuantos || 12);
+  const colores = top.map((o,i)=>degradado(i, top.length, 'azul'));
+  return new Chart(el, {
+    plugins:[pluginEtiquetas({datasets:[0], minimo:0.05,
+      segundaLinea:function(j){ return n0(top[j].v) + ' prendas'; }})],
+    data:{labels:top.map(o=>defs[o.i].defecto), datasets:[
+      {type:'bar', label:'% del total de prendas con defecto',
+       data:top.map(o=>+pct(o.v, totalDef).toFixed(1)),
+       backgroundColor:colores, borderRadius:4}
+    ]},
+    options:{responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=> n0(top[c.dataIndex].v) + ' prendas · ' + n1(c.raw) +
+          '% de las ' + n0(totalDef) + ' con defecto'}}},
+      scales:{y:{beginAtZero:true, max:112, grid:{color:'#F1F6F4'},
+          ticks:{callback:v=> v > 100 ? '' : v+'%', stepSize:20}},
+        x:{grid:{display:false}, ticks:{maxRotation:60, minRotation:30, font:{size:9.5}}}}}
+  });
+}
+function pintarReporte(rows, rowsEfi, A){
+  const el1 = document.getElementById('chEfiInsR');
+  if(el1 && window.Chart){
+    const m = {};
+    rowsEfi.forEach(f=>{ const k = f[F_INS] || '(sin dato)'; (m[k] = m[k] || []).push(f); });
+    const M = {}; Object.keys(m).forEach(k=>{ M[k] = met(m[k]); });
+    const orden = Object.keys(m).filter(k=> M[k].hProd > 0).sort((a,b)=> M[b].pEfi - M[a].pEfi);
+    if(!orden.length){
+      el1.parentNode.innerHTML = '<div class="nota">Sin horas de turno registradas en el período.</div>';
+    }else{
+      const col = orden.map((k,i)=>degradado(i, orden.length, 'verde'));
+      charts.efiR = new Chart(el1, {
+        plugins:[pluginEtiquetas({datasets:[0],
+          segundaLinea:function(j){ const k = orden[j]; return n0(M[k].carga + M[k].rein) + ' prendas'; }})],
+        data:{labels:orden, datasets:[
+          {type:'bar', label:'% Eficiencia', data:orden.map(k=>+M[k].pEfi.toFixed(1)),
+           backgroundColor:col, borderRadius:4, maxBarThickness:80}
+        ]},
+        options:{responsive:true, maintainAspectRatio:false,
+          plugins:{legend:{display:false},
+            tooltip:{callbacks:{label:c=>{
+              const k = orden[c.dataIndex];
+              return n0(M[k].min) + ' min producidos ÷ ' + n0(M[k].hProd*60) + ' min asistidos';
+            }}}},
+          scales:{y:{beginAtZero:true, grace:'22%', grid:{color:'#F1F6F4'}, ticks:{callback:v=>v+'%'}},
+            x:{grid:{display:false}}}}
+      });
+    }
+  }
+
+  const el2 = document.getElementById('chCatR');
+  if(el2 && window.Chart){
+    const defs = DATA.defectos, cats = {};
+    totalesDefectosDe(rows).forEach(o=>{
+      cats[defs[o.i].categoria] = (cats[defs[o.i].categoria] || 0) + o.v;
+    });
+    const ks = Object.keys(cats).sort((a,b)=>cats[b]-cats[a]);
+    if(!ks.length){
+      el2.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>';
+    }else{
+      charts.catR = new Chart(el2, {
+        type:'doughnut',
+        plugins:[pluginEtiquetasAnillo()],
+        data:{labels:ks, datasets:[{data:ks.map(k=>cats[k]),
+          backgroundColor:ks.map((k,i)=>ROT[i%ROT.length]), borderWidth:2, borderColor:'#fff'}]},
+        options:{responsive:true, maintainAspectRatio:false, cutout:'58%',
+          plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:12}},
+            tooltip:{callbacks:{label:c=>{
+              const t = c.dataset.data.reduce((a,b)=>a+b,0);
+              return c.label + ': ' + n1(pct(c.raw,t)) + '% (' + n0(c.raw) + ' prendas)';
+            }}}}}
+      });
+    }
+  }
+
+  const gen = totalesDefectosDe(rows);
+  if(gen.length){ charts.parR = paretoEn('chParR', gen, A.def, 12); }
+  else{
+    const e = document.getElementById('chParR');
+    if(e) e.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>';
+  }
+
+  const cont = document.getElementById('repLineas');
+  if(!cont) return;
+  const porLinea = {};
+  rows.forEach(f=>{ const k = f[F_LIN] || '(sin línea)'; (porLinea[k] = porLinea[k] || []).push(f); });
+  const lineas = Object.keys(porLinea).sort();
+  if(!lineas.length){ cont.innerHTML = '<div class="nota">Sin registros en el período.</div>'; return; }
+
+  const ancho = lineas.length >= 3 ? 'col4' : (lineas.length === 2 ? 'col6' : 'col12');
+  cont.innerHTML = lineas.map((L,i)=>{
+    const mL = met(porLinea[L]);
+    return '<div class="' + ancho + '"><div class="panel">' +
+      '<div class="pt">' + esc(L) + '</div>' +
+      '<div class="ph">' + n0(mL.carga) + ' prendas revisadas · ' + n0(mL.def) +
+      ' con defecto (' + n1(mL.pDef) + '%) · ' + n1(mL.pPri) + '% primeras</div>' +
+      '<div class="cwrap"><canvas id="chLinRep' + i + '"></canvas></div></div></div>';
+  }).join('');
+
+  lineas.forEach((L,i)=>{
+    const lista = totalesDefectosDe(porLinea[L]);
+    const mL = met(porLinea[L]);
+    const e = document.getElementById('chLinRep' + i);
+    if(!lista.length){
+      if(e) e.parentNode.innerHTML = '<div class="nota">Sin defectos registrados en esta línea durante el período.</div>';
+      return;
+    }
+    charts['linRep'+i] = paretoEn('chLinRep' + i, lista, mL.def, 8);
+  });
+}
+
 function pintarPortada(k, mCur, mEfi, mPrev, R, ultima, parcial, nServ){
   const tipo = GRAN === 'sem' ? 'Reporte semanal' : (GRAN === 'anio' ? 'Reporte anual' : 'Reporte mensual');
   const cmp = mPrev
@@ -2321,7 +2457,9 @@ function pintarPortada(k, mCur, mEfi, mPrev, R, ultima, parcial, nServ){
 }
 function imprimirReporte(){
   if(!DATA){ toast('Espera a que carguen los datos', true); return; }
-  window.print();
+  const btns = document.querySelectorAll('.tabs button');
+  if(btns.length >= 5) tab(4, btns[4]);
+  setTimeout(()=>window.print(), 350);
 }
 
 /* ---------------- exportar copia estática ---------------- */
