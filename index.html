@@ -138,6 +138,7 @@ overflow:hidden;}
 .alerta{display:none;background:#FCEBEB;border-left:4px solid var(--rose);color:#8A1F1F;
 border-radius:0 8px 8px 0;padding:10px 14px;margin-top:12px;font-size:13px;font-weight:700;}
 .alerta.on{display:block;}
+.alerta.aviso{background:#EDF3FA;border-left-color:#2563EB;color:#1E4D6B;font-weight:400;}
 .avisoinfo{background:var(--card);border-left:4px solid var(--tan);border-radius:0 var(--r) var(--r) 0;
 box-shadow:var(--sh);padding:12px 16px;margin-bottom:14px;font-size:13.5px;}
 .avisoinfo b{color:var(--sage-dark);}
@@ -326,6 +327,16 @@ border-bottom:2px solid var(--emer);padding-bottom:8px;margin-bottom:10px;}
 #printHead .rexp{font-size:11.5px;color:var(--stone);margin-top:8px;line-height:1.45;}
 #printHead .rexp b{color:#333;}
 
+body.solotab #app{display:none;}
+body.solotab .header .btn-tablero{display:none!important;}
+body.solotab .overlay{display:block;position:static;background:none;padding:0;}
+body.solotab .oinner{max-width:1440px;height:auto;border-radius:0;box-shadow:none;
+background:transparent;overflow:visible;}
+body.solotab .obar{background:var(--petrol-2);border-bottom:none;}
+body.solotab #btnCerrar{display:none;}
+body.solotab .obody{overflow:visible;padding:16px 22px 44px;}
+body.solotab .bar{position:sticky;top:0;}
+
 body.snap #app{display:none;}
 body.snap .header .btn-tablero{display:none!important;}
 body.snap .overlay{display:block;position:static;background:none;padding:0;}
@@ -443,7 +454,7 @@ body.snap .bar{position:sticky;top:0;}
   <!-- 2. ESTILO, CARGA Y T. STD -->
   <div class="panel">
     <div class="pt">2. Estilo, carga y tiempo estándar</div>
-    <div class="ph">Carga = cantidad de prendas revisadas en ese estilo. Si son varias cargas, escríbelas separadas por espacio o con “+” (ejemplo: <b>20 30</b> o <b>10+10</b>) y el sistema las suma solo.</div>
+    <div class="ph">Carga = cantidad de prendas revisadas en ese estilo. Si son varias cargas, escríbelas separadas por espacio o con “+” (ejemplo: <b>20 30</b> o <b>10+10</b>) y el sistema las suma solo. Si fue una <b>re-inspección suelta</b>, de prendas que le trajeron y que no son de una carga propia, deja la carga vacía y anota la cantidad en RE-INSPECC.</div>
     <div class="fgrid">
       <div>
         <label>Estilo</label>
@@ -553,6 +564,7 @@ body.snap .bar{position:sticky;top:0;}
     <summary>¿Cómo se calcula esto?</summary>
     <p><b>Primeras = Carga − Defectos que restan.</b> Descuentan compostura, manchas, zurcido, limpieza y segundas. <b>No descuentan</b> primeras especiales ni re-inspección: la primera especial sale igual como prenda buena, y la re-inspección es una carga que hubo que volver a revisar, no una prenda perdida.</p>
     <p><b>T. STD.</b> Es el tiempo estándar en minutos que toma inspeccionar una prenda de ese estilo. Aparece solo cuando el estilo ya lo tiene registrado. Si el estilo es nuevo o si esa prenda toma más o menos de lo normal, se escribe aquí y ese valor queda guardado solo en ese registro. Para que quede como el tiempo oficial del estilo hay que pulsar “Guardar este T. STD para el estilo”.</p>
+    <p><b>Re-inspección suelta.</b> A veces se revisan por segunda vuelta prendas que llegan de otro lado y que no son de una carga propia. En ese caso se deja la carga vacía y solo se pone la cantidad en RE-INSPECC. Ese registro no entra en el % de primeras ni en el de defectos, porque no hubo carga que juzgar, pero sí suma tiempo trabajado para la eficiencia, que es lo correcto: ese trabajo se hizo.</p>
     <p><b>Eficiencia.</b> Se calcula en el tablero como (prendas revisadas + prendas re-inspeccionadas) × T. STD ÷ minutos productivos. Los minutos productivos son las horas del turno menos las horas improductivas menos 45 minutos de refrigerio si el turno duró 4 horas o más. Es decir: los minutos de trabajo que valía lo hecho, sobre los minutos que realmente se tuvo para trabajar.</p>
     <p><b>Horas improductivas.</b> Con la hora de inicio y la hora final el sistema calcula cuántas horas duró el turno. Ahí se escribe cuántas de esas horas no se pudo trabajar (línea parada, falta de habilitado, corte de energía). El resto son horas productivas. Como las horas son las mismas para todos los estilos del turno, en los totales <b>cada turno se cuenta una sola vez</b>, no una vez por estilo.</p>
     <p><b>Servicio.</b> En la lista de líneas, debajo de las líneas existentes, está la opción SERVICIO, para la prenda que no viene de una línea interna. En el tablero se puede incluir o excluir con un interruptor.</p>
@@ -745,6 +757,9 @@ let DATA_COMPLETA = false;
 let GRAN = 'mes';
 let charts = {};
 let SNAP = false;
+/* Con #tablero al final del enlace, la página abre directamente el tablero,
+   sin el formulario. Sirve para compartirlo con quien solo va a mirar. */
+const SOLO_TABLERO = /(^|[?#&])tablero\b/i.test(location.search + location.hash);
 let editId = null;
 
 const CTX = {
@@ -947,6 +962,13 @@ async function iniciar(){
     b.href = URL_PORTAL;
     b.style.display = 'inline-flex';
   }
+  if(SOLO_TABLERO && !window.__SNAPSHOT__){
+    document.body.classList.add('solotab');
+    document.getElementById('overlay').classList.add('on');
+    document.querySelector('.htitle').textContent = 'Tablero de Inspección Final — Área de Costura';
+    document.querySelector('.hsub').textContent = 'Dpto. Ingeniería · solo consulta';
+    cargarChart().catch(()=>{});
+  }
 
   if(window.__SNAPSHOT__){
     SNAP = true;
@@ -983,7 +1005,7 @@ async function iniciar(){
     avisar('No se pudo cargar el catálogo: ' + e.message);
     return;
   }
-  cargarDatos();
+  cargarDatos(SOLO_TABLERO ? {full:true} : undefined);
 }
 function avisar(html){
   const a = document.getElementById('aviso');
@@ -1106,12 +1128,20 @@ function pintarDefectos(k){
       '<button class="del" type="button" title="Quitar" onclick="quitarDef(\''+k+'\',\''+e+'\')">✕</button></li>';
   }).join('');
 }
+function esReinspeccion(nombre){
+  return String(nombre).toUpperCase().indexOf('RE-INSPECC') === 0;
+}
 function totalesDe(obj){
-  let resta = 0, noResta = 0;
+  let resta = 0, noResta = 0, rein = 0;
   Object.keys(obj).forEach(n=>{
-    if(defInfo(n).resta === false) noResta += obj[n]; else resta += obj[n];
+    if(defInfo(n).resta === false){
+      noResta += obj[n];
+      if(esReinspeccion(n)) rein += obj[n];
+    }else{
+      resta += obj[n];
+    }
   });
-  return {resta:resta, noResta:noResta};
+  return {resta:resta, noResta:noResta, rein:rein};
 }
 function recalcular(k){
   const c = CTX[k];
@@ -1128,9 +1158,15 @@ function recalcular(k){
     a.className = 'alerta on';
     a.innerHTML = '⚠ Los defectos que restan ('+T.resta+') superan la carga ('+carga+'). Las primeras dan '+pri+
       '. Revisa: puede que una misma prenda esté marcada en dos defectos, o que falte corregir la carga. Igual puedes guardar si así es.';
+  }else if(carga === 0 && T.rein > 0 && T.resta === 0){
+    a.className = 'alerta on aviso';
+    a.innerHTML = 'Re-inspección suelta: ' + T.rein + ' prenda(s) revisadas por segunda vuelta sin ' +
+      'carga propia. Se puede guardar así. No entra en el % de primeras ni en el de defectos, ' +
+      'pero sí suma tiempo trabajado para la eficiencia.';
   }else if(carga === 0 && (T.resta + T.noResta) > 0){
     a.className = 'alerta on';
-    a.innerHTML = '⚠ Hay defectos marcados pero la carga está en 0. Escribe la carga.';
+    a.innerHTML = '⚠ Hay defectos marcados pero la carga está en 0. Escribe la carga, o deja solo ' +
+      'la cantidad de re-inspección si fue una revisión suelta.';
   }else{ a.className = 'alerta'; }
 }
 function pasoCarga(n){
@@ -1193,7 +1229,10 @@ async function guardar(){
   if(!linea){ toast('Falta elegir la línea', true); return; }
   if(!fecha){ toast('Falta la fecha', true); return; }
   if(!estilo){ toast('Falta el estilo', true); return; }
-  if(carga <= 0){ toast('Falta la carga', true); return; }
+  const TF = totalesDe(CTX.F.obj);
+  if(carga <= 0 && TF.rein <= 0){
+    toast('Falta la carga. Si fue una re-inspección suelta, pon la cantidad en RE-INSPECC.', true); return;
+  }
 
   const btn = document.getElementById('btnGuardar');
   btn.disabled = true; btn.textContent = 'Guardando…';
@@ -1367,8 +1406,12 @@ async function guardarEdit(){
   const estilo = document.getElementById('edEstilo').value.trim().toUpperCase();
   const carga = sumaTexto(document.getElementById('edCarga').value);
 
-  if(!inspectora || !linea || !fecha || !estilo || carga <= 0){
-    toast('Faltan datos: inspectora, línea, fecha, estilo y carga son obligatorios', true); return;
+  const TE = totalesDe(CTX.E.obj);
+  if(!inspectora || !linea || !fecha || !estilo){
+    toast('Faltan datos: inspectora, línea, fecha y estilo son obligatorios', true); return;
+  }
+  if(carga <= 0 && TE.rein <= 0){
+    toast('Falta la carga. Si fue una re-inspección suelta, pon la cantidad en RE-INSPECC.', true); return;
   }
   const previa = DATA.filas.filter(x=>x[F_ID] === editId)[0] || [];
   const btn = document.getElementById('btnGuardarEdit');
@@ -1811,6 +1854,7 @@ function htmlTabs(){
   '<details class="help"><summary>¿Cómo leo este tablero?</summary>' +
   '<p><b>Qué período estoy viendo.</b> Los botones Semanal, Mensual y Anual cambian el tipo de período; el desplegable de al lado elige cuál. Las semanas van de lunes a domingo con sus fechas reales.</p>' +
   '<p><b>Todo habla del mismo período.</b> Las tarjetas, los gráficos, las tablas y el texto de arriba son todos del período que elegiste en el filtro. La flecha de cada tarjeta compara contra el período anterior del mismo tipo: una semana contra la semana anterior, un mes contra el mes anterior. Si el período todavía no termina, la cabecera lo dice y muestra hasta qué día hay datos.</p>' +
+  '<p><b>Re-inspección suelta.</b> Hay registros con carga cero: son prendas que llegaron de otro lado y se revisaron por segunda vuelta, sin carga propia. No entran en el % de primeras ni en el de defectos (no había carga que juzgar), pero sí suman minutos de trabajo para la eficiencia.</p>' +
   '<p><b>Qué entra en cada indicador.</b> Primeras, con defecto y segundas se calculan <b>sin la prenda de servicio</b>: son indicadores de la calidad de las líneas. Eficiencia y tiempo <b>sí incluyen el servicio</b>, porque esas horas también se trabajaron. Cada tarjeta lo dice en su pie.</p>' +
   '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = prendas con defecto ÷ prendas revisadas. % Segundas = prendas marcadas como segundas ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos productivos, donde los minutos productivos son las horas de turno menos las improductivas menos 45 minutos de refrigerio por cada turno de 4 horas o más. % Tiempo productivo = horas productivas ÷ horas de turno. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
   '<p><b>Eficiencia.</b> El T. STD es el tiempo estándar en minutos que debería tomar inspeccionar una prenda de ese estilo. Las prendas re-inspeccionadas suman porque se revisaron dos veces; las primeras especiales no suman aparte, porque ya venían dentro de la carga. Del tiempo disponible se descuentan las horas improductivas y <b>45 minutos de refrigerio</b> por cada turno de 4 horas o más. Si un registro no tiene T. STD aporta cero minutos y la eficiencia baja: por eso el tablero avisa cuando hay estilos sin T. STD.</p>' +
@@ -2327,7 +2371,7 @@ document.addEventListener('keydown', e=>{
   if(e.key === 'Escape'){
     if(document.getElementById('mdNuevo').classList.contains('on')) cerrarNuevoDefecto();
     else if(document.getElementById('mdEdit').classList.contains('on')) cerrarEdit();
-    else if(!SNAP && document.getElementById('overlay').classList.contains('on')) cerrarTablero();
+    else if(!SNAP && !SOLO_TABLERO && document.getElementById('overlay').classList.contains('on')) cerrarTablero();
   }
 });
 document.getElementById('estilo').addEventListener('change', buscarSTD);
