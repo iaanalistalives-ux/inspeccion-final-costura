@@ -616,7 +616,7 @@ body.snap .bar{position:sticky;top:0;}
     <p><b>T. STD.</b> Es el tiempo estándar en minutos que toma inspeccionar una prenda de ese estilo. Aparece solo cuando el estilo ya lo tiene registrado. Si el estilo es nuevo o si esa prenda toma más o menos de lo normal, se escribe aquí y ese valor queda guardado solo en ese registro. Para que quede como el tiempo oficial del estilo hay que pulsar “Guardar este T. STD para el estilo”.</p>
     <p><b>Re-inspección suelta.</b> A veces se revisan por segunda vuelta prendas que llegan de otro lado y que no son de una carga propia. En ese caso se deja la carga vacía y solo se pone la cantidad en RE-INSPECC. Ese registro no entra en el % de primeras ni en el de defectos, porque no hubo carga que juzgar, pero sí suma tiempo trabajado para la eficiencia, que es lo correcto: ese trabajo se hizo.</p>
     <p><b>Eficiencia.</b> Se calcula en el tablero como (prendas revisadas + prendas re-inspeccionadas) × T. STD ÷ minutos asistidos. Los minutos asistidos son las horas del turno menos las horas improductivas menos 45 minutos de refrigerio si el turno duró 4 horas o más. Es decir: los minutos producidos por lo hecho, sobre los minutos que realmente se tuvo para trabajar.</p>
-    <p><b>Horas improductivas.</b> Con la hora de inicio y la hora final el sistema calcula cuántas horas duró el turno. Ahí se escribe cuántas de esas horas no se pudo trabajar (línea parada, falta de habilitado, corte de energía). El resto son horas asistidas. Como las horas son las mismas para todos los estilos del turno, en los totales <b>cada turno se cuenta una sola vez</b>, no una vez por estilo.</p>
+    <p><b>Horas improductivas.</b> Con la hora de inicio y la hora final el sistema calcula cuánto duró la jornada. Ahí se escribe cuántas de esas horas no se pudo trabajar (línea parada, falta de habilitado, corte de energía). El resto son horas asistidas. <b>El tiempo es de la jornada completa, no de cada estilo:</b> aunque se registren diez estilos, se cuenta una sola vez por persona y día. Las horas improductivas se pueden escribir al final del día; el sistema toma el mayor valor anotado en esa jornada, nunca la suma de todos los registros.</p>
     <p><b>Servicio.</b> En la lista de líneas, debajo de las líneas existentes, está la opción SERVICIO, para la prenda que no viene de una línea interna. En el tablero se puede incluir o excluir con un interruptor.</p>
     <p><b>Observaciones.</b> Texto libre por inspección, hasta 500 caracteres. Sirve para explicar lo que los números no dicen.</p>
     <p><b>Regla de conteo:</b> cada prenda se marca en un solo defecto, el principal. Si una prenda con mancha y puntada saltada se marca en las dos filas, esa prenda se descuenta dos veces y las primeras quedan por debajo de lo real.</p>
@@ -1702,20 +1702,32 @@ function prepararFiltros(){
 }
 
 /* ---------------- métricas ---------------- */
-/* Las horas de inicio y final se repiten en cada estilo del mismo turno, así que
-   cada turno (fecha + inspectora + horario + improductivas) se cuenta una vez. */
+/* UN TURNO ES UNA PERSONA EN UN DÍA.
+   Las horas y las improductivas se repiten en cada estilo registrado, y además
+   cambian mientras avanza la jornada: las horas improductivas se suelen escribir
+   al final, cuando ya se guardaron estilos con ese campo en cero. Por eso el
+   turno se arma por fecha + inspectora, tomando la entrada más temprana, la
+   salida más tardía y el mayor valor anotado de improductivas. Así el tiempo no
+   se multiplica por cantidad de estilos.                                      */
 function agregarHoras(rows){
-  const vistos = {};
-  let tot = 0, imp = 0, turnos = 0;
+  const t = {};
   rows.forEach(f=>{
-    if(!f[F_HTOT] && !f[F_HIMP]) return;
-    const k = [f[F_FEC], f[F_INS], f[F_HI], f[F_HF], f[F_HIMP]].join('|');
-    if(vistos[k]) return;
-    vistos[k] = 1;
-    tot += f[F_HTOT] || 0;
-    imp += f[F_HIMP] || 0;
-    /* El refrigerio solo corresponde en turnos de 4 horas o más. */
-    if(f[F_HTOT] >= HORAS_MIN_REFRIGERIO) turnos++;
+    if(!f[F_HI] && !f[F_HF] && !f[F_HIMP]) return;
+    const k = f[F_FEC] + '|' + f[F_INS];
+    if(!t[k]) t[k] = {ini:'', fin:'', imp:0};
+    const o = t[k];
+    if(f[F_HI] && (!o.ini || f[F_HI] < o.ini)) o.ini = f[F_HI];
+    if(f[F_HF] && (!o.fin || f[F_HF] > o.fin)) o.fin = f[F_HF];
+    if((f[F_HIMP] || 0) > o.imp) o.imp = f[F_HIMP] || 0;
+  });
+  let tot = 0, imp = 0, turnos = 0;
+  Object.keys(t).forEach(k=>{
+    const o = t[k];
+    const hT = horasEntre(o.ini, o.fin);
+    if(!hT && !o.imp) return;
+    tot += hT;
+    imp += hT ? Math.min(o.imp, hT) : o.imp;
+    if(hT >= HORAS_MIN_REFRIGERIO) turnos++;
   });
   const refr = Math.round(turnos * (MIN_REFRIGERIO/60) * 100)/100;
   tot = Math.round(tot*100)/100; imp = Math.round(imp*100)/100;
