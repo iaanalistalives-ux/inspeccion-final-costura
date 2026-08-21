@@ -107,7 +107,8 @@ input.spin{-moz-appearance:number-input;}
   .timegrp select.ap{flex:0 0 74px;}
 }
 
-.adder{display:grid;grid-template-columns:1fr 126px 120px 130px;gap:10px;align-items:end;}
+.adder{display:grid;grid-template-columns:1fr 116px 112px 126px 120px;gap:10px;align-items:end;}
+.adder .primeras label{color:var(--sage-dark);}
 .deflist{list-style:none;margin:12px 0 0;padding:0;}
 .deflist li{display:grid;grid-template-columns:88px 1fr auto auto;align-items:center;
 gap:10px;padding:9px 0;border-bottom:1px solid var(--warm-light);}
@@ -556,6 +557,10 @@ body.snap .bar{position:sticky;top:0;}
       <div>
         <button class="btn" type="button" style="width:100%" onclick="abrirNuevoDefecto()">✚ Defecto nuevo</button>
       </div>
+      <div>
+        <label>Primeras</label>
+        <input type="text" id="primeras" inputmode="numeric" placeholder="0" autocomplete="off">
+      </div>
     </div>
 
     <ul class="deflist" id="deflistF"></ul>
@@ -564,12 +569,12 @@ body.snap .bar{position:sticky;top:0;}
     <div class="totbar">
       <div class="tot"><div class="l">Carga</div><div class="v" id="tCargaF">0</div>
         <div class="s">prendas revisadas</div></div>
-      <div class="tot def"><div class="l">Defectos que restan</div><div class="v" id="tDefF">0</div>
-        <div class="s">descuentan de las primeras</div></div>
-      <div class="tot nor"><div class="l">No restan</div><div class="v" id="tNorF">0</div>
-        <div class="s">1ras especiales y re-inspección</div></div>
       <div class="tot pri"><div class="l">Primeras</div><div class="v" id="tPriF">0</div>
-        <div class="s">carga − defectos que restan</div></div>
+        <div class="s">las que escribiste arriba</div></div>
+      <div class="tot pri"><div class="l">% Primeras</div><div class="v" id="tPctPriF">0%</div>
+        <div class="s">primeras ÷ carga</div></div>
+      <div class="tot def"><div class="l">% Defectos</div><div class="v" id="tPctDefF">0%</div>
+        <div class="s">100% − % primeras</div></div>
     </div>
 
     <div class="alerta" id="alertaF"></div>
@@ -619,7 +624,7 @@ body.snap .bar{position:sticky;top:0;}
     <p><b>Horas improductivas.</b> Con la hora de inicio y la hora final el sistema calcula cuánto duró la jornada. Ahí se escribe cuántas de esas horas no se pudo trabajar (línea parada, falta de habilitado, corte de energía). El resto son horas asistidas. <b>El tiempo es de la jornada completa, no de cada estilo:</b> aunque se registren diez estilos, se cuenta una sola vez por persona y día. Las horas improductivas se pueden escribir al final del día; el sistema toma el mayor valor anotado en esa jornada, nunca la suma de todos los registros.</p>
     <p><b>Servicio.</b> En la lista de líneas, debajo de las líneas existentes, está la opción SERVICIO, para la prenda que no viene de una línea interna. En el tablero se puede incluir o excluir con un interruptor.</p>
     <p><b>Observaciones.</b> Texto libre por inspección, hasta 500 caracteres. Sirve para explicar lo que los números no dicen.</p>
-    <p><b>Regla de conteo:</b> cada prenda se marca en un solo defecto, el principal. Si una prenda con mancha y puntada saltada se marca en las dos filas, esa prenda se descuenta dos veces y las primeras quedan por debajo de lo real.</p>
+    <p><b>Regla de conteo:</b> cada prenda se marca en un solo defecto, el principal, para que el gráfico de defectos no cuente dos veces la misma prenda.</p>
     <p><b>Defecto nuevo:</b> el botón “Defecto nuevo” agrega la falla a la lista para siempre, en el grupo que elijas. Se guarda en MAYÚSCULAS y no se puede repetir. Un defecto nuevo siempre resta de las primeras.</p>
     <p><b>Eliminar:</b> el registro desaparece del formulario y del tablero, pero la fila queda tachada en el Google Sheet con la marca ANULADO.</p>
     <p><b>Términos:</b> <b>Carga</b> = grupo de prendas que se revisa de una vez. <b>Primeras</b> = prendas conformes. <b>Segundas</b> = prendas con falla que no se recuperan como primera. <b>Compostura</b> = falla de costura que se arregla cosiendo. <b>Zurcido</b> = falla de tela o puntada que se repara con aguja. <b>Limpieza</b> = hilos sueltos o sin cortar.</p>
@@ -705,6 +710,8 @@ body.snap .bar{position:sticky;top:0;}
             <button class="stepbtn" type="button" onclick="pasoCargaEdit(1)">+</button>
           </div>
         </div>
+        <div><label>Primeras</label>
+          <input type="text" id="edPrimeras" inputmode="numeric" autocomplete="off"></div>
         <div><label>T. STD <span class="mini">(min/prenda)</span></label>
           <input type="number" id="edStd" min="0" step="0.05" class="spin"></div>
       </div>
@@ -726,9 +733,9 @@ body.snap .bar{position:sticky;top:0;}
 
       <div class="totbar">
         <div class="tot"><div class="l">Carga</div><div class="v" id="tCargaE">0</div><div class="s">prendas revisadas</div></div>
-        <div class="tot def"><div class="l">Defectos que restan</div><div class="v" id="tDefE">0</div><div class="s">descuentan</div></div>
-        <div class="tot nor"><div class="l">No restan</div><div class="v" id="tNorE">0</div><div class="s">solo se registra</div></div>
-        <div class="tot pri"><div class="l">Primeras</div><div class="v" id="tPriE">0</div><div class="s">carga − defectos que restan</div></div>
+        <div class="tot pri"><div class="l">Primeras</div><div class="v" id="tPriE">0</div><div class="s">dato digitado</div></div>
+        <div class="tot pri"><div class="l">% Primeras</div><div class="v" id="tPctPriE">0%</div><div class="s">primeras ÷ carga</div></div>
+        <div class="tot def"><div class="l">% Defectos</div><div class="v" id="tPctDefE">0%</div><div class="s">100% − % primeras</div></div>
       </div>
       <div class="alerta" id="alertaE"></div>
 
@@ -813,9 +820,9 @@ let TAB_ACT = 0;   /* pestaña abierta: se conserva al cambiar de filtro */
 
 const CTX = {
   F:{obj:{}, sel:'selDefF', q:'qDefF', list:'deflistF', vacio:'defVacioF', carga:'carga',
-     tC:'tCargaF', tD:'tDefF', tN:'tNorF', tP:'tPriF', al:'alertaF'},
+     pri:'primeras', tC:'tCargaF', tP:'tPriF', tPP:'tPctPriF', tPD:'tPctDefF', al:'alertaF'},
   E:{obj:{}, sel:'selDefE', q:'qDefE', list:'deflistE', vacio:'defVacioE', carga:'edCarga',
-     tC:'tCargaE', tD:'tDefE', tN:'tNorE', tP:'tPriE', al:'alertaE'}
+     pri:'edPrimeras', tC:'tCargaE', tP:'tPriE', tPP:'tPctPriE', tPD:'tPctDefE', al:'alertaE'}
 };
 
 /* La librería de gráficos se descarga solo cuando se abre el tablero. */
@@ -1209,23 +1216,23 @@ function totalesDe(obj){
 function recalcular(k){
   const c = CTX[k];
   const carga = sumaTexto(document.getElementById(c.carga).value);
+  const pri = sumaTexto(document.getElementById(c.pri).value);
   const T = totalesDe(c.obj);
-  const pri = carga - T.resta;
+  const pPri = pct(pri, carga);
   if(k === 'F') document.getElementById('cargaCalc').textContent = carga;
   document.getElementById(c.tC).textContent = n0(carga);
-  document.getElementById(c.tD).textContent = n0(T.resta);
-  document.getElementById(c.tN).textContent = n0(T.noResta);
   document.getElementById(c.tP).textContent = n0(pri);
+  document.getElementById(c.tPP).textContent = carga ? n1(pPri) + '%' : '0%';
+  document.getElementById(c.tPD).textContent = carga ? n1(Math.max(0, 100 - pPri)) + '%' : '0%';
   const a = document.getElementById(c.al);
-  if(carga > 0 && T.resta > carga){
+  if(carga > 0 && pri > carga){
     a.className = 'alerta on';
-    a.innerHTML = '⚠ Los defectos que restan ('+T.resta+') superan la carga ('+carga+'). Las primeras dan '+pri+
-      '. Revisa: puede que una misma prenda esté marcada en dos defectos, o que falte corregir la carga. Igual puedes guardar si así es.';
-  }else if(carga === 0 && T.rein > 0 && T.resta === 0){
+    a.innerHTML = '⚠ Las primeras ('+n0(pri)+') no pueden ser más que la carga ('+n0(carga)+'). Revisa el número.';
+  }else if(carga === 0 && T.rein > 0){
     a.className = 'alerta on aviso';
     a.innerHTML = 'Re-inspección suelta: ' + T.rein + ' prenda(s) revisadas por segunda vuelta sin ' +
-      'carga propia. Se puede guardar así. No entra en el % de primeras ni en el de defectos, ' +
-      'pero sí suma tiempo trabajado para la eficiencia.';
+      'carga propia. Se puede guardar así: no entra en el % de primeras, pero sí suma tiempo ' +
+      'trabajado para la eficiencia.';
   }else if(carga === 0 && (T.resta + T.noResta) > 0){
     a.className = 'alerta on';
     a.innerHTML = '⚠ Hay defectos marcados pero la carga está en 0. Escribe la carga, o deja solo ' +
@@ -1293,8 +1300,12 @@ async function guardar(){
   if(!fecha){ toast('Falta la fecha', true); return; }
   if(!estilo){ toast('Falta el estilo', true); return; }
   const TF = totalesDe(CTX.F.obj);
+  const primeras = sumaTexto(document.getElementById('primeras').value);
   if(carga <= 0 && TF.rein <= 0){
     toast('Falta la carga. Si fue una re-inspección suelta, pon la cantidad en RE-INSPECC.', true); return;
+  }
+  if(carga > 0 && primeras > carga){
+    toast('Las primeras no pueden ser más que la carga', true); return;
   }
 
   const btn = document.getElementById('btnGuardar');
@@ -1309,7 +1320,7 @@ async function guardar(){
     const r = await jsonp({accion:'guardar', clave:claveUnica(), fecha:fecha,
       inspectora:inspectora, linea:linea, estilo:estilo, carga:carga,
       hini:hini, hfin:hfin, horasImp:horasImp, obs:obs,
-      std:std, grupo:GRUPO_ACTUAL,
+      std:std, grupo:GRUPO_ACTUAL, primeras:primeras,
       defectos:JSON.stringify(detalle)});
     if(!r.ok) throw new Error(r.error || 'Error del servidor');
 
@@ -1348,6 +1359,7 @@ function limpiarEstilo(avisarUsuario){
   document.getElementById('estilo').value = '';
   document.getElementById('carga').value = '';
   document.getElementById('obs').value = '';
+  document.getElementById('primeras').value = '';
   document.getElementById('std').value = '';
   GRUPO_ACTUAL = '';
   buscarSTD();
@@ -1449,6 +1461,7 @@ function abrirEdit(id){
   document.getElementById('edHorasImp').value = f[F_HIMP] || '';
   document.getElementById('edObs').value = f[F_OBS] || '';
   document.getElementById('edStd').value = f[F_STD] || '';
+  document.getElementById('edPrimeras').value = f[F_PRI];
   actualizarHoras('E');
   document.getElementById('edEstilo').value = f[F_EST];
   document.getElementById('edCarga').value = f[F_CAR];
@@ -1473,6 +1486,10 @@ async function guardarEdit(){
   const carga = sumaTexto(document.getElementById('edCarga').value);
 
   const TE = totalesDe(CTX.E.obj);
+  const primerasEd = sumaTexto(document.getElementById('edPrimeras').value);
+  if(carga > 0 && primerasEd > carga){
+    toast('Las primeras no pueden ser más que la carga', true); return;
+  }
   if(!inspectora || !linea || !fecha || !estilo){
     toast('Faltan datos: inspectora, línea, fecha y estilo son obligatorios', true); return;
   }
@@ -1489,7 +1506,7 @@ async function guardarEdit(){
       horasImp:document.getElementById('edHorasImp').value || 0,
       obs:document.getElementById('edObs').value.trim(),
       std:parseFloat(document.getElementById('edStd').value) || 0,
-      grupo:previa[F_GRP] || '',
+      grupo:previa[F_GRP] || '', primeras:primerasEd,
       defectos:JSON.stringify(CTX.E.obj)});
     if(!r.ok) throw new Error(r.error || 'Error del servidor');
     const i = DATA.filas.findIndex(x=>x[F_ID] === editId);
@@ -1758,7 +1775,11 @@ function met(rows){
   return {
     n:rows.length, carga:carga, def:def, pri:pri, rein:rein, min:min, espec:espec, seg:seg,
     hTot:H.tot, hImp:H.imp, hProd:H.prod, hRefr:H.refr, turnos:H.turnos,
-    pPri: pct(pri,carga), pDef: pct(def,carga), pSeg: pct(seg,carga),
+    pPri: pct(pri,carga),
+    /* % defectos = lo que no salió primera. Los defectos marcados se cuentan
+       aparte, en defMarcados, y sirven para el Pareto.                      */
+    pDef: carga > 0 ? Math.max(0, 100 - pct(pri,carga)) : 0,
+    noPri: Math.max(0, carga - pri), defMarcados: def, pSeg: pct(seg,carga),
     pProd: pct(H.prod, H.tot),
     pEfi: H.prod > 0 ? pct(min, H.prod*60) : 0,
     cobStd: pct(cargaStd, carga)
@@ -1873,7 +1894,7 @@ function htmlKpis(A, P, E, PE, k, R, ultima, parcial, nServ){
     kpi('','% Primeras ' + eti, n1(A.pPri)+'%', deltaHtml(A.pPri, P?P.pPri:null, true),
         n0(A.pri) + ' primeras ÷ ' + n0(A.carga) + ' prendas revisadas · sin servicio', 'spkPri') +
     kpi('alert','% Con defecto ' + eti, n1(A.pDef)+'%', deltaHtml(A.pDef, P?P.pDef:null, false),
-        n0(A.def) + ' con defecto ÷ ' + n0(A.carga) + ' revisadas · sin servicio', 'spkDef') +
+        n0(A.noPri) + ' que no salieron primeras ÷ ' + n0(A.carga) + ' revisadas · sin servicio', 'spkDef') +
     kpi('alert','% Segundas ' + eti, n1(A.pSeg)+'%', deltaHtml(A.pSeg, P?P.pSeg:null, false),
         n0(A.seg) + ' segundas ÷ ' + n0(A.carga) + ' revisadas · sin servicio', 'spkSeg') +
     kpi('','% Eficiencia ' + eti, n1(E.pEfi)+'%', deltaHtml(E.pEfi, PE?PE.pEfi:null, true),
@@ -1902,7 +1923,7 @@ function htmlInsight(rows, A, k){
       n0(A.carga) + ' prendas revisadas salieron todas como primeras.</div>';
   }
   const top3 = idx.slice(0,3);
-  const conc = pct(top3.reduce((a,o)=>a+o.v,0), A.def);
+  const conc = pct(top3.reduce((a,o)=>a+o.v,0), A.defMarcados);
   const nom = top3.map(o=>esc(defs[o.i].defecto)).join(', ');
   const siBaja = pct(A.pri + top3[0].v, A.carga);
   return '<div class="insight">En ' + etiquetaPeriodo(k) + ', los <b>' + top3.length +
@@ -1926,7 +1947,7 @@ function htmlTabs(){
 
   '<div class="tabpane' + (TAB_ACT===1?' active':'') + '"><div class="grid">' +
     panel('col8','Los defectos que más pesan','Cada barra es el porcentaje de las prendas revisadas que salió con esa falla, y debajo la cantidad. La línea verde acumula el peso de cada falla dentro del total de prendas con defecto: donde llega al 80% están las pocas fallas que explican casi todo el problema.','<div class="cwrap tall"><canvas id="chPar"></canvas></div>') +
-    panel('col4','Peso de cada grupo','% sobre el total de prendas con defecto del período.','<div class="cwrap tall"><canvas id="chCat"></canvas></div><div id="bxSplit"></div>') +
+    panel('col4','Peso de cada grupo','% sobre el total de prendas marcadas con defecto en el período.','<div class="cwrap tall"><canvas id="chCat"></canvas></div>') +
   '</div></div>' +
 
   '<div class="tabpane' + (TAB_ACT===2?' active':'') + '"><div class="grid">' +
@@ -1953,10 +1974,10 @@ function htmlTabs(){
   '<p><b>Todo habla del mismo período.</b> Las tarjetas, los gráficos, las tablas y el texto de arriba son todos del período que elegiste en el filtro. La flecha de cada tarjeta compara contra el período anterior del mismo tipo: una semana contra la semana anterior, un mes contra el mes anterior. Si el período todavía no termina, la cabecera lo dice y muestra hasta qué día hay datos.</p>' +
   '<p><b>Re-inspección suelta.</b> Hay registros con carga cero: son prendas que llegaron de otro lado y se revisaron por segunda vuelta, sin carga propia. No entran en el % de primeras ni en el de defectos (no había carga que juzgar), pero sí suman minutos producidos para la eficiencia.</p>' +
   '<p><b>Qué entra en cada indicador.</b> Primeras, con defecto y segundas se calculan <b>sin la prenda de servicio</b>: son indicadores de la calidad de las líneas. Eficiencia y tiempo <b>sí incluyen el servicio</b>, porque esas horas también se trabajaron. Cada tarjeta lo dice en su pie.</p>' +
-  '<p><b>Fórmulas.</b> Primeras = carga − defectos que descuentan. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = prendas con defecto ÷ prendas revisadas. % Segundas = prendas marcadas como segundas ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos asistidos, donde los minutos asistidos son las horas de turno menos las improductivas menos 45 minutos de refrigerio por cada turno de 4 horas o más. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
+  '<p><b>Fórmulas.</b> Las primeras las digita la inspectora. % Primeras = suma de primeras ÷ suma de prendas revisadas. % Con defecto = 100% − % Primeras. % Segundas = prendas marcadas como segundas ÷ prendas revisadas. <b>% Eficiencia</b> = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos asistidos, donde los minutos asistidos son las horas de turno menos las improductivas menos 45 minutos de refrigerio por cada turno de 4 horas o más. Todo se calcula sumando primero y dividiendo después, nunca promediando porcentajes de días distintos.</p>' +
   '<p><b>Eficiencia.</b> El T. STD es el tiempo estándar en minutos que debería tomar inspeccionar una prenda de ese estilo. Las prendas re-inspeccionadas suman porque se revisaron dos veces; las primeras especiales no suman aparte, porque ya venían dentro de la carga. Del tiempo disponible se descuentan las horas improductivas y <b>45 minutos de refrigerio</b> por cada turno de 4 horas o más. Si un registro no tiene T. STD aporta cero minutos y la eficiencia baja: por eso el tablero avisa cuando hay estilos sin T. STD.</p>' +
-  '<p><b>Lo que no descuenta.</b> <b>Primeras especiales</b> no resta: la prenda sale igual como primera, así que ya está contada en el % de primeras y no aparece en los gráficos de defectos. <b>Re-inspección</b> tampoco resta prendas, pero sí suma tiempo trabajado.</p>' +
-  '<p><b>El gráfico de defectos.</b> Cada barra es el <b>porcentaje sobre las prendas revisadas</b>: si dice 6,5%, quiere decir que 6 o 7 de cada 100 prendas revisadas salieron con esa falla. Debajo va la cantidad exacta. Como cada barra se mide sobre lo revisado, <b>no suman 100%</b>: entre todas suman el % con defecto del período. La línea verde es distinta: acumula el peso de cada falla dentro del total de prendas con defecto, y donde llega al 80% están las pocas fallas que explican casi todo el problema. Al pasar el cursor salen las dos cifras.</p>' +
+  '<p><b>El conteo de defectos es independiente.</b> El % Con defecto sale de las primeras digitadas: es lo que no salió primera. El gráfico de defectos, en cambio, cuenta las fallas marcadas una por una. Los dos números pueden no coincidir, porque una prenda puede repararse y salir igual como primera. El primero dice cuánto se perdió; el segundo, por qué.</p>' +
+  '<p><b>El gráfico de defectos.</b> Cada barra es el <b>porcentaje sobre las prendas revisadas</b>: si dice 6,5%, quiere decir que 6 o 7 de cada 100 prendas revisadas salieron con esa falla. Debajo va la cantidad exacta. La línea verde acumula el peso de cada falla dentro del total de fallas marcadas, y donde llega al 80% están las pocas que explican casi todo el problema.</p>' +
   '<p><b>Eficiencia por inspectora.</b> Se calcula con los mismos minutos producidos y minutos asistidos, separando los registros de cada una. Solo aparecen las que tienen hora de inicio y final registradas; sin horas no hay divisor y la barra no se puede dibujar.</p>' +
   '<p><b>Exportar reporte.</b> El botón de arriba descarga un archivo con la pestaña Reporte y los datos guardados dentro. Se abre con doble clic, no necesita conexión y los filtros de período siguen funcionando, así que quien lo reciba puede mirar otro día o mes sin pedir nada. Para tenerlo en PDF, se abre el archivo y se imprime con Ctrl+P eligiendo Guardar como PDF.</p>' +
   '<p><b>Los números sobre los gráficos.</b> Cada barra lleva su porcentaje y, debajo en letra chica, la cantidad de prendas, sin tener que pasar el cursor. Si dos etiquetas se fueran a encimar, la segunda no se dibuja. En la línea de tendencia, con muchos días se escriben salteadas.</p>' +
@@ -2293,7 +2314,7 @@ function pintarDefectosDash(rows, A){
       const top = conResta.slice(0,12);
       const colores = top.map((o,i)=>degradado(i, top.length, 'azul'));
       let acum = 0;
-      const acumPct = top.map(o=>{ acum += o.v; return +pct(acum, A.def).toFixed(1); });
+      const acumPct = top.map(o=>{ acum += o.v; return +pct(acum, A.defMarcados).toFixed(1); });
       charts.par = new Chart(elPar, {
         plugins:[pluginEtiquetas({datasets:[0], minimo:0.05,
           segundaLinea:function(j){ return n0(top[j].v) + ' prendas'; }})],
@@ -2310,7 +2331,7 @@ function pintarDefectosDash(rows, A){
               const o = top[c.dataIndex];
               return c.datasetIndex === 0
                 ? n0(o.v) + ' prendas · ' + n1(pct(o.v, A.carga)) + '% de las ' + n0(A.carga) +
-                  ' revisadas · ' + n1(pct(o.v, A.def)) + '% de las ' + n0(A.def) + ' con defecto'
+                  ' revisadas · ' + n1(pct(o.v, A.defMarcados)) + '% de las ' + n0(A.defMarcados) + ' marcadas'
                 : 'Acumulado sobre el total de defectos: ' + n1(c.raw) + '%';
             }}}},
           scales:{y:{beginAtZero:true, grace:'22%', grid:{color:'#F1F6F4'},
@@ -2322,22 +2343,6 @@ function pintarDefectosDash(rows, A){
     }
   }
 
-  const bx = document.getElementById('bxSplit');
-  if(bx){
-    bx.innerHTML = (A.rein || A.espec)
-      ? '<div class="split3">' +
-        '<div class="mini-kpi"><div class="l">Descuentan de las primeras</div>' +
-        '<div class="v">' + n1(A.pDef) + '%</div><div class="s">' + n0(A.def) + ' prendas</div></div>' +
-        '<div class="mini-kpi g"><div class="l">Primeras especiales</div>' +
-        '<div class="v">' + n0(A.espec) + '</div><div class="s">ya contadas dentro de las primeras</div></div>' +
-        '<div class="mini-kpi b"><div class="l">Re-inspección</div>' +
-        '<div class="v">' + n0(A.rein) + '</div><div class="s">no descuenta, pero suma tiempo</div></div></div>' +
-        '<div class="nota"><b>Primeras especiales</b> no es un defecto: la prenda igual sale como primera, ' +
-        'por eso ya está incluida en el % de primeras y no aparece en los gráficos de defectos. ' +
-        '<b>Re-inspección</b> tampoco descuenta prendas, pero sí suma trabajo: esas prendas se revisaron ' +
-        'dos veces y por eso entran en la eficiencia.</div>'
-      : '';
-  }
 }
 function pintarDetalleDash(rows, nServ){
   const ord = rows.slice().sort((a,b)=> a[F_FEC] < b[F_FEC] ? 1 : -1);
@@ -2439,8 +2444,8 @@ function bandaMetricas(m){
         '<div class="o">prendas conformes</div></div>' +
       '<div class="k"><div class="r">% Primeras</div><div class="g">' + n1(m.pPri) + '%</div>' +
         '<div class="o">de lo revisado</div></div>' +
-      '<div class="k"><div class="r">Con defecto</div><div class="g rojo">' + n0(m.def) + '</div>' +
-        '<div class="o">prendas con falla</div></div>' +
+      '<div class="k"><div class="r">Con defecto</div><div class="g rojo">' + n0(m.noPri) + '</div>' +
+        '<div class="o">no salieron primeras</div></div>' +
       '<div class="k"><div class="r">% Con defecto</div><div class="g rojo">' + n1(m.pDef) + '%</div>' +
         '<div class="o">de lo revisado</div></div>' +
       '<div class="k"><div class="r">Segundas</div><div class="g rojo">' + n0(m.seg) + '</div>' +
@@ -2457,7 +2462,7 @@ function pintarReporte(rows, rowsEfi, A){
         '<div class="s">en ' + n0(A.n) + ' inspecciones</div></div>' +
       '<div class="b pri"><div class="l">Prendas primeras</div><div class="v">' + n0(A.pri) + '</div>' +
         '<div class="s">' + n1(A.pPri) + '% de lo revisado</div></div>' +
-      '<div class="b def"><div class="l">Con defecto</div><div class="v">' + n0(A.def) + '</div>' +
+      '<div class="b def"><div class="l">Con defecto</div><div class="v">' + n0(A.noPri) + '</div>' +
         '<div class="s">' + n1(A.pDef) + '% de lo revisado</div></div>' +
       '<div class="b def"><div class="l">Segundas</div><div class="v">' + n0(A.seg) + '</div>' +
         '<div class="s">' + n1(A.pSeg) + '% de lo revisado</div></div>' +
@@ -2505,7 +2510,7 @@ function pintarReporte(rows, rowsEfi, A){
 
   const gen = totalesDefectosDe(rows);
   charts.catR = donutEn('chCatR', gen);
-  if(gen.length){ charts.parR = paretoEn('chParR', gen, A.carga, A.def, 12); }
+  if(gen.length){ charts.parR = paretoEn('chParR', gen, A.carga, A.defMarcados, 12); }
   else{
     const e = document.getElementById('chParR');
     if(e) e.parentNode.innerHTML = '<div class="nota">Sin defectos que descuenten en el período.</div>';
@@ -2528,7 +2533,7 @@ function pintarReporte(rows, rowsEfi, A){
         '<div class="cwrap"><canvas id="chLinRep' + i + '"></canvas></div></div></div>' +
       '<div class="col4"><div class="panel">' +
         '<div class="pt">' + esc(L) + ' — peso de cada grupo</div>' +
-        '<div class="ph">% sobre las ' + n0(mL.def) + ' prendas con defecto de esta línea.</div>' +
+        '<div class="ph">% sobre las ' + n0(mL.defMarcados) + ' fallas marcadas en esta línea.</div>' +
         '<div class="cwrap"><canvas id="chLinDon' + i + '"></canvas></div></div></div>';
   }).join('');
 
@@ -2543,7 +2548,7 @@ function pintarReporte(rows, rowsEfi, A){
       if(e2) e2.parentNode.innerHTML = aviso;
       return;
     }
-    charts['linRep'+i] = paretoEn('chLinRep' + i, lista, mL.carga, mL.def, 8);
+    charts['linRep'+i] = paretoEn('chLinRep' + i, lista, mL.carga, mL.defMarcados, 8);
     charts['linDon'+i] = donutEn('chLinDon' + i, lista);
   });
 }
@@ -2632,8 +2637,8 @@ document.addEventListener('wheel', e=>{
 }, {passive:false});
 
 document.addEventListener('input', e=>{
-  if(e.target.id === 'carga') recalcular('F');
-  if(e.target.id === 'edCarga') recalcular('E');
+  if(e.target.id === 'carga' || e.target.id === 'primeras') recalcular('F');
+  if(e.target.id === 'edCarga' || e.target.id === 'edPrimeras') recalcular('E');
   if(e.target.id === 'horasImp') actualizarHoras('F');
   if(e.target.id === 'edHorasImp') actualizarHoras('E');
 });
