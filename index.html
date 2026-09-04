@@ -47,7 +47,13 @@ padding:10px 18px;cursor:pointer;min-height:44px;white-space:nowrap;}
 .wrap{width:100%;max-width:1180px;margin:0 auto;padding:18px 22px 60px;}
 
 .panel{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);
-padding:16px 18px;margin-bottom:14px;}
+padding:16px 18px;margin-bottom:14px;position:relative;overflow:hidden;}
+.grid .panel{padding-top:20px;margin-bottom:0;}
+.panel .tira{position:absolute;left:0;right:0;top:0;height:4px;background:var(--warm);}
+.panel .tira.resultado{background:var(--sage);}
+.panel .tira.riesgo{background:var(--rose);}
+.panel .tira.volumen{background:var(--slate);}
+.panel .tira.tiempo{background:var(--tan);}
 .panel .pt{font-size:15px;font-weight:700;}
 .panel .ph{font-size:11.5px;color:var(--stone);margin-top:2px;margin-bottom:12px;}
 .pthead{display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;}
@@ -120,10 +126,10 @@ letter-spacing:.3px;}
 .tagc.COMPOSTURA{background:#E7F4EF;color:var(--sage);}
 .tagc.MANCHAS{background:#FEF3E2;color:var(--taupe);}
 .tagc.ZURCIDO{background:#EDF1F3;color:var(--slate);}
-.tagc.LIMPIEZA{background:#E8F0FA;color:#2563EB;}
+.tagc.LIMPIEZA{background:#E6F7F0;color:#0B815E;}
 .tagc.SEGUNDAS{background:#FCEBEB;color:var(--rose);}
 .tagc.NODESCUENTAN{background:#EDF1F3;color:var(--slate);}
-.tagc.OTROS{background:#F1F1F1;color:#666;}
+.tagc.OTROS{background:var(--warm-light);color:var(--stone);}
 .qty{display:flex;align-items:center;gap:4px;}
 .qty button{width:40px;height:40px;border:1px solid var(--warm);background:#fff;
 border-radius:8px;font-size:19px;font-weight:700;color:var(--sage);cursor:pointer;line-height:1;}
@@ -148,7 +154,7 @@ overflow:hidden;}
 .alerta{display:none;background:#FCEBEB;border-left:4px solid var(--rose);color:#8A1F1F;
 border-radius:0 8px 8px 0;padding:10px 14px;margin-top:12px;font-size:13px;font-weight:700;}
 .alerta.on{display:block;}
-.alerta.aviso{background:#EDF3FA;border-left-color:#2563EB;color:#1E4D6B;font-weight:400;}
+.alerta.aviso{background:#EDF1F3;border-left-color:var(--slate);color:#2B4452;font-weight:400;}
 .avisoinfo{background:var(--card);border-left:4px solid var(--tan);border-radius:0 var(--r) var(--r) 0;
 box-shadow:var(--sh);padding:12px 16px;margin-bottom:14px;font-size:13.5px;}
 .avisoinfo b{color:var(--sage-dark);}
@@ -239,7 +245,8 @@ color:var(--slate);background:var(--warm-light);padding:2px 7px;border-radius:20
 margin-left:5px;vertical-align:middle;}
 
 .verdict{display:flex;align-items:center;gap:16px;background:var(--card);border-radius:var(--r);
-box-shadow:var(--sh);padding:16px 20px;margin-bottom:14px;border-left:6px solid var(--rose);}
+box-shadow:var(--sh);padding:16px 20px;margin-bottom:14px;border-left:6px solid var(--rose);
+border-top-left-radius:0;border-bottom-left-radius:0;}
 .verdict .dot{width:44px;height:44px;border-radius:50%;background:#FCEBEB;color:var(--rose);
 display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex:none;}
 .verdict .t{font-size:19px;font-weight:700;color:var(--rose);line-height:1.2;}
@@ -249,23 +256,39 @@ display:flex;align-items:center;justify-content:center;font-size:22px;font-weigh
 .verdict.warn{border-left-color:var(--tan);}
 .verdict.warn .dot{background:#FEF3E2;color:var(--taupe);} .verdict.warn .t{color:var(--taupe);}
 
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-bottom:14px;}
-.kpi{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:14px 16px;
-position:relative;overflow:hidden;transition:box-shadow .15s,transform .15s;}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;
+margin-bottom:14px;align-items:stretch;}
+.kpi{background:var(--card);border-radius:var(--r);box-shadow:var(--sh);padding:0;
+position:relative;overflow:hidden;display:flex;flex-direction:column;
+transition:box-shadow .15s,transform .15s;}
 .kpi:hover{box-shadow:var(--sh-h);transform:translateY(-1px);}
-.kpi::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--sage);}
-.kpi.alert::after{background:var(--rose);} .kpi.neutro::after{background:var(--slate);}
+.kpi .banda{display:block;height:5px;background:var(--sage);flex:none;}
+.kpi.alert .banda{background:var(--rose);}
+.kpi.neutro .banda{background:var(--slate);}
+.kpi .cuerpo{padding:15px 17px 16px;display:flex;flex-direction:column;flex:1;}
 .kpi .l{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--stone);}
-.kpi .row{display:flex;align-items:baseline;gap:8px;margin-top:5px;}
-.kpi .v{font-size:32px;font-weight:700;line-height:1;color:var(--sage);}
+.kpi .row{display:flex;align-items:baseline;gap:10px;margin-top:7px;flex-wrap:wrap;}
+.kpi .v{font-size:42px;font-weight:700;line-height:1;color:var(--sage);letter-spacing:-1.2px;}
 .kpi.alert .v{color:var(--rose);} .kpi.neutro .v{color:var(--slate);}
-.kpi .d{font-size:12px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.kpi .d{font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:20px;}
 .d.mal{color:var(--rose);background:#FCEBEB;}
 .d.bien{color:var(--sage);background:#E7F4EF;}
 .d.flat{color:var(--stone);background:var(--warm-light);}
-.kpi .s{font-size:11.5px;color:var(--stone);margin-top:3px;}
-.kpi .spark{height:26px;margin-top:6px;position:relative;}
-.kpi .spark canvas{position:absolute;inset:0;}
+.kpi .s{font-size:11.5px;color:var(--stone);margin-top:6px;}
+.kpi .spark{height:26px;margin-top:auto;padding-top:8px;position:relative;}
+.kpi .spark canvas{position:absolute;inset:8px 0 0 0;}
+
+/* Protagonista: el indicador que da nombre al tablero, sobre Petróleo. */
+.kpi.hero{background:var(--petrol);}
+.kpi.hero .banda{background:var(--emer);}
+.kpi.hero .l{color:#8FB3AC;}
+.kpi.hero .v{color:#fff;font-size:52px;}
+.kpi.hero .s{color:#8FB3AC;}
+.kpi.hero .d.mal{color:#FFC9C9;background:rgba(220,38,38,.30);}
+.kpi.hero .d.bien{color:#9BE8CB;background:rgba(16,185,129,.22);}
+.kpi.hero .d.flat{color:#B9CFC9;background:rgba(255,255,255,.12);}
+.kpi.hero .kpiper{color:#B9CFC9;background:rgba(255,255,255,.14);}
+@media(max-width:600px){ .kpi .v{font-size:34px;} .kpi.hero .v{font-size:40px;} }
 
 .insight{background:var(--card);border-left:4px solid var(--tan);border-radius:0 var(--r) var(--r) 0;
 box-shadow:var(--sh);padding:12px 16px;margin-bottom:16px;font-size:13.5px;}
@@ -296,6 +319,8 @@ font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content
 .rank .track{height:7px;background:var(--warm-light);border-radius:4px;margin-top:5px;overflow:hidden;}
 .rank .fill{height:100%;border-radius:4px;width:0;background:var(--sage);
 transition:width .9s cubic-bezier(.2,.8,.2,1);}
+.rank li:first-child .nm{color:var(--petrol);}
+.rank li:first-child .n{background:var(--petrol);color:#fff;}
 .rank .val{text-align:right;font-size:15px;font-weight:700;color:var(--sage);}
 .rank .sub{font-size:11px;color:var(--stone);font-weight:400;}
 
@@ -426,6 +451,7 @@ body.snap .bar{position:sticky;top:0;}
   .tabpane.active{display:block!important;}
   #printHead{display:block!important;margin-bottom:10px;}
   .panel,.kpi,.insight,.verdict{box-shadow:none;border:1px solid var(--warm);break-inside:avoid;}
+  .kpi.hero{background:var(--petrol)!important;}
   .cwrap,.cwrap.tall{height:165px!important;}
   .grid{gap:8px;}
 }
@@ -802,7 +828,8 @@ const F_FEC=0, F_INS=1, F_LIN=2, F_EST=3, F_CAR=4, F_DEF=5, F_PRI=6, F_DET=7,
       F_STD=15, F_GRP=16, F_MIN=17, F_REI=18;
 const MIN_REFRIGERIO = 45;          /* minutos de refrigerio por turno */
 const HORAS_MIN_REFRIGERIO = 4;    /* turnos más cortos no lo descuentan */
-const ROT = ['#B45309','#4E6B78','#2563EB','#DC2626','#F59E0B','#10B981'];
+/* Rotación oficial de la marca para desgloses por categoría. */
+const ROT = ['#B45309','#4E6B78','#10B981','#DC2626','#F59E0B'];
 const MES3 = ['ene','feb','mar','abr','may','jun','jul','ago','set','oct','nov','dic'];
 
 let CAT = {inspectoras:[], lineas:[], estilos:[], defectos:[], categorias:[], std:{}};
@@ -997,10 +1024,11 @@ function defInfo(nombre){
 /* Degradado: el primero del ranking en color fuerte, los siguientes más claros. */
 function degradado(i, total, tono){
   const t = total <= 1 ? 0 : i/(total-1);
+  /* Escalas construidas sobre colores de la paleta, de saturado a claro. */
   const pares = {
-    azul:  [[24,73,110],[188,214,231]],
-    verde: [[11,105,79],[186,224,209]],
-    pizarra:[[43,68,82],[203,216,222]]
+    azul:   [[180,83,9],[248,222,193]],    /* taupe: lo que duele */
+    verde:  [[16,185,129],[190,232,216]],  /* esmeralda: lo que rinde */
+    pizarra:[[78,107,120],[205,217,222]]
   };
   const p = pares[tono || 'azul'];
   return 'rgb(' + p[0].map((v,k)=>Math.round(v + (p[1][k]-v)*t)).join(',') + ')';
@@ -1891,7 +1919,7 @@ function htmlKpis(A, P, E, PE, k, R, ultima, parcial, nServ){
       '</span></div>';
   const eti = '<span class="kpiper">' + nombreFiltro().toLowerCase() + '</span>';
   return cab + '<div class="kpis">' +
-    kpi('','% Primeras ' + eti, n1(A.pPri)+'%', deltaHtml(A.pPri, P?P.pPri:null, true),
+    kpi('hero','% Primeras ' + eti, n1(A.pPri)+'%', deltaHtml(A.pPri, P?P.pPri:null, true),
         n0(A.pri) + ' primeras ÷ ' + n0(A.carga) + ' prendas revisadas · sin servicio', 'spkPri') +
     kpi('alert','% Con defecto ' + eti, n1(A.pDef)+'%', deltaHtml(A.pDef, P?P.pDef:null, false),
         n0(A.noPri) + ' que no salieron primeras ÷ ' + n0(A.carga) + ' revisadas · sin servicio', 'spkDef') +
@@ -1905,9 +1933,11 @@ function htmlKpis(A, P, E, PE, k, R, ultima, parcial, nServ){
   '</div>';
 }
 function kpi(cls,label,valor,delta,sub,sparkId){
-  return '<div class="kpi ' + cls + '"><div class="l">' + label + '</div>' +
+  return '<div class="kpi ' + cls + '"><span class="banda"></span><div class="cuerpo">' +
+    '<div class="l">' + label + '</div>' +
     '<div class="row"><div class="v">' + valor + '</div>' + delta + '</div>' +
-    '<div class="s">' + sub + '</div><div class="spark"><canvas id="' + sparkId + '"></canvas></div></div>';
+    '<div class="s">' + sub + '</div>' +
+    '<div class="spark"><canvas id="' + sparkId + '"></canvas></div></div></div>';
 }
 function totalesPorDefecto(rows){
   const tot = new Array(DATA.defectos.length).fill(0);
@@ -1939,31 +1969,31 @@ function htmlTabs(){
       ' onclick="tab(' + i + ',this)">' + t + '</button>').join('') + '</div>' +
 
   '<div class="tabpane' + (TAB_ACT===0?' active':'') + '"><div class="grid">' +
-    panel('col8','Eficiencia por inspectora','Debajo de cada barra está el lote que trabajó: carga más re-inspección. La eficiencia son los minutos producidos por ese lote ÷ los minutos asistidos que tuvo. <b>Incluye la prenda de servicio.</b> Solo aparecen las que tienen hora de inicio y final registradas.','<div class="cwrap"><canvas id="chEfiIns"></canvas></div>') +
-    panel('col4','Orden por eficiencia','Depende del T. STD de los estilos que le tocaron y de las horas que registró, no solo de su ritmo.','<ul class="rank" id="rkIns"></ul>') +
-    panel('col12','Detalle por inspectora','Los totales suman el total general del período.','<div class="tablescroll" id="tbIns"></div>') +
-    panel('col12','Eficiencia y tiempo del período','Eficiencia = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos asistidos. Los minutos asistidos descuentan las horas improductivas y 45 minutos de refrigerio por cada turno de 4 horas o más. <b>Incluye la prenda de servicio.</b>','<div id="bxEfi"></div>') +
+    panel('col8','Eficiencia por inspectora','Debajo de cada barra está el lote que trabajó: carga más re-inspección. La eficiencia son los minutos producidos por ese lote ÷ los minutos asistidos que tuvo. <b>Incluye la prenda de servicio.</b> Solo aparecen las que tienen hora de inicio y final registradas.','<div class="cwrap"><canvas id="chEfiIns"></canvas></div>','resultado') +
+    panel('col4','Orden por eficiencia','Depende del T. STD de los estilos que le tocaron y de las horas que registró, no solo de su ritmo.','<ul class="rank" id="rkIns"></ul>','resultado') +
+    panel('col12','Detalle por inspectora','Los totales suman el total general del período.','<div class="tablescroll" id="tbIns"></div>','volumen') +
+    panel('col12','Eficiencia y tiempo del período','Eficiencia = (prendas revisadas + re-inspeccionadas) × T. STD ÷ minutos asistidos. Los minutos asistidos descuentan las horas improductivas y 45 minutos de refrigerio por cada turno de 4 horas o más. <b>Incluye la prenda de servicio.</b>','<div id="bxEfi"></div>','tiempo') +
   '</div></div>' +
 
   '<div class="tabpane' + (TAB_ACT===1?' active':'') + '"><div class="grid">' +
-    panel('col8','Los defectos que más pesan','Cada barra es el porcentaje de las prendas revisadas que salió con esa falla, y debajo la cantidad. La línea verde acumula el peso de cada falla dentro del total de prendas con defecto: donde llega al 80% están las pocas fallas que explican casi todo el problema.','<div class="cwrap tall"><canvas id="chPar"></canvas></div>') +
-    panel('col4','Peso de cada grupo','% sobre el total de prendas marcadas con defecto en el período.','<div class="cwrap tall"><canvas id="chCat"></canvas></div>') +
+    panel('col8','Los defectos que más pesan','Cada barra es el porcentaje de las prendas revisadas que salió con esa falla, y debajo la cantidad. La línea verde acumula el peso de cada falla dentro del total de prendas con defecto: donde llega al 80% están las pocas fallas que explican casi todo el problema.','<div class="cwrap tall"><canvas id="chPar"></canvas></div>','riesgo') +
+    panel('col4','Peso de cada grupo','% sobre el total de prendas marcadas con defecto en el período.','<div class="cwrap tall"><canvas id="chCat"></canvas></div>','riesgo') +
   '</div></div>' +
 
   '<div class="tabpane' + (TAB_ACT===2?' active':'') + '"><div class="grid">' +
-    panel('col12','Inspecciones del período','Una fila por estilo/carga registrado, sin la prenda de servicio, igual que el resto de los indicadores de calidad. Los registros eliminados no aparecen.','<div class="tablescroll" id="tbDetDash"></div>') +
+    panel('col12','Inspecciones del período','Una fila por estilo/carga registrado, sin la prenda de servicio, igual que el resto de los indicadores de calidad. Los registros eliminados no aparecen.','<div class="tablescroll" id="tbDetDash"></div>','volumen') +
   '</div></div>' +
 
   '<div class="tabpane' + (TAB_ACT===3?' active':'') + '"><div class="grid">' +
-    panel('col8','Cómo se movió el período','Las tres líneas son porcentajes y se leen en el eje de la izquierda (0 a 100%). Las barras grises al fondo son el volumen de prendas revisadas, en el eje de la derecha. Primeras y segundas van sin la prenda de servicio; la eficiencia sí la incluye.','<div class="cwrap tall"><canvas id="chTend"></canvas></div>') +
+    panel('col8','Cómo se movió el período','Las tres líneas son porcentajes y se leen en el eje de la izquierda (0 a 100%). Las barras grises al fondo son el volumen de prendas revisadas, en el eje de la derecha. Primeras y segundas van sin la prenda de servicio; la eficiencia sí la incluye.','<div class="cwrap tall"><canvas id="chTend"></canvas></div>','resultado') +
     panel('col4','Cómo leer esta pestaña','Sirve para ver si el indicador sube o baja a lo largo del período. Con el filtro diario muestra un solo punto, así que se aprovecha mejor en semanal, mensual o anual.','<div class="nota">Si solo te interesa el dato del día, usa el filtro <b>Diario</b> y mira las tarjetas de arriba y la pestaña Inspectoras: ahí está el reproceso y la eficiencia de esa jornada.</div>') +
   '</div></div>' +
 
   '<div class="tabpane' + (TAB_ACT===4?' active':'') + '"><div class="grid">' +
-    panel('col12','Resultado del período','Se recalcula con el filtro de período, de línea y de inspectora que esté puesto arriba.','<div class="bigk" id="repResumen"></div>') +
-    panel('col12','Eficiencia por inspectora','Debajo de cada barra, el lote trabajado: carga más re-inspección. Incluye la prenda de servicio.','<div class="cwrap"><canvas id="chEfiInsR"></canvas></div>') +
-    panel('col8','Defectos en todas las líneas','Cada barra es el porcentaje de las prendas revisadas que salió con esa falla, y debajo la cantidad de prendas.','<div id="repBandaGen"></div><div class="cwrap"><canvas id="chParR"></canvas></div>') +
-    panel('col4','Peso de cada grupo — todas las líneas','% sobre el total de prendas con defecto del período.','<div class="cwrap"><canvas id="chCatR"></canvas></div>') +
+    panel('col12','Resultado del período','Se recalcula con el filtro de período, de línea y de inspectora que esté puesto arriba.','<div class="bigk" id="repResumen"></div>','resultado') +
+    panel('col12','Eficiencia por inspectora','Debajo de cada barra, el lote trabajado: carga más re-inspección. Incluye la prenda de servicio.','<div class="cwrap"><canvas id="chEfiInsR"></canvas></div>','resultado') +
+    panel('col8','Defectos en todas las líneas','Cada barra es el porcentaje de las prendas revisadas que salió con esa falla, y debajo la cantidad de prendas.','<div id="repBandaGen"></div><div class="cwrap"><canvas id="chParR"></canvas></div>','riesgo') +
+    panel('col4','Peso de cada grupo — todas las líneas','% sobre el total de prendas con defecto del período.','<div class="cwrap"><canvas id="chCatR"></canvas></div>','riesgo') +
     '<div class="col12"><div class="panel"><div class="pt">Defectos por línea</div>' +
       '<div class="ph">Para cada línea de producción, sus defectos más pesados y el peso de cada grupo al costado. Ambos se calculan sobre los defectos de esa línea, no sobre el total.</div>' +
       '<div class="grid" id="repLineas"></div></div></div>' +
@@ -1987,9 +2017,11 @@ function htmlTabs(){
   '<p><b>Términos.</b> <b>Carga</b>: grupo de prendas que se revisa de una vez. <b>Primeras</b>: prendas conformes. <b>Segundas</b>: prenda con falla que ya no se recupera como primera. <b>Compostura</b>: falla de costura que se arregla cosiendo. <b>Zurcido</b>: falla de tela o puntada que se repara con aguja. <b>Limpieza</b>: hilos sueltos o sin cortar. <b>Re-inspección</b>: carga que hubo que volver a revisar.</p>' +
   '</details>';
 }
-function panel(col,titulo,sub,cuerpo){
-  return '<div class="' + col + '"><div class="panel"><div class="pt">' + titulo +
-    '</div><div class="ph">' + sub + '</div>' + cuerpo + '</div></div>';
+/* tema: resultado (cómo salió) · riesgo (dónde duele) · volumen · tiempo */
+function panel(col,titulo,sub,cuerpo,tema){
+  return '<div class="' + col + '"><div class="panel">' +
+    (tema ? '<span class="tira ' + tema + '"></span>' : '') +
+    '<div class="pt">' + titulo + '</div><div class="ph">' + sub + '</div>' + cuerpo + '</div></div>';
 }
 function tab(i,btn){
   TAB_ACT = i;
@@ -2027,6 +2059,31 @@ function pintarSparklines(){
   sparkline('spkSeg', s.map(o=>o.cal.pSeg));
   sparkline('spkEfi', s.map(o=>o.efi.pEfi));
 }
+
+/* ---------------- estilo de las series de tendencia ----------------
+   Línea gruesa que sobrevive a un proyector, área en degradado que da peso
+   sin tapar la grilla, y punto con borde blanco para que se lea sobre el área. */
+const AREA = (ctx, rgb) => {
+  const a = ctx.chart.chartArea;
+  if(!a) return 'transparent';
+  const g = ctx.chart.ctx.createLinearGradient(0, a.top, 0, a.bottom);
+  g.addColorStop(0, 'rgba(' + rgb + ',.22)');
+  g.addColorStop(1, 'rgba(255,255,255,0)');
+  return g;
+};
+function serieTendencia(color, rgb){
+  return {
+    borderColor:color, borderWidth:3.5, tension:.35, fill:true,
+    backgroundColor:c=>AREA(c, rgb),
+    pointRadius:5, pointHoverRadius:8, pointBackgroundColor:color,
+    pointBorderColor:'#fff', pointBorderWidth:2.5, pointHoverBorderWidth:3
+  };
+}
+/* Los puntos entran de izquierda a derecha, una sola vez al cargar. */
+const ANIM = {
+  duration:900, easing:'easeOutCubic',
+  delay:c => (c.type === 'data' && c.mode === 'default') ? c.dataIndex * 45 : 0
+};
 
 /* ---------------- etiquetas de valor sobre los gráficos ----------------
    Dibuja el número encima de cada barra o punto, sin librerías extra.     */
@@ -2075,6 +2132,26 @@ function pluginEtiquetas(op){
           if(!libre(el.x, y, an, al)) return;
           cajas.push({x:el.x, y:y, an:an, al:al});
           const color = o.color || (ds.borderColor && typeof ds.borderColor === 'string' ? ds.borderColor : '#33474F');
+          /* Pastilla blanca con sombra: el número se lee sobre el área de la serie. */
+          if(o.pastilla){
+            const w = ctx.measureText(txt).width;
+            const rx = el.x - w/2 - 7, ry = y - 9.5, rw = w + 14, rh = 19, r = 9.5;
+            ctx.beginPath();
+            ctx.moveTo(rx + r, ry);
+            ctx.arcTo(rx + rw, ry,      rx + rw, ry + rh, r);
+            ctx.arcTo(rx + rw, ry + rh, rx,      ry + rh, r);
+            ctx.arcTo(rx,      ry + rh, rx,      ry,      r);
+            ctx.arcTo(rx,      ry,      rx + rw, ry,      r);
+            ctx.closePath();
+            ctx.fillStyle = '#fff';
+            ctx.shadowColor = 'rgba(14,59,54,.18)';
+            ctx.shadowBlur = 4; ctx.shadowOffsetY = 1;
+            ctx.fill();
+            ctx.shadowColor = 'transparent';
+            ctx.fillStyle = color;
+            ctx.fillText(txt, el.x, y);
+            return;
+          }
           function linea(t, yy, gris){
             ctx.lineWidth = 3.5;
             ctx.strokeStyle = 'rgba(255,255,255,.92)';
@@ -2135,25 +2212,24 @@ function pintarTendencia(rows, rowsEfi){
   const ks = Object.keys(m).sort();
   const serie = ks.map(k=>met(m[k]));
   const serieE = ks.map(k=>met(me[k] || []));
-  const pasoT = Math.max(1, Math.ceil(ks.length/10));
+  const pasoT = Math.max(1, Math.ceil(ks.length/(window.matchMedia('(max-width:600px)').matches?7:12)));
   charts.tend = new Chart(document.getElementById('chTend'), {
-    plugins:[pluginEtiquetas({datasets:[1,2,3], paso:pasoT,
-      desplazar:{1:-12, 2:14, 3:-12}})],
+    plugins:[pluginEtiquetas({datasets:[1,2,3], paso:pasoT, pastilla:true,
+      desplazar:{1:-20, 2:-20, 3:22}})],
     data:{labels:ks.map(etiquetaGrafico), datasets:[
       {type:'bar', label:'Prendas revisadas', data:serie.map(x=>x.carga),
-       backgroundColor:'rgba(220,229,226,.85)', borderRadius:4, order:4, yAxisID:'y1'},
-      {type:'line', label:'% Primeras', data:serie.map(x=>+x.pPri.toFixed(1)),
-       borderColor:'#0F7A5A', backgroundColor:'#0F7A5A', borderWidth:2.6, tension:.3,
-       pointRadius:3, order:1, yAxisID:'y'},
-      {type:'line', label:'% Eficiencia', data:serieE.map(x=>+x.pEfi.toFixed(1)),
-       borderColor:'#B45309', backgroundColor:'#B45309', borderWidth:2.2, tension:.3,
-       pointRadius:3, borderDash:[6,3], order:2, yAxisID:'y'},
-      {type:'line', label:'% Segundas', data:serie.map(x=>+x.pSeg.toFixed(1)),
-       borderColor:'#DC2626', backgroundColor:'#DC2626', borderWidth:2, tension:.3,
-       pointRadius:2.5, order:3, yAxisID:'y'}
+       backgroundColor:'rgba(220,229,226,.8)', borderRadius:5, order:4, yAxisID:'y1',
+       maxBarThickness:46},
+      Object.assign({type:'line', label:'% Primeras', data:serie.map(x=>+x.pPri.toFixed(1)),
+       order:1, yAxisID:'y'}, serieTendencia('#10B981','16,185,129')),
+      Object.assign({type:'line', label:'% Eficiencia', data:serieE.map(x=>+x.pEfi.toFixed(1)),
+       order:2, yAxisID:'y'}, serieTendencia('#B45309','180,83,9')),
+      Object.assign({type:'line', label:'% Segundas', data:serie.map(x=>+x.pSeg.toFixed(1)),
+       order:3, yAxisID:'y', etiquetaAbajo:true}, serieTendencia('#DC2626','220,38,38'))
     ]},
     options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
-      plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14}},
+      animation:ANIM, layout:{padding:{top:34}},
+      plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14, boxWidth:12}},
         tooltip:{callbacks:{label:c=> c.dataset.yAxisID === 'y'
           ? c.dataset.label + ': ' + n1(c.raw) + '%'
           : c.dataset.label + ': ' + n0(c.raw)}}},
@@ -2214,8 +2290,9 @@ function pintarCategorias(rows){
     plugins:[pluginEtiquetasAnillo()],
     data:{labels:ks, datasets:[{data:ks.map(k=>cats[k]),
       backgroundColor:ks.map((k,i)=>ROT[i%ROT.length]), borderWidth:2, borderColor:'#fff'}]},
-    options:{responsive:true, maintainAspectRatio:false, cutout:'58%',
-      plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:12}},
+    options:{responsive:true, maintainAspectRatio:false, cutout:'62%',
+      animation:{duration:900, easing:'easeOutCubic'},
+      plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:12, boxWidth:11}},
         tooltip:{callbacks:{label:c=>{
           const t = c.dataset.data.reduce((a,b)=>a+b,0);
           return c.label + ': ' + n1(pct(c.raw,t)) + '% (' + n0(c.raw) + ' prendas)';
@@ -2326,7 +2403,8 @@ function pintarDefectosDash(rows, A){
            borderColor:'#0F7A5A', borderWidth:2.2, tension:.25, pointRadius:3, yAxisID:'y1'}
         ]},
         options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
-          plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14}},
+          animation:ANIM, layout:{padding:{top:22}},
+          plugins:{legend:{position:'bottom', labels:{usePointStyle:true, padding:14, boxWidth:12}},
             tooltip:{callbacks:{label:c=>{
               const o = top[c.dataIndex];
               return c.datasetIndex === 0
@@ -2399,6 +2477,7 @@ function paretoEn(canvasId, lista, carga, totalDef, cuantos){
        backgroundColor:colores, borderRadius:4}
     ]},
     options:{responsive:true, maintainAspectRatio:false,
+      animation:ANIM, layout:{padding:{top:22}},
       plugins:{legend:{display:false},
         tooltip:{callbacks:{label:c=>{
           const o = top[c.dataIndex];
@@ -2526,12 +2605,12 @@ function pintarReporte(rows, rowsEfi, A){
   cont.innerHTML = lineas.map((L,i)=>{
     const mL = met(porLinea[L]);
     const banda = bandaMetricas(mL);
-    return '<div class="col8"><div class="panel">' +
+    return '<div class="col8"><div class="panel"><span class="tira riesgo"></span>' +
         '<div class="pt">' + esc(L) + ' — defectos sobre lo revisado</div>' +
         '<div class="ph">Cada barra es el % de las prendas revisadas de esta línea que salió con esa falla.</div>' +
         banda +
         '<div class="cwrap"><canvas id="chLinRep' + i + '"></canvas></div></div></div>' +
-      '<div class="col4"><div class="panel">' +
+      '<div class="col4"><div class="panel"><span class="tira riesgo"></span>' +
         '<div class="pt">' + esc(L) + ' — peso de cada grupo</div>' +
         '<div class="ph">% sobre las ' + n0(mL.defMarcados) + ' fallas marcadas en esta línea.</div>' +
         '<div class="cwrap"><canvas id="chLinDon' + i + '"></canvas></div></div></div>';
