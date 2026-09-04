@@ -438,6 +438,60 @@ body.snap .bar{position:sticky;top:0;}
   .bar{position:static;}
 }
 
+
+/* ================= TABLET (hasta 900px) =================
+   En pantalla mediana no se encoge todo: se pasa a una columna y los
+   gráficos crecen para que sigan siendo legibles.                      */
+@media(max-width:900px){
+  .wrap{padding:14px 14px 36px;}
+  .obody{padding:14px 14px 30px;}
+  .col12,.col8,.col6,.col4{grid-column:span 12;}
+  .kpis{grid-template-columns:repeat(2,1fr);}
+  .cwrap,.cwrap.tall{height:320px;}
+  .split3{grid-template-columns:repeat(3,1fr);}
+}
+
+/* ================= CELULAR (hasta 600px) =================
+   Regla de fondo: se muestra menos, no se encoge todo.                  */
+@media(max-width:600px){
+  body{font-size:13.5px;}
+  .grid,.kpis,.split,.split3{grid-template-columns:1fr!important;}
+  .grid>*{grid-column:span 12!important;}
+
+  /* La barra de filtros se desliza en horizontal en vez de amontonarse. */
+  .bar{position:static;flex-wrap:nowrap;overflow-x:auto;padding:8px 10px;gap:8px;
+       -webkit-overflow-scrolling:touch;}
+  .bar::-webkit-scrollbar{display:none;}
+  .bar>*{flex:none;}
+  .bar .lb{white-space:nowrap;}
+
+  /* Todo lo que se toca, mínimo 44px de alto. */
+  .btn,select,.seg button,.obar button,.iconbtn{min-height:44px;font-size:14px;}
+  .iconbtn{padding:10px 13px;}
+
+  .verdict{padding:14px;gap:12px;}
+  .verdict .dot{width:36px;height:36px;font-size:18px;}
+  .verdict .t{font-size:16px;}
+
+  .kpi:active{background:var(--warm-light);}
+  .kpi.hero:active{background:var(--petrol-2);}
+
+  .obar{padding:10px 12px;gap:8px;}
+  .obar .ot{font-size:15px;}
+
+  .rank li{grid-template-columns:22px 1fr 56px;}
+  .rank .val{font-size:14px;}
+
+  .panel:hover{box-shadow:var(--sh);}
+
+  /* Tablas plegadas tras un botón: están, pero no estorban. */
+  .panel.plegable.plegado .tablescroll{display:none!important;}
+  .verdet{display:block;width:100%;margin-top:10px;background:#fff;
+          border:1px solid var(--warm);color:var(--sage);border-radius:8px;padding:12px;
+          font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;min-height:44px;}
+  .verdet:active{background:var(--warm-light);}
+}
+
 @media print{
   @page{size:A4 landscape;margin:9mm;}
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
@@ -1820,6 +1874,58 @@ function met(rows){
   };
 }
 
+
+/* En celular las tablas del tablero se pliegan tras un botón: el panel
+   conserva su título y su explicación, que es donde dice qué mide.      */
+function plegarTablasEnCelular(){
+  const movil = window.matchMedia('(max-width:600px)').matches;
+  document.querySelectorAll('#contenido .panel').forEach(p=>{
+    if(!p.querySelector('table')) return;
+    if(!movil){
+      p.classList.remove('plegable','plegado');
+      const b = p.querySelector('.verdet'); if(b) b.remove();
+      return;
+    }
+    if(p.classList.contains('plegable')) return;
+    p.classList.add('plegable','plegado');
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'verdet'; b.textContent = 'Ver tabla';
+    b.onclick = ()=>{
+      const sigue = p.classList.toggle('plegado');
+      b.textContent = sigue ? 'Ver tabla' : 'Ocultar tabla';
+    };
+    p.appendChild(b);
+  });
+}
+/* Si un panel se ocultó por falta de datos, el que queda en esa fila se
+   estira para no dejar el hueco. */
+function reajustarGrids(){
+  const spanDe = c => c.classList.contains('col8') ? 8
+                    : c.classList.contains('col6') ? 6
+                    : c.classList.contains('col4') ? 4 : 12;
+  document.querySelectorAll('#contenido .grid').forEach(g=>{
+    [].forEach.call(g.children, c=>{ c.style.gridColumn = ''; });
+    if(window.matchMedia('(max-width:900px)').matches) return;
+    const vis = [].filter.call(g.children, c=> c.style.display !== 'none');
+    let fila = [], acum = 0;
+    const cerrar = ()=>{
+      if(fila.length && acum < 12){
+        const u = fila[fila.length-1];
+        u.style.gridColumn = 'span ' + (12 - acum + spanDe(u));
+      }
+      fila = []; acum = 0;
+    };
+    vis.forEach(c=>{
+      const sp = spanDe(c);
+      if(acum + sp > 12) cerrar();
+      fila.push(c); acum += sp;
+      if(acum >= 12){ fila = []; acum = 0; }
+    });
+    cerrar();
+  });
+  plegarTablasEnCelular();
+}
+
 /* ---------------- render ---------------- */
 async function render(){
   Object.keys(charts).forEach(k=>{ try{ charts[k].destroy(); }catch(e){} });
@@ -1873,6 +1979,7 @@ async function render(){
   pintarReporte(CUR, CUR_EFI, mCur);
   pintarPortada(k, mCur, mEfi, mPrev, R, ultimaFecha, parcial, nServ);
 
+  reajustarGrids();
   setTimeout(()=>{ document.querySelectorAll('.rank .fill').forEach(f=>{ f.style.width = f.dataset.w; }); }, 120);
 
   if(!DATA_COMPLETA){
@@ -2034,6 +2141,9 @@ function tab(i,btn){
   document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.tabpane').forEach((p,k)=>p.classList.toggle('active', k===i));
+  /* Sin esto, un gráfico que estaba oculto se dibuja deforme al mostrarse. */
+  Object.keys(charts).forEach(k=>{ try{ charts[k].resize(); }catch(e){} });
+  reajustarGrids();
 }
 
 /* ---------------- sparklines por período ---------------- */
@@ -2780,6 +2890,12 @@ document.querySelectorAll('#segGran button').forEach(b=>{
     prepararFiltros();
     render();
   });
+});
+/* Al girar el celular o cambiar el tamaño de la ventana, se rehace el acomodo. */
+let tmpResize = null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(tmpResize);
+  tmpResize = setTimeout(()=>{ if(DATA) reajustarGrids(); }, 200);
 });
 iniciar();
 </script>
