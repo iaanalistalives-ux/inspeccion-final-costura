@@ -304,7 +304,9 @@ color:var(--stone);padding:10px 16px;cursor:pointer;border-bottom:3px solid tran
 .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;}
 .col12{grid-column:span 12;} .col8{grid-column:span 8;}
 .col6{grid-column:span 6;} .col4{grid-column:span 4;}
-@media(max-width:1100px){.col8,.col6,.col4{grid-column:span 12;}}
+/* Hasta 900px se apila; por encima, una laptop de 1024 conserva la jerarquía
+   de un panel ancho con su acompañante al costado. */
+.grid>.panel:not([class*="col"]){grid-column:span 12;}
 
 .cwrap{position:relative;width:100%;height:clamp(290px,32vh,390px);}
 .cwrap.tall{height:clamp(290px,32vh,390px);}
