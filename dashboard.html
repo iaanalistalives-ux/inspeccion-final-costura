@@ -194,7 +194,7 @@ max-width:92vw;text-align:center;}
 .overlay{display:none;position:fixed;inset:0;background:rgba(14,59,54,.55);z-index:100;padding:22px;}
 .overlay.on{display:block;}
 .oinner{background:var(--warm-light);border-radius:var(--r);box-shadow:0 18px 50px rgba(14,59,54,.35);
-width:100%;max-width:1440px;height:100%;margin:0 auto;display:flex;flex-direction:column;overflow:hidden;}
+width:100%;max-width:none;height:100%;margin:0;display:flex;flex-direction:column;overflow:hidden;}
 .obar{background:var(--petrol);border-bottom:3px solid var(--emer);padding:12px 18px;
 display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex:none;}
 .obar .ot{color:#fff;font-size:16px;font-weight:700;}
@@ -386,7 +386,7 @@ border-bottom:2px solid var(--emer);padding-bottom:8px;margin-bottom:10px;}
 body.solotab #app{display:none;}
 body.solotab .header .btn-tablero{display:none!important;}
 body.solotab .overlay{display:block;position:static;background:none;padding:0;}
-body.solotab .oinner{max-width:1440px;height:auto;border-radius:0;box-shadow:none;
+body.solotab .oinner{max-width:none;height:auto;border-radius:0;box-shadow:none;
 background:transparent;overflow:visible;}
 /* En modo tablero la cabecera verde de la página ya lleva el título, así que
    la barra del panel se queda solo con los botones, sin repetirlo. */
@@ -411,7 +411,7 @@ body.soloreporte #btnExp{display:none;}
 body.snap #app{display:none;}
 body.snap .header .btn-tablero{display:none!important;}
 body.snap .overlay{display:block;position:static;background:none;padding:0;}
-body.snap .oinner{max-width:1440px;height:auto;border-radius:0;box-shadow:none;
+body.snap .oinner{max-width:none;height:auto;border-radius:0;box-shadow:none;
 background:transparent;overflow:visible;}
 body.snap #btnCerrar,body.snap #btnExp,body.snap #btnRef{display:none;}
 body.snap .obody{overflow:visible;padding:16px 22px 44px;}
@@ -444,6 +444,20 @@ body.snap .bar{position:sticky;top:0;}
 /* ================= TABLET (hasta 900px) =================
    En pantalla mediana no se encoge todo: se pasa a una columna y los
    gráficos crecen para que sigan siendo legibles.                      */
+/* ===== MONITOR GRANDE (desde 1500px) =====
+   El tablero usa todo el ancho disponible; solo se le da más aire lateral
+   para que el contenido no quede pegado al borde de la pantalla. */
+@media(min-width:1500px){
+  .obody{padding:18px 34px 44px;}
+  body.solotab .obody,body.snap .obody{padding:18px 34px 50px;}
+  .grid{gap:16px;}
+  .kpis{gap:14px;}
+}
+@media(min-width:2000px){
+  .obody{padding:20px 56px 50px;}
+  body.solotab .obody,body.snap .obody{padding:20px 56px 56px;}
+}
+
 @media(max-width:900px){
   .wrap{padding:14px 14px 36px;}
   .obody{padding:14px 14px 30px;}
