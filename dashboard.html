@@ -1035,6 +1035,7 @@ body.snap .bar{position:sticky;top:0;}
 }
 </style>
 <style id="lsLimp2Css">/* lives-limpieza v2 · sin notas, veredictos ni paneles de título arriba */.verdict,.insight{display:none!important}</style>
+<style id="lsSinActCss">/* 12/10/2026: sin botón Actualizar propio; se usa el actualizar del portal */#btnRef{display:none!important}</style>
 </head>
 <body>
 
@@ -1203,7 +1204,6 @@ body.snap .bar{position:sticky;top:0;}
         <div class="ph">Todas las inspecciones guardadas en el sistema, no solo las de este equipo. Filtra por fecha y edita o elimina cualquier registro.</div>
       </div>
       <span class="sp"></span>
-      <button class="btn small" type="button" onclick="cargarDatos({full:DATA_COMPLETA})">Actualizar</button>
     </div>
 
     <div class="fgrid" style="margin-bottom:12px">
@@ -2208,7 +2208,7 @@ async function cargarDatos(opciones){
     document.getElementById('dEstado').textContent = 'Sin conexión';
     if(!o.silencioso){
       dAvisar('No se pudieron cargar los datos: ' + e.message +
-        ' Pulsa <b>Actualizar</b> para volver a intentar; si sigue igual, avísale a Christian.');
+        ' Para volver a intentar, actualiza la pantalla desde el portal; si sigue igual, avísale a Christian.');
       const cajaReg = document.getElementById('tbRegistros');
       if(cajaReg) cajaReg.innerHTML =
         '<div class="mini">No se pudieron cargar los registros: ' + esc(e.message) + '</div>';
@@ -2521,7 +2521,7 @@ async function render(){
   setTimeout(()=>{ document.querySelectorAll('.rank .fill').forEach(f=>{ f.style.width = f.dataset.w; }); }, 120);
 
   if(!DATA_COMPLETA){
-    dAvisar('Solo están cargados los datos del mes actual y el anterior, así que el acumulado del año puede quedar corto. Pulsa <b>Actualizar</b> para traer todo el histórico.');
+    dAvisar('Solo están cargados los datos del mes actual y el anterior, así que el acumulado del año puede quedar corto. Actualiza la pantalla desde el portal para traer todo el histórico.');
   }
 }
 
