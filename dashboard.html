@@ -2439,8 +2439,31 @@ function prepararFiltros(){
   const sp = document.getElementById('fPeriodo'), ap = sp.value;
   let claves = clavesPeriodo().reverse();
   if(GRAN === 'dia') claves = claves.slice(0, 180);
-  sp.innerHTML = claves.map(k=>'<option value="'+k+'">'+etiquetaPeriodo(k)+'</option>').join('');
+  if(GRAN === 'sem') sp.innerHTML = opcionesSemana(claves);
+  else sp.innerHTML = claves.map(k=>'<option value="'+k+'">'+etiquetaPeriodo(k)+'</option>').join('');
   sp.value = (ap && claves.indexOf(ap) >= 0) ? ap : (claves[0] || '');
+}
+/* 22-oct-2026: el desplegable de semanas va igual que el del Dashboard Acabados:
+   agrupado por año, "Semana N — desde D mes" (número de semana ISO, lunes a
+   domingo, el mismo que usa Acabados) y la semana en curso como "Semana actual". */
+const MESES_SEM = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+function semanaIso(lunes){
+  const d = new Date(lunes+'T00:00:00'); d.setDate(d.getDate()+3);   /* jueves de esa semana */
+  const anio = d.getFullYear();
+  const ene4 = new Date(anio, 0, 4);
+  return {num: 1 + Math.round(((d - ene4)/86400000 - 3 + (ene4.getDay()+6)%7) / 7), anio: anio};
+}
+function opcionesSemana(claves){
+  const actual = lunesDe(isoDe(new Date()));
+  let html = '', grupo = null;
+  claves.forEach(k=>{
+    if(k === actual){ html += '<option value="'+k+'">📡 Semana actual (en vivo)</option>'; return; }
+    const s = semanaIso(k), p = k.split('-');
+    if(s.anio !== grupo){ if(grupo !== null) html += '</optgroup>'; html += '<optgroup label="'+s.anio+'">'; grupo = s.anio; }
+    html += '<option value="'+k+'">Semana '+s.num+' — desde '+Number(p[2])+' '+MESES_SEM[+p[1]-1]+'</option>';
+  });
+  if(grupo !== null) html += '</optgroup>';
+  return html;
 }
 
 /* ---------------- métricas ---------------- */

@@ -4,7 +4,7 @@ Las reglas generales de trabajo están en el repo privado `lives-instrucciones` 
 
 ## Qué hace
 - `index.html` — **formulario diario** de la inspectora de costura: fecha, inspectora, línea, estilo, carga, primeras, defectos por prenda, hora de inicio y fin, horas improductivas y observaciones. Tabla de registros con editar y eliminar (eliminar = queda ANULADO, con el usuario). Se pueden agregar defectos nuevos y el T. STD de un estilo. Botón "📊 Ver tablero" abre el tablero en una ventana; con `#tablero` abre directo en modo solo consulta.
-- `dashboard.html` — el mismo **tablero**, solo de consulta (`SOLO_LECTURA`): pestañas Inspectoras, Defectos, Detalle, Tendencia y Reporte; período semanal, mensual, anual o por día; filtros de línea e inspectora; comparación con el período anterior. Excel LIVES (Resumen con numerador y denominador de cada indicador, por inspectora, por línea, defectos; y Detalle).
+- `dashboard.html` — el mismo **tablero**, solo de consulta (`SOLO_LECTURA`): pestañas Inspectoras, Defectos, Detalle, Tendencia y Reporte; período semanal, mensual, anual o por día; filtros de línea e inspectora; comparación con el período anterior. En Semanal, el desplegable va igual que el de Acabados: agrupado por año, "Semana N — desde D mes" (semana ISO, lunes a domingo) y la semana en curso como "📡 Semana actual (en vivo)". Excel LIVES (Resumen con numerador y denominador de cada indicador, por inspectora, por línea, defectos; y Detalle).
 - Los dos permiten descargar una copia HTML del tablero o del reporte.
 
 ## Indicadores (suma primero, divide después)
