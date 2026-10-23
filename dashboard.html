@@ -2475,28 +2475,31 @@ function opcionesSemana(claves){
    salida más tardía y el mayor valor anotado de improductivas. Así el tiempo no
    se multiplica por cantidad de estilos.                                      */
 function agregarHoras(rows){
+  /* 23/10/2026: los minutos producidos solo cuentan en los turnos con horas válidas (inicio y final, final mayor que inicio).
+     Antes entraban todos en el numerador y el turno sin horas válidas no aportaba horas al divisor: la eficiencia salía inflada. */
   const t = {};
   rows.forEach(f=>{
-    if(!f[F_HI] && !f[F_HF] && !f[F_HIMP]) return;
     const k = f[F_FEC] + '|' + f[F_INS];
-    if(!t[k]) t[k] = {ini:'', fin:'', imp:0};
+    if(!t[k]) t[k] = {ini:'', fin:'', imp:0, min:0};
     const o = t[k];
+    o.min += (f[F_MIN] || 0);
     if(f[F_HI] && (!o.ini || f[F_HI] < o.ini)) o.ini = f[F_HI];
     if(f[F_HF] && (!o.fin || f[F_HF] > o.fin)) o.fin = f[F_HF];
     if((f[F_HIMP] || 0) > o.imp) o.imp = f[F_HIMP] || 0;
   });
-  let tot = 0, imp = 0, turnos = 0;
+  let tot = 0, imp = 0, turnos = 0, minV = 0, sinHoras = 0, minSin = 0;
   Object.keys(t).forEach(k=>{
     const o = t[k];
     const hT = horasEntre(o.ini, o.fin);
-    if(!hT && !o.imp) return;
+    if(!hT){ if(o.min > 0){ sinHoras++; minSin += o.min; } return; }
     tot += hT;
-    imp += hT ? Math.min(o.imp, hT) : o.imp;
+    imp += Math.min(o.imp, hT);
+    minV += o.min;
     if(hT >= HORAS_MIN_REFRIGERIO) turnos++;
   });
   const refr = Math.round(turnos * (MIN_REFRIGERIO/60) * 100)/100;
   tot = Math.round(tot*100)/100; imp = Math.round(imp*100)/100;
-  return {tot:tot, imp:imp, turnos:turnos, refr:refr,
+  return {tot:tot, imp:imp, turnos:turnos, refr:refr, minV:minV, sinHoras:sinHoras, minSin:minSin,
           prod:Math.round(Math.max(0, tot - imp - refr)*100)/100};
 }
 /* Índices de los defectos del grupo SEGUNDAS, para el KPI de segundas. */
@@ -2511,17 +2514,17 @@ function idxSegundas(){
 }
 function met(rows){
   const iSeg = idxSegundas();
-  let carga=0, def=0, pri=0, rein=0, min=0, cargaStd=0, espec=0, seg=0;
+  let carga=0, def=0, pri=0, rein=0, minTodos=0, cargaStd=0, espec=0, seg=0;
   rows.forEach(f=>{
     carga += f[F_CAR]; def += f[F_DEF]; pri += f[F_PRI];
-    rein += (f[F_REI]||0); min += (f[F_MIN]||0);
+    rein += (f[F_REI]||0); minTodos += (f[F_MIN]||0);
     if(f[F_STD] > 0) cargaStd += f[F_CAR];
     espec += Math.max(0, (f[F_NOR]||0) - (f[F_REI]||0));
     detPares(f).forEach(par=>{ if(iSeg.indexOf(par[0]) >= 0) seg += par[1]; });
   });
   const H = agregarHoras(rows);
   return {
-    n:rows.length, carga:carga, def:def, pri:pri, rein:rein, min:min, espec:espec, seg:seg,
+    n:rows.length, carga:carga, def:def, pri:pri, rein:rein, min:H.minV, minTodos:minTodos, sinHoras:H.sinHoras, espec:espec, seg:seg,
     hTot:H.tot, hImp:H.imp, hProd:H.prod, hRefr:H.refr, turnos:H.turnos,
     pPri: pct(pri,carga),
     /* % defectos = lo que no salió primera. Los defectos marcados se cuentan
@@ -2529,7 +2532,7 @@ function met(rows){
     pDef: carga > 0 ? Math.max(0, 100 - pct(pri,carga)) : 0,
     noPri: Math.max(0, carga - pri), defMarcados: def, pSeg: pct(seg,carga),
     pProd: pct(H.prod, H.tot),
-    pEfi: H.prod > 0 ? pct(min, H.prod*60) : 0,
+    pEfi: H.prod > 0 ? pct(H.minV, H.prod*60) : 0,
     cobStd: pct(cargaStd, carga)
   };
 }
@@ -3138,7 +3141,7 @@ function pintarInspectoras(rows){
     '<th class="num">Prendas revisadas</th><th class="num">Re-inspeccionadas</th>' +
     '<th class="num">Min. de trabajo</th><th class="num">H. asistidas</th>' +
     '<th class="num">% Eficiencia</th><th class="num">% Primeras</th></tr></thead><tbody>' +
-    ks.map(k=>'<tr><td><b>' + esc(k) + '</b></td><td class="num">' + n0(M[k].n) + '</td>' +
+    ks.map(k=>'<tr><td><b>' + esc(k) + '</b>' + (M[k].sinHoras ? '<br><span class="mini">' + M[k].sinHoras + ' turno(s) sin horas válidas: no cuentan en la eficiencia</span>' : '') + '</td><td class="num">' + n0(M[k].n) + '</td>' +
       '<td class="num">' + n0(M[k].carga) + '</td><td class="num">' + n0(M[k].rein) + '</td>' +
       '<td class="num">' + n0(M[k].min) + '</td><td class="num">' + nh(M[k].hProd) + '</td>' +
       '<td class="num">' + (M[k].hProd ? '<span class="pill ok">'+n1(M[k].pEfi)+'%</span>' : '—') + '</td>' +

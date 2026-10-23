@@ -10,7 +10,7 @@ Las reglas generales de trabajo están en el repo privado `lives-instrucciones` 
 ## Indicadores (suma primero, divide después)
 - % Primeras = Σ primeras ÷ Σ carga. % Con defecto = 100 − % Primeras.
 - % Segundas = prendas con defectos de la categoría segundas ÷ Σ carga.
-- % Eficiencia = minutos producidos ÷ (horas asistidas × 60). Minutos producidos = (carga + re-inspección) × T. STD (lo calcula la base). Horas asistidas = turno − improductivas − 45 min de refrigerio por turno de 4 h o más; el turno se arma por fecha e inspectora.
+- % Eficiencia = minutos producidos ÷ (horas asistidas × 60). Minutos producidos = (carga + re-inspección) × T. STD (lo calcula la base). Horas asistidas = turno − improductivas − 45 min de refrigerio por turno de 4 h o más; el turno se arma por fecha e inspectora. Solo cuentan los turnos con hora de inicio y final válidas (final mayor que inicio): los minutos de un turno sin horas válidas no entran en el numerador (desde el 23/10/2026; antes inflaban la eficiencia). En el formulario, bajo "Datos de la inspección", salen la eficiencia acumulada de la semana y del mes de la inspectora elegida.
 - Primeras, defecto y segundas excluyen la prenda de SERVICIO; eficiencia la incluye. La re-inspección con carga 0 suma minutos pero no entra en los %.
 
 ## Base de datos (Supabase lives-datos)
