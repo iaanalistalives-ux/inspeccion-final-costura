@@ -2151,6 +2151,7 @@ function pintarMiEfi(){
   const propias = DATA.filas.filter(f=>f[F_INS] === ins);
   caja.style.display = '';
   caja.innerHTML =
+    tarjetaEfi('Eficiencia del día', propias.filter(f=>f[F_FEC] === fe), fechaCorta(fe).slice(0,10)) +
     tarjetaEfi('Eficiencia acumulada de la semana', propias.filter(f=>f[F_FEC] >= lun && f[F_FEC] <= dom), fechaCorta(lun) + ' al ' + fechaCorta(dom)) +
     tarjetaEfi('Eficiencia acumulada del mes', propias.filter(f=>f[F_FEC] >= ym + '-01' && f[F_FEC] <= ultimo), fechaCorta(ym + '-01') + ' al ' + fechaCorta(ultimo));
 }
