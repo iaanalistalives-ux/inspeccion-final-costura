@@ -3597,6 +3597,8 @@ html[data-tema="oscuro"] #lsRegVel .lsRegCaja,html[data-tema="oscuro"] #lsRegVel
 var SRC='index.html',RPC='ifc_puede_escribir_',KEY='sb_publishable_1g-n6UT70EUlNAo8Lyc04w_jKR4LpXZ',URL='https://xxfufpddgoyhbotjmaiy.supabase.co';
 var vel=document.getElementById('lsRegVel'),fr=document.getElementById('lsRegFr'),btn=document.getElementById('btnRegistrar'),x=document.getElementById('lsRegX');
 if(!vel||!btn)return;
+/* Lo acomoda junto a los demás botones del tablero (Descargar Excel, Exportar…) apenas lives-franja los agrupa. */
+var intentos=0,mov=setInterval(function(){var g=document.querySelector('#btnPdf');g=g&&g.closest('.lsAcc');if(g&&window.innerWidth<=700){clearInterval(mov);}else if(g){g.insertBefore(btn,g.firstChild);btn.classList.add('lsBtn','lsAccBtn');clearInterval(mov);}else if(++intentos>40)clearInterval(mov);},250);
 var cambio=false,tmr=null,cargado=false;
 function refrescar(){cambio=false;try{if(typeof cargarDatos==='function')cargarDatos({full:true});}catch(e){}}
 function programar(){cambio=true;clearTimeout(tmr);tmr=setTimeout(function(){if(cambio)refrescar();},1500);}
