@@ -1604,6 +1604,7 @@ async function jsonpUna(params){
     err.sinReintento = true; throw err;
   }
   if(!r.ok || !j) throw new Error((j && (j.message || j.hint)) || ('respuesta inesperada del servidor (' + r.status + ')'));
+  if(/^(guardar|editar|eliminar|nuevoDefecto|guardarSTD)/.test(accion) && j.ok !== false && window.lsRegGuardado) window.lsRegGuardado();
   return j;
 }
 /* Un reintento ante corte de señal; la siguiente acción vuelve a intentar sola.
@@ -4361,5 +4362,12 @@ button.lsBtn:disabled{opacity:.5;cursor:not-allowed}
   })();
 })();</script>
 <!-- ===== fin lives-leyenda v1 ===== -->
+<script id="lsRegFormJs">(function(){try{
+if(!/[?&]embebido=1/.test(location.search)||window.parent===window)return;
+var sucio=false;
+document.addEventListener('input',function(e){var t=e.target;if(t&&/^(INPUT|TEXTAREA)$/.test(t.tagName)&&t.type!=='checkbox'&&t.type!=='radio'&&!t.readOnly&&!(t.closest&&t.closest('[data-ls-fijo]')))sucio=true;},true);
+window.addEventListener('message',function(e){if(e.source!==window.parent||!e.data)return;if(e.data.ls==='sucio?')window.parent.postMessage({ls:'sucio',valor:sucio},location.origin);});
+window.lsRegGuardado=function(){sucio=false;window.parent.postMessage({ls:'guardado'},location.origin);};
+}catch(x){}})();</script>
 </body>
 </html>
